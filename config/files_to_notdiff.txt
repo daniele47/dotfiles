@@ -1,0 +1,45 @@
+// vim:commentstring=//\ %s
+
+// font files
+.local/share/fonts/FiraCode
+
+// mozilla files
+.mozilla/firefox/kvgujw0x.customized/extension-settings.json
+.mozilla/firefox/kvgujw0x.customized/places.sqlite
+.mozilla/firefox/kvgujw0x.customized/prefs.js
+.mozilla/firefox/kvgujw0x.customized/search.json.mozlz4
+.mozilla/firefox/profiles.ini
+
+// apps config files
+.config/htop/htoprc
+.config/dolphinrc
+.config/krunnerrc
+.config/okularpartrc
+.config/konsolerc
+.local/share/konsole/NerdProfileNoLigatures.profile
+.local/share/konsole/NerdProfile.profile
+.local/share/kxmlgui5/konsole
+.local/state/konsolestaterc
+
+// plasma config files
+.config/bluedevilglobalrc
+.config/kactivitymanagerdrc
+.config/kactivitymanagerd-statsrc
+.config/kcminputrc
+.config/kded5rc
+.config/kdedefaults
+.config/kdeglobals
+.config/kglobalshortcutsrc
+.config/kscreenlockerrc
+.config/kwinrc
+.config/kxkbrc
+.config/networkmanagement.notifyrc
+.config/PlasmaDiscoverUpdates
+.config/plasma-localerc
+.config/plasma-org.kde.plasma.desktop-appletsrc
+.config/plasmaparc
+.config/plasmarc
+.config/plasmashellrc
+.config/powerdevilrc
+.config/systemsettingsrc
+.config/Trolltech.conf
