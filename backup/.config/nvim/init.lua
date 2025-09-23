@@ -33,12 +33,6 @@ vim.api.nvim_create_autocmd("FileType", {
 		vim.opt.formatoptions:remove({ "c", "r", "o" })
 	end,
 })
-vim.api.nvim_create_autocmd("ColorScheme", {
-    pattern = "evening",
-    callback = function()
-        vim.api.nvim_set_hl(0, "EndOfBuffer", { link = "Normal" })
-    end,
-})
 
 -- colorscheme
-vim.cmd("colorscheme evening")
+vim.cmd("colorscheme sorbet")
