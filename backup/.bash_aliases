@@ -3,8 +3,7 @@
 export EDITOR=nvim
 alias la="ls -A"
 alias ll="ls -l"
-alias lla="ls -lA
-
+alias lla="ls -lA"
 
 # prompt
 function __cleanup_prompt__() {
@@ -38,5 +37,4 @@ function __cleanup_prompt__() {
     return "${retval}"
 }
 PROMPT_COMMAND="__cleanup_prompt__;"${PROMPT_COMMAND}
-
 
