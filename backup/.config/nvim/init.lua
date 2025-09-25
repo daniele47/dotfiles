@@ -16,19 +16,6 @@ vim.opt.pumheight = 15
 vim.opt.swapfile = false
 vim.opt.fillchars = { eob = " " }
 
--- use clipboard-osc52 to be able to copy from inside a container
-vim.g.clipboard = {
-	name = "OSC52",
-	copy = {
-		["+"] = require("vim.ui.clipboard.osc52").copy("+"),
-		["*"] = require("vim.ui.clipboard.osc52").copy("*"),
-	},
-	paste = {
-		["+"] = function() end,
-		["*"] = function() end,
-	},
-}
-
 -- keymaps
 vim.keymap.set("t", "<Esc>", "<C-\\><C-n>")
 vim.keymap.set("n", "grf", "")
