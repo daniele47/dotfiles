@@ -15,6 +15,7 @@ vim.opt.mousemodel = "extend"
 vim.opt.pumheight = 15
 vim.opt.swapfile = false
 vim.opt.fillchars = { eob = " " }
+vim.o.termguicolors = true
 
 -- keymaps
 vim.keymap.set("t", "<Esc>", "<C-\\><C-n>")
