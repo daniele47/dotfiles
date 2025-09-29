@@ -25,15 +25,7 @@ vim.opt.pumheight = 15
 vim.opt.pumwidth = 80
 
 -- colorscheme (TODO: write entire colorscheme file instead!)
-vim.opt.termguicolors = true
-vim.cmd.colorscheme("sorbet")
-vim.api.nvim_set_hl(0, 'StatusLine', { bg = '#1e1e2e', fg = '#cdd6f4' })                    -- statusline
-vim.api.nvim_set_hl(0, 'Pmenu', { bg = '#1e1e2e', fg = '#cdd6f4' })                         -- completion menu default
-vim.api.nvim_set_hl(0, 'PmenuSel', { bg = '#313244', fg = '#ffffff' })                      -- completion menu selected line
-vim.api.nvim_set_hl(0, 'PmenuSbar', { bg = '#11111b' })                                     -- completion menu bar empty part
-vim.api.nvim_set_hl(0, 'PmenuThumb', { bg = '#45475a' })                                    -- completion menu bar scroller
-vim.api.nvim_set_hl(0, 'PmenuMatch', { fg = '#cba6f7', bg = '#1e1e2e' })                    -- completion menu matched part
-vim.api.nvim_set_hl(0, 'PmenuMatchSel', { fg = '#cba6f7', bg = '#313244', bold = true })    -- completion menu matched part on current line
+vim.cmd.colorscheme("ultimate")
 
 -- various
 vim.opt.mousemodel = "extend"

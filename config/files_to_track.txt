@@ -2,5 +2,5 @@
 
 .bashrc.d
 .config/mpv
-.config/nvim/init.lua
+.config/nvim/
 .gitconfig
