@@ -48,7 +48,7 @@ vim.cmd([[
     hi SpellCap guifg=#87afd7 guibg=NONE guisp=#87afd7 ctermfg=110 ctermbg=NONE gui=undercurl cterm=underline
     hi SpellLocal guifg=#af87d7 guibg=NONE guisp=#af87d7 ctermfg=140 ctermbg=NONE gui=undercurl cterm=underline
     hi SpellRare guifg=#5fafaf guibg=NONE guisp=#5fafaf ctermfg=73 ctermbg=NONE gui=undercurl cterm=underline
-    hi StatusLine guifg=#cdd6f4 guibg=#1e1e2e ctermfg=189 ctermbg=235 gui=NONE cterm=bold
+    hi StatusLine guifg=#cdd6f4 guibg=#1e1e2e ctermfg=189 ctermbg=235 gui=NONE cterm=NONE
     hi StatusLineNC guifg=#8787af guibg=#000000 ctermfg=103 ctermbg=16 gui=reverse cterm=reverse
     hi TabLine guifg=#8787af guibg=#000000 ctermfg=103 ctermbg=16 gui=reverse cterm=reverse
     hi TabLineSel guifg=#000000 guibg=#d7d7ff ctermfg=16 ctermbg=189 gui=bold cterm=bold
