@@ -1,5 +1,8 @@
-hi clear
+set background=dark
 let g:colors_name = 'ultimate'
+
+" lsp/treesitter highlight groups reused from default colorscheme
+source $VIMRUNTIME/colors/vim.lua
 
 " builtin highlight groups
 hi Normal guifg=#dadada guibg=#161821 ctermfg=253 ctermbg=233 gui=NONE cterm=NONE
@@ -73,3 +76,37 @@ hi CursorIM guifg=#000000 guibg=#afff00 ctermfg=16 ctermbg=154 gui=NONE cterm=NO
 hi ToolbarLine guifg=NONE guibg=#000000 ctermfg=NONE ctermbg=16 gui=NONE cterm=NONE
 hi ToolbarButton guifg=#dadada guibg=#000000 ctermfg=253 ctermbg=16 gui=bold cterm=bold
 hi debugBreakpoint guifg=#8787af guibg=#000000 ctermfg=103 ctermbg=16 gui=bold,reverse cterm=bold,reverse
+
+" builtin highlight groups linked
+hi! link Terminal Normal
+hi! link StatusLineTerm StatusLine
+hi! link StatusLineTermNC StatusLineNC
+hi! link MessageWindow Pmenu
+hi! link PopupNotification Todo
+hi! link PopupSelected PmenuSel
+hi! link Boolean Constant
+hi! link Character Constant
+hi! link Conditional Statement
+hi! link Define PreProc
+hi! link Debug Special
+hi! link Delimiter Special
+hi! link ErrorMsg Error
+hi! link Exception Statement
+hi! link Float Constant
+hi! link Function Identifier
+hi! link Include PreProc
+hi! link Keyword Statement
+hi! link Label Statement
+hi! link Macro PreProc
+hi! link Number Constant
+hi! link Operator Statement
+hi! link PreCondit PreProc
+hi! link Repeat Statement
+hi! link SpecialChar Special
+hi! link SpecialComment Special
+hi! link StorageClass Type
+hi! link Structure Type
+hi! link Tag Special
+hi! link Typedef Type
+hi! link lCursor Cursor
+hi! link debugPC CursorLine
