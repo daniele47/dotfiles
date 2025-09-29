@@ -22,7 +22,7 @@ vim.opt.hlsearch = false
 
 -- completion menu
 vim.opt.pumheight = 15
-vim.opt.pumwidth = 80
+vim.opt.pumwidth = 20
 
 -- colorscheme
 vim.opt.termguicolors = true
