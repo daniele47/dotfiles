@@ -14,7 +14,7 @@ vim.opt.splitbelow = true
 -- statusline
 vim.opt.statusline = "%<%f %m%r%y %= %{&ff} %l:%v %P"
 vim.opt.laststatus = 3
-vim.opt.showmode = true
+vim.opt.showmode = false
 
 -- search options
 vim.opt.ignorecase = true
