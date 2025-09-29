@@ -22,7 +22,6 @@ vim.cmd([[
     hi DiffChange guifg=#87afff guibg=#000000 ctermfg=111 ctermbg=16 gui=reverse cterm=reverse
     hi DiffDelete guifg=#d7005f guibg=#000000 ctermfg=161 ctermbg=16 gui=reverse cterm=reverse
     hi DiffText guifg=#ff87ff guibg=#000000 ctermfg=213 ctermbg=16 gui=reverse cterm=reverse
-    hi Directory guifg=#dadada guibg=NONE ctermfg=253 ctermbg=NONE gui=NONE cterm=NONE
     hi EndOfBuffer guifg=#5f5f87 guibg=NONE ctermfg=60 ctermbg=NONE gui=NONE cterm=NONE
     hi FoldColumn guifg=#8787af guibg=NONE ctermfg=103 ctermbg=NONE gui=NONE cterm=NONE
     hi Folded guifg=#8787af guibg=#161821 ctermfg=103 ctermbg=233 gui=NONE cterm=NONE
@@ -30,7 +29,6 @@ vim.cmd([[
     hi LineNr guifg=#5f5f87 guibg=NONE ctermfg=60 ctermbg=NONE gui=NONE cterm=NONE
     hi MatchParen guifg=#ff00af guibg=NONE ctermfg=199 ctermbg=NONE gui=bold cterm=bold
     hi ModeMsg guifg=#dadada guibg=NONE ctermfg=253 ctermbg=NONE gui=bold cterm=bold
-    hi MoreMsg guifg=#dadada guibg=NONE ctermfg=253 ctermbg=NONE gui=NONE cterm=NONE
     hi NonText guifg=#707070 guibg=NONE ctermfg=242 ctermbg=NONE gui=NONE cterm=NONE
     hi Pmenu guifg=#cdd6f4 guibg=#11111b ctermfg=189 ctermbg=233 gui=NONE cterm=NONE
     hi PmenuMatch guifg=#cba6f7 guibg=#11111b ctermfg=183 ctermbg=233 gui=bold cterm=bold
@@ -45,7 +43,6 @@ vim.cmd([[
     hi Question guifg=#dadada guibg=NONE ctermfg=253 ctermbg=NONE gui=NONE cterm=NONE
     hi QuickFixLine guifg=#ff5fff guibg=#000000 ctermfg=207 ctermbg=16 gui=reverse cterm=reverse
     hi Search guifg=#00afff guibg=#000000 ctermfg=39 ctermbg=16 gui=reverse cterm=reverse
-    hi SignColumn guifg=#dadada guibg=NONE ctermfg=253 ctermbg=NONE gui=NONE cterm=NONE
     hi SpecialKey guifg=#5f5f87 guibg=NONE ctermfg=60 ctermbg=NONE gui=bold cterm=bold
     hi SpellBad guifg=#d75f5f guibg=NONE guisp=#d75f5f ctermfg=167 ctermbg=NONE gui=undercurl cterm=underline
     hi SpellCap guifg=#87afd7 guibg=NONE guisp=#87afd7 ctermfg=110 ctermbg=NONE gui=undercurl cterm=underline
@@ -54,20 +51,17 @@ vim.cmd([[
     hi StatusLine guifg=#cdd6f4 guibg=#1e1e2e ctermfg=189 ctermbg=235 gui=NONE cterm=bold
     hi StatusLineNC guifg=#8787af guibg=#000000 ctermfg=103 ctermbg=16 gui=reverse cterm=reverse
     hi TabLine guifg=#8787af guibg=#000000 ctermfg=103 ctermbg=16 gui=reverse cterm=reverse
-    hi TabLineFill guifg=#dadada guibg=NONE ctermfg=253 ctermbg=NONE gui=NONE cterm=NONE
     hi TabLineSel guifg=#000000 guibg=#d7d7ff ctermfg=16 ctermbg=189 gui=bold cterm=bold
     hi Title guifg=NONE guibg=NONE ctermfg=NONE ctermbg=NONE gui=NONE ctermfg=NONE ctermbg=NONE cterm=NONE
     hi VertSplit guifg=#5f5f87 guibg=NONE ctermfg=60 ctermbg=NONE gui=NONE cterm=NONE
     hi Visual guifg=#ffaf00 guibg=#000000 ctermfg=214 ctermbg=16 gui=reverse cterm=reverse
     hi VisualNOS guifg=NONE guibg=#363841 ctermfg=NONE ctermbg=237 gui=NONE cterm=NONE
-    hi WarningMsg guifg=#dadada guibg=NONE ctermfg=253 ctermbg=NONE gui=NONE cterm=NONE
     hi WildMenu guifg=#d7d7ff guibg=#161821 ctermfg=189 ctermbg=233 gui=bold cterm=bold
     hi Comment guifg=#8787af guibg=NONE ctermfg=103 ctermbg=NONE gui=italic cterm=NONE
     hi Constant guifg=#d75f5f guibg=NONE ctermfg=167 ctermbg=NONE gui=NONE cterm=NONE
     hi Error guifg=#ff5f5f guibg=#000000 ctermfg=203 ctermbg=16 gui=bold,reverse cterm=bold,reverse
     hi Identifier guifg=#87d75f guibg=NONE ctermfg=113 ctermbg=NONE gui=NONE cterm=NONE
     hi Function guifg=#cf6fdf guibg=NONE ctermfg=170 ctermbg=NONE gui=NONE cterm=NONE
-    hi Ignore guifg=#dadada guibg=NONE ctermfg=253 ctermbg=NONE gui=NONE cterm=NONE
     hi Special guifg=#5fafaf guibg=NONE ctermfg=73 ctermbg=NONE gui=NONE cterm=NONE
     hi Statement guifg=#5fafaf guibg=NONE ctermfg=73 ctermbg=NONE gui=NONE cterm=NONE
     hi String guifg=#d7af5f guibg=NONE ctermfg=179 ctermbg=NONE gui=NONE cterm=NONE
@@ -112,6 +106,11 @@ vim.cmd([[
     hi! link Typedef Type
     hi! link lCursor Cursor
     hi! link debugPC CursorLine
+    hi! link Directory Question
+    hi! link SignColumn Question
+    hi! link TabLineFill Question
+    hi! link WarningMsg Question
+    hi! link Ignore Question
 
     " diagnostic undercurl
     hi DiagnosticUnderlineError gui=undercurl
