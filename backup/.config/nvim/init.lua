@@ -25,6 +25,7 @@ vim.opt.pumheight = 15
 vim.opt.pumwidth = 80
 
 -- colorscheme
+vim.opt.termguicolors = true
 vim.cmd.colorscheme("ultimate")
 
 -- various
