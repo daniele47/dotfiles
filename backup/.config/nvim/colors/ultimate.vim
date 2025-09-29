@@ -1,51 +1,8 @@
 set background=dark
 
-" hi clear
-source $VIMRUNTIME/colors/vim.lua " Nvim: revert to Vim default color scheme
+source $VIMRUNTIME/colors/vim.lua
 let g:colors_name = 'ultimate'
 
-let s:t_Co = &t_Co
-
-hi! link Terminal Normal
-hi! link StatusLineTerm StatusLine
-hi! link StatusLineTermNC StatusLineNC
-hi! link MessageWindow Pmenu
-hi! link PopupNotification Todo
-hi! link PopupSelected PmenuSel
-hi! link Boolean Constant
-hi! link Character Constant
-hi! link Conditional Statement
-hi! link Define PreProc
-hi! link Debug Special
-hi! link Delimiter Special
-hi! link ErrorMsg Error
-hi! link Exception Statement
-hi! link Float Constant
-hi! link Function Identifier
-hi! link Include PreProc
-hi! link Keyword Statement
-hi! link Label Statement
-hi! link Macro PreProc
-hi! link Number Constant
-hi! link Operator Statement
-hi! link PreCondit PreProc
-hi! link Repeat Statement
-hi! link SpecialChar Special
-hi! link SpecialComment Special
-hi! link StorageClass Type
-hi! link Structure Type
-hi! link Tag Special
-hi! link Typedef Type
-hi! link lCursor Cursor
-hi! link debugPC CursorLine
-
-if (has('termguicolors') && &termguicolors) || has('gui_running')
-  let g:terminal_ansi_colors = ['#000000', '#d75f5f', '#87d75f', '#d7af5f', '#87afd7', '#af87d7', '#5fafaf', '#dadada', '#707070', '#ff5f5f', '#87ff5f', '#ffd75f', '#87d7ff', '#d787ff', '#5fd7d7', '#ffffff']
-  " Nvim uses g:terminal_color_{0-15} instead
-  for i in range(g:terminal_ansi_colors->len())
-    let g:terminal_color_{i} = g:terminal_ansi_colors[i]
-  endfor
-endif
 hi Normal guifg=#dadada guibg=#161821 gui=NONE cterm=NONE
 hi Added guifg=#87d75f guibg=NONE gui=NONE cterm=NONE
 hi Changed guifg=#87afd7 guibg=NONE gui=NONE cterm=NONE
@@ -118,7 +75,7 @@ hi ToolbarLine guifg=NONE guibg=#000000 gui=NONE cterm=NONE
 hi ToolbarButton guifg=#dadada guibg=#000000 gui=bold cterm=bold
 hi debugBreakpoint guifg=#8787af guibg=#000000 gui=bold,reverse cterm=bold,reverse
 
-if s:t_Co >= 256
+if !&termguicolors
   hi Normal ctermfg=253 ctermbg=233 cterm=NONE
   hi Added ctermfg=113 ctermbg=NONE cterm=NONE
   hi Changed ctermfg=110 ctermbg=NONE cterm=NONE
@@ -190,227 +147,38 @@ if s:t_Co >= 256
   hi ToolbarLine ctermfg=NONE ctermbg=16 cterm=NONE
   hi ToolbarButton ctermfg=253 ctermbg=16 cterm=bold
   hi debugBreakpoint ctermfg=103 ctermbg=16 cterm=bold,reverse
-  unlet s:t_Co
   finish
 endif
 
-if s:t_Co >= 16
-  hi CurSearch ctermfg=magenta ctermbg=black cterm=reverse
-  hi EndOfBuffer ctermfg=darkgrey ctermbg=NONE cterm=NONE
-  hi Folded ctermfg=darkgrey ctermbg=NONE cterm=NONE
-  hi IncSearch ctermfg=yellow ctermbg=black cterm=reverse
-  hi LineNr ctermfg=darkgrey ctermbg=NONE cterm=NONE
-  hi NonText ctermfg=darkgrey ctermbg=NONE cterm=NONE
-  hi PmenuSbar ctermfg=darkgrey ctermbg=NONE cterm=reverse
-  hi Search ctermfg=cyan ctermbg=black cterm=reverse
-  hi SpecialKey ctermfg=darkgrey ctermbg=NONE cterm=bold
-  hi StatusLineNC ctermfg=darkgrey ctermbg=NONE cterm=reverse
-  hi TabLine ctermfg=darkgrey ctermbg=NONE cterm=reverse
-  hi VertSplit ctermfg=darkgrey ctermbg=NONE cterm=NONE
-  hi Normal ctermfg=NONE ctermbg=NONE cterm=NONE
-  hi Added ctermfg=darkgreen ctermbg=NONE cterm=NONE
-  hi Changed ctermfg=darkblue ctermbg=NONE cterm=NONE
-  hi Removed ctermfg=darkred ctermbg=NONE cterm=NONE
-  hi ColorColumn ctermfg=NONE ctermbg=NONE cterm=reverse
-  hi Conceal ctermfg=NONE ctermbg=NONE cterm=NONE
-  hi Cursor ctermfg=NONE ctermbg=NONE cterm=reverse
-  hi CursorColumn ctermfg=NONE ctermbg=NONE cterm=NONE
-  hi CursorLine ctermfg=NONE ctermbg=NONE cterm=NONE
-  hi CursorLineNr ctermfg=NONE ctermbg=NONE cterm=bold
-  hi DiffAdd ctermfg=darkgreen ctermbg=black cterm=reverse
-  hi DiffChange ctermfg=darkblue ctermbg=black cterm=reverse
-  hi DiffDelete ctermfg=darkred ctermbg=black cterm=reverse
-  hi DiffText ctermfg=darkmagenta ctermbg=black cterm=reverse
-  hi Directory ctermfg=NONE ctermbg=NONE cterm=NONE
-  hi FoldColumn ctermfg=NONE ctermbg=NONE cterm=NONE
-  hi MatchParen ctermfg=NONE ctermbg=NONE cterm=bold,underline
-  hi ModeMsg ctermfg=NONE ctermbg=NONE cterm=bold
-  hi MoreMsg ctermfg=NONE ctermbg=NONE cterm=NONE
-  hi Pmenu ctermfg=NONE ctermbg=NONE cterm=reverse
-  hi PmenuMatch ctermfg=NONE ctermbg=darkred cterm=reverse
-  hi PmenuExtra ctermfg=NONE ctermbg=NONE cterm=reverse
-  hi PmenuKind ctermfg=NONE ctermbg=NONE cterm=bold,reverse
-  hi PmenuSel ctermfg=NONE ctermbg=NONE cterm=bold
-  hi PmenuMatchSel ctermfg=darkred ctermbg=NONE cterm=bold
-  hi PmenuExtraSel ctermfg=NONE ctermbg=NONE cterm=bold
-  hi PmenuKindSel ctermfg=NONE ctermbg=NONE cterm=bold
-  hi PmenuThumb ctermfg=NONE ctermbg=NONE cterm=NONE
-  hi Question ctermfg=NONE ctermbg=NONE cterm=standout
-  hi QuickFixLine ctermfg=darkmagenta ctermbg=black cterm=reverse
-  hi SignColumn ctermfg=NONE ctermbg=NONE cterm=NONE
-  hi SpellBad ctermfg=darkred ctermbg=NONE cterm=underline
-  hi SpellCap ctermfg=darkblue ctermbg=NONE cterm=underline
-  hi SpellLocal ctermfg=darkmagenta ctermbg=NONE cterm=underline
-  hi SpellRare ctermfg=darkcyan ctermbg=NONE cterm=underline
-  hi StatusLine ctermfg=NONE ctermbg=NONE cterm=bold,reverse
-  hi TabLineFill ctermfg=NONE ctermbg=NONE cterm=NONE
-  hi TabLineSel ctermfg=NONE ctermbg=NONE cterm=bold,reverse
-  hi Title ctermfg=NONE ctermbg=NONE cterm=NONE
-  hi Visual ctermfg=darkyellow ctermbg=black cterm=reverse
-  hi VisualNOS ctermfg=NONE ctermbg=NONE cterm=NONE
-  hi WarningMsg ctermfg=NONE ctermbg=NONE cterm=standout
-  hi WildMenu ctermfg=NONE ctermbg=NONE cterm=bold
-  hi Comment ctermfg=darkmagenta ctermbg=NONE cterm=NONE
-  hi Constant ctermfg=darkred ctermbg=NONE cterm=NONE
-  hi Error ctermfg=darkred ctermbg=black cterm=bold,reverse
-  hi Identifier ctermfg=darkgreen ctermbg=NONE cterm=NONE
-  hi Ignore ctermfg=NONE ctermbg=NONE cterm=NONE
-  hi PreProc ctermfg=darkblue ctermbg=NONE cterm=NONE
-  hi Special ctermfg=darkcyan ctermbg=NONE cterm=NONE
-  hi Statement ctermfg=darkblue ctermbg=NONE cterm=NONE
-  hi String ctermfg=darkyellow ctermbg=NONE cterm=NONE
-  hi Todo ctermfg=darkgreen ctermbg=black cterm=bold,reverse
-  hi Type ctermfg=darkblue ctermbg=NONE cterm=NONE
-  hi Underlined ctermfg=NONE ctermbg=NONE cterm=underline
-  hi CursorIM ctermfg=NONE ctermbg=NONE cterm=NONE
-  hi ToolbarLine ctermfg=NONE ctermbg=NONE cterm=reverse
-  hi ToolbarButton ctermfg=NONE ctermbg=NONE cterm=bold,reverse
-  hi debugBreakpoint ctermfg=NONE ctermbg=NONE cterm=bold,reverse
-  unlet s:t_Co
-  finish
-endif
-
-if s:t_Co >= 8
-  hi CurSearch ctermfg=darkmagenta ctermbg=black cterm=reverse
-  hi EndOfBuffer ctermfg=NONE ctermbg=NONE cterm=NONE
-  hi Folded ctermfg=NONE ctermbg=NONE cterm=NONE
-  hi IncSearch ctermfg=darkyellow ctermbg=black cterm=reverse
-  hi LineNr ctermfg=NONE ctermbg=NONE cterm=NONE
-  hi NonText ctermfg=NONE ctermbg=NONE cterm=NONE
-  hi PmenuSbar ctermfg=NONE ctermbg=NONE cterm=reverse
-  hi Search ctermfg=darkcyan ctermbg=black cterm=reverse
-  hi SpecialKey ctermfg=NONE ctermbg=NONE cterm=bold
-  hi StatusLineNC ctermfg=NONE ctermbg=NONE cterm=bold,underline
-  hi TabLine ctermfg=NONE ctermbg=NONE cterm=bold,underline
-  hi VertSplit ctermfg=NONE ctermbg=NONE cterm=NONE
-  hi Normal ctermfg=NONE ctermbg=NONE cterm=NONE
-  hi Added ctermfg=darkgreen ctermbg=NONE cterm=NONE
-  hi Changed ctermfg=darkblue ctermbg=NONE cterm=NONE
-  hi Removed ctermfg=darkred ctermbg=NONE cterm=NONE
-  hi ColorColumn ctermfg=NONE ctermbg=NONE cterm=reverse
-  hi Conceal ctermfg=NONE ctermbg=NONE cterm=NONE
-  hi Cursor ctermfg=NONE ctermbg=NONE cterm=reverse
-  hi CursorColumn ctermfg=NONE ctermbg=NONE cterm=NONE
-  hi CursorLine ctermfg=NONE ctermbg=NONE cterm=NONE
-  hi CursorLineNr ctermfg=NONE ctermbg=NONE cterm=bold
-  hi DiffAdd ctermfg=darkgreen ctermbg=black cterm=reverse
-  hi DiffChange ctermfg=darkblue ctermbg=black cterm=reverse
-  hi DiffDelete ctermfg=darkred ctermbg=black cterm=reverse
-  hi DiffText ctermfg=darkmagenta ctermbg=black cterm=reverse
-  hi Directory ctermfg=NONE ctermbg=NONE cterm=NONE
-  hi FoldColumn ctermfg=NONE ctermbg=NONE cterm=NONE
-  hi MatchParen ctermfg=NONE ctermbg=NONE cterm=bold,underline
-  hi ModeMsg ctermfg=NONE ctermbg=NONE cterm=bold
-  hi MoreMsg ctermfg=NONE ctermbg=NONE cterm=NONE
-  hi Pmenu ctermfg=NONE ctermbg=NONE cterm=reverse
-  hi PmenuMatch ctermfg=NONE ctermbg=darkred cterm=reverse
-  hi PmenuExtra ctermfg=NONE ctermbg=NONE cterm=reverse
-  hi PmenuKind ctermfg=NONE ctermbg=NONE cterm=bold,reverse
-  hi PmenuSel ctermfg=NONE ctermbg=NONE cterm=bold
-  hi PmenuMatchSel ctermfg=darkred ctermbg=NONE cterm=bold
-  hi PmenuExtraSel ctermfg=NONE ctermbg=NONE cterm=bold
-  hi PmenuKindSel ctermfg=NONE ctermbg=NONE cterm=bold
-  hi PmenuThumb ctermfg=NONE ctermbg=NONE cterm=NONE
-  hi Question ctermfg=NONE ctermbg=NONE cterm=standout
-  hi QuickFixLine ctermfg=darkmagenta ctermbg=black cterm=reverse
-  hi SignColumn ctermfg=NONE ctermbg=NONE cterm=NONE
-  hi SpellBad ctermfg=darkred ctermbg=NONE cterm=underline
-  hi SpellCap ctermfg=darkblue ctermbg=NONE cterm=underline
-  hi SpellLocal ctermfg=darkmagenta ctermbg=NONE cterm=underline
-  hi SpellRare ctermfg=darkcyan ctermbg=NONE cterm=underline
-  hi StatusLine ctermfg=NONE ctermbg=NONE cterm=bold,reverse
-  hi TabLineFill ctermfg=NONE ctermbg=NONE cterm=NONE
-  hi TabLineSel ctermfg=NONE ctermbg=NONE cterm=bold,reverse
-  hi Title ctermfg=NONE ctermbg=NONE cterm=NONE
-  hi Visual ctermfg=darkyellow ctermbg=black cterm=reverse
-  hi VisualNOS ctermfg=NONE ctermbg=NONE cterm=NONE
-  hi WarningMsg ctermfg=NONE ctermbg=NONE cterm=standout
-  hi WildMenu ctermfg=NONE ctermbg=NONE cterm=bold
-  hi Comment ctermfg=darkmagenta ctermbg=NONE cterm=NONE
-  hi Constant ctermfg=darkred ctermbg=NONE cterm=NONE
-  hi Error ctermfg=darkred ctermbg=black cterm=bold,reverse
-  hi Identifier ctermfg=darkgreen ctermbg=NONE cterm=NONE
-  hi Ignore ctermfg=NONE ctermbg=NONE cterm=NONE
-  hi PreProc ctermfg=darkblue ctermbg=NONE cterm=NONE
-  hi Special ctermfg=darkcyan ctermbg=NONE cterm=NONE
-  hi Statement ctermfg=darkblue ctermbg=NONE cterm=NONE
-  hi String ctermfg=darkyellow ctermbg=NONE cterm=NONE
-  hi Todo ctermfg=darkgreen ctermbg=black cterm=bold,reverse
-  hi Type ctermfg=darkblue ctermbg=NONE cterm=NONE
-  hi Underlined ctermfg=NONE ctermbg=NONE cterm=underline
-  hi CursorIM ctermfg=NONE ctermbg=NONE cterm=NONE
-  hi ToolbarLine ctermfg=NONE ctermbg=NONE cterm=reverse
-  hi ToolbarButton ctermfg=NONE ctermbg=NONE cterm=bold,reverse
-  hi debugBreakpoint ctermfg=NONE ctermbg=NONE cterm=bold,reverse
-  unlet s:t_Co
-  finish
-endif
-
-if s:t_Co >= 0
-  hi Normal term=NONE
-  hi ColorColumn term=reverse
-  hi Conceal term=NONE
-  hi Cursor term=reverse
-  hi CursorColumn term=NONE
-  hi CursorLine term=underline
-  hi CursorLineNr term=bold
-  hi DiffAdd term=reverse
-  hi DiffChange term=NONE
-  hi DiffDelete term=reverse
-  hi DiffText term=reverse
-  hi Directory term=NONE
-  hi EndOfBuffer term=NONE
-  hi ErrorMsg term=bold,reverse
-  hi FoldColumn term=NONE
-  hi Folded term=NONE
-  hi IncSearch term=bold,reverse,underline
-  hi LineNr term=NONE
-  hi MatchParen term=bold,underline
-  hi ModeMsg term=bold
-  hi MoreMsg term=NONE
-  hi NonText term=NONE
-  hi Pmenu term=reverse
-  hi PmenuSbar term=reverse
-  hi PmenuSel term=bold
-  hi PmenuThumb term=NONE
-  hi Question term=standout
-  hi Search term=reverse
-  hi SignColumn term=reverse
-  hi SpecialKey term=bold
-  hi SpellBad term=underline
-  hi SpellCap term=underline
-  hi SpellLocal term=underline
-  hi SpellRare term=underline
-  hi StatusLine term=bold,reverse
-  hi StatusLineNC term=bold,underline
-  hi TabLine term=bold,underline
-  hi TabLineFill term=NONE
-  hi Terminal term=NONE
-  hi TabLineSel term=bold,reverse
-  hi Title term=NONE
-  hi VertSplit term=NONE
-  hi Visual term=reverse
-  hi VisualNOS term=NONE
-  hi WarningMsg term=standout
-  hi WildMenu term=bold
-  hi CursorIM term=NONE
-  hi ToolbarLine term=reverse
-  hi ToolbarButton term=bold,reverse
-  hi CurSearch term=reverse
-  hi CursorLineFold term=underline
-  hi CursorLineSign term=underline
-  hi Comment term=bold
-  hi Constant term=NONE
-  hi Error term=bold,reverse
-  hi Identifier term=NONE
-  hi Ignore term=NONE
-  hi PreProc term=NONE
-  hi Special term=NONE
-  hi Statement term=NONE
-  hi Todo term=bold,reverse
-  hi Type term=NONE
-  hi Underlined term=underline
-  unlet s:t_Co
-  finish
-endif
-
+hi! link Terminal Normal
+hi! link StatusLineTerm StatusLine
+hi! link StatusLineTermNC StatusLineNC
+hi! link MessageWindow Pmenu
+hi! link PopupNotification Todo
+hi! link PopupSelected PmenuSel
+hi! link Boolean Constant
+hi! link Character Constant
+hi! link Conditional Statement
+hi! link Define PreProc
+hi! link Debug Special
+hi! link Delimiter Special
+hi! link ErrorMsg Error
+hi! link Exception Statement
+hi! link Float Constant
+hi! link Function Identifier
+hi! link Include PreProc
+hi! link Keyword Statement
+hi! link Label Statement
+hi! link Macro PreProc
+hi! link Number Constant
+hi! link Operator Statement
+hi! link PreCondit PreProc
+hi! link Repeat Statement
+hi! link SpecialChar Special
+hi! link SpecialComment Special
+hi! link StorageClass Type
+hi! link Structure Type
+hi! link Tag Special
+hi! link Typedef Type
+hi! link lCursor Cursor
+hi! link debugPC CursorLine
