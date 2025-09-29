@@ -24,7 +24,7 @@ vim.opt.hlsearch = false
 vim.opt.pumheight = 15
 vim.opt.pumwidth = 80
 
--- colorscheme (TODO: write entire colorscheme file instead!)
+-- colorscheme
 vim.cmd.colorscheme("ultimate")
 
 -- various
