@@ -32,3 +32,4 @@ vim.cmd.colorscheme("ultimate")
 vim.opt.mousemodel = "extend"
 vim.opt.swapfile = false
 vim.opt.fillchars = { eob = " " }
+vim.opt.signcolumn = "no"
