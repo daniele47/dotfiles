@@ -62,11 +62,10 @@ vim.cmd([[
     hi Error guifg=#ff5f5f guibg=#000000 ctermfg=203 ctermbg=16 gui=bold,reverse cterm=bold,reverse
     hi Identifier guifg=#87d75f guibg=NONE ctermfg=113 ctermbg=NONE gui=NONE cterm=NONE
     hi Function guifg=#cf6fdf guibg=NONE ctermfg=170 ctermbg=NONE gui=NONE cterm=NONE
-    hi Special guifg=#5fafaf guibg=NONE ctermfg=73 ctermbg=NONE gui=NONE cterm=NONE
-    hi Statement guifg=#5fafaf guibg=NONE ctermfg=73 ctermbg=NONE gui=NONE cterm=NONE
+    hi Statement guifg=#5fd7d7 guibg=NONE ctermfg=80 ctermbg=NONE gui=NONE cterm=NONE
     hi String guifg=#d7af5f guibg=NONE ctermfg=179 ctermbg=NONE gui=NONE cterm=NONE
     hi Todo guifg=#5fd7af guibg=NONE ctermfg=79 ctermbg=NONE gui=bold,reverse cterm=bold,reverse
-    hi Type guifg=#5f87d7 guibg=NONE ctermfg=68 ctermbg=NONE gui=NONE cterm=NONE
+    hi Type guifg=#5f87ff guibg=NONE ctermfg=69 ctermbg=NONE gui=NONE cterm=NONE
     hi Underlined guifg=#dadada guibg=NONE ctermfg=253 ctermbg=NONE gui=underline cterm=underline
     hi CursorIM guifg=#000000 guibg=#afff00 ctermfg=16 ctermbg=154 gui=NONE cterm=NONE
     hi ToolbarLine guifg=NONE guibg=#000000 ctermfg=NONE ctermbg=16 gui=NONE cterm=NONE
@@ -98,6 +97,7 @@ vim.cmd([[
     hi! link PreCondit Statement
     hi! link PreProc Statement
     hi! link Repeat Statement
+    hi! link Special Statement
     hi! link SpecialChar Special
     hi! link SpecialComment Special
     hi! link StorageClass Type
