@@ -144,16 +144,16 @@ if s:t_Co >= 256
   hi ModeMsg ctermfg=253 ctermbg=NONE cterm=bold
   hi MoreMsg ctermfg=253 ctermbg=NONE cterm=NONE
   hi NonText ctermfg=242 ctermbg=NONE cterm=NONE
-  hi Pmenu ctermfg=16 ctermbg=248 cterm=NONE
-  hi PmenuMatch ctermfg=161 ctermbg=248 cterm=NONE
+  hi Pmenu ctermfg=189 ctermbg=235 cterm=NONE
+  hi PmenuMatch ctermfg=183 ctermbg=235 cterm=NONE
   hi PmenuExtra ctermfg=16 ctermbg=248 cterm=NONE
   hi PmenuKind ctermfg=16 ctermbg=248 cterm=bold
-  hi PmenuSbar ctermfg=242 ctermbg=60 cterm=NONE
-  hi PmenuSel ctermfg=16 ctermbg=189 cterm=NONE
-  hi PmenuMatchSel ctermfg=161 ctermbg=189 cterm=bold
+  hi PmenuSbar ctermfg=242 ctermbg=233 cterm=NONE
+  hi PmenuSel ctermfg=15 ctermbg=237 cterm=NONE
+  hi PmenuMatchSel ctermfg=183 ctermbg=237 cterm=bold
   hi PmenuExtraSel ctermfg=16 ctermbg=189 cterm=NONE
   hi PmenuKindSel ctermfg=16 ctermbg=189 cterm=bold
-  hi PmenuThumb ctermfg=253 ctermbg=189 cterm=NONE
+  hi PmenuThumb ctermfg=253 ctermbg=239 cterm=NONE
   hi Question ctermfg=253 ctermbg=NONE cterm=NONE
   hi QuickFixLine ctermfg=207 ctermbg=16 cterm=reverse
   hi Search ctermfg=39 ctermbg=16 cterm=reverse
@@ -163,7 +163,7 @@ if s:t_Co >= 256
   hi SpellCap ctermfg=110 ctermbg=NONE cterm=underline
   hi SpellLocal ctermfg=140 ctermbg=NONE cterm=underline
   hi SpellRare ctermfg=73 ctermbg=NONE cterm=underline
-  hi StatusLine ctermfg=16 ctermbg=189 cterm=bold
+  hi StatusLine ctermfg=189 ctermbg=235 cterm=NONE
   hi StatusLineNC ctermfg=103 ctermbg=16 cterm=reverse
   hi TabLine ctermfg=103 ctermbg=16 cterm=reverse
   hi TabLineFill ctermfg=253 ctermbg=NONE cterm=NONE
