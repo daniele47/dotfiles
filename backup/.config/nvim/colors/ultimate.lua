@@ -54,8 +54,8 @@ vim.cmd([[
     hi TabLineSel guifg=#000000 guibg=#d7d7ff ctermfg=16 ctermbg=189 gui=bold cterm=bold
     hi Title guifg=NONE guibg=NONE ctermfg=NONE ctermbg=NONE gui=NONE ctermfg=NONE ctermbg=NONE cterm=NONE
     hi VertSplit guifg=#5f5f87 guibg=NONE ctermfg=60 ctermbg=NONE gui=NONE cterm=NONE
-    hi Visual guifg=#ffaf00 guibg=#000000 ctermfg=214 ctermbg=16 gui=reverse cterm=reverse
-    hi VisualNOS guifg=NONE guibg=#363841 ctermfg=NONE ctermbg=237 gui=NONE cterm=NONE
+    hi Visual guifg=NONE guibg=#3a3a5f ctermfg=NONE ctermbg=60 gui=NONE cterm=NONE
+    hi VisualNOS guifg=NONE guibg=#2a2a3f ctermfg=NONE ctermbg=236 gui=NONE cterm=NONE
     hi WildMenu guifg=#d7d7ff guibg=#161821 ctermfg=189 ctermbg=233 gui=bold cterm=bold
     hi Comment guifg=#8787af guibg=NONE ctermfg=103 ctermbg=NONE gui=NONE cterm=NONE
     hi Constant guifg=#d75f5f guibg=NONE ctermfg=167 ctermbg=NONE gui=NONE cterm=NONE
