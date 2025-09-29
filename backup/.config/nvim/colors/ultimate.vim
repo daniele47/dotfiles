@@ -60,7 +60,7 @@ hi Visual guifg=#ffaf00 guibg=#000000 ctermfg=214 ctermbg=16 gui=reverse cterm=r
 hi VisualNOS guifg=NONE guibg=#363841 ctermfg=NONE ctermbg=237 gui=NONE cterm=NONE
 hi WarningMsg guifg=#dadada guibg=NONE ctermfg=253 ctermbg=NONE gui=NONE cterm=NONE
 hi WildMenu guifg=#d7d7ff guibg=#161821 ctermfg=189 ctermbg=233 gui=bold cterm=bold
-hi Comment guifg=#cba6f7 guibg=NONE ctermfg=183 ctermbg=NONE gui=italic cterm=italic
+hi Comment guifg=#cba6f7 guibg=NONE ctermfg=183 ctermbg=NONE gui=italic cterm=NONE
 hi Constant guifg=#d75f5f guibg=NONE ctermfg=167 ctermbg=NONE gui=NONE cterm=NONE
 hi Error guifg=#ff5f5f guibg=#000000 ctermfg=203 ctermbg=16 gui=bold,reverse cterm=bold,reverse
 hi Identifier guifg=#87d75f guibg=NONE ctermfg=113 ctermbg=NONE gui=NONE cterm=NONE
