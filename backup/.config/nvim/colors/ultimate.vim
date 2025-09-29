@@ -1,14 +1,10 @@
 set background=dark
 
-if has('termguicolors') && !has('gui_running')
-  set termguicolors
-endif
-
-hi clear
-if exists('syntax_on')
-  syntax reset
-endif
+" hi clear
+source $VIMRUNTIME/colors/vim.lua " Nvim: revert to Vim default color scheme
 let g:colors_name = 'ultimate'
+
+let s:t_Co = &t_Co
 
 hi! link Terminal Normal
 hi! link StatusLineTerm StatusLine
@@ -43,6 +39,13 @@ hi! link Typedef Type
 hi! link lCursor Cursor
 hi! link debugPC CursorLine
 
+if (has('termguicolors') && &termguicolors) || has('gui_running')
+  let g:terminal_ansi_colors = ['#000000', '#d75f5f', '#87d75f', '#d7af5f', '#87afd7', '#af87d7', '#5fafaf', '#dadada', '#707070', '#ff5f5f', '#87ff5f', '#ffd75f', '#87d7ff', '#d787ff', '#5fd7d7', '#ffffff']
+  " Nvim uses g:terminal_color_{0-15} instead
+  for i in range(g:terminal_ansi_colors->len())
+    let g:terminal_color_{i} = g:terminal_ansi_colors[i]
+  endfor
+endif
 hi Normal guifg=#dadada guibg=#161821 gui=NONE cterm=NONE
 hi Added guifg=#87d75f guibg=NONE gui=NONE cterm=NONE
 hi Changed guifg=#87afd7 guibg=NONE gui=NONE cterm=NONE
@@ -68,16 +71,16 @@ hi MatchParen guifg=#ff00af guibg=NONE gui=bold cterm=bold
 hi ModeMsg guifg=#dadada guibg=NONE gui=bold cterm=bold
 hi MoreMsg guifg=#dadada guibg=NONE gui=NONE cterm=NONE
 hi NonText guifg=#707070 guibg=NONE gui=NONE cterm=NONE
-hi Pmenu guifg=#cdd6f4 guibg=#1e1e2e gui=NONE cterm=NONE
-hi PmenuMatch guifg=#cba6f7 guibg=#1e1e2e gui=NONE cterm=NONE
+hi Pmenu guifg=#000000 guibg=#a6a8b1 gui=NONE cterm=NONE
+hi PmenuMatch guifg=#d7005f guibg=#a6a8b1 gui=NONE cterm=NONE
 hi PmenuExtra guifg=#000000 guibg=#a6a8b1 gui=NONE cterm=NONE
 hi PmenuKind guifg=#000000 guibg=#a6a8b1 gui=bold cterm=bold
-hi PmenuSbar guifg=#707070 guibg=#11111b gui=NONE cterm=NONE
-hi PmenuSel guifg=#ffffff guibg=#313244 gui=NONE cterm=NONE
-hi PmenuMatchSel guifg=#cba6f7 guibg=#313244 gui=bold cterm=bold
+hi PmenuSbar guifg=#707070 guibg=#5f5f87 gui=NONE cterm=NONE
+hi PmenuSel guifg=#000000 guibg=#d7d7ff gui=NONE cterm=NONE
+hi PmenuMatchSel guifg=#d7005f guibg=#d7d7ff gui=bold cterm=bold
 hi PmenuExtraSel guifg=#000000 guibg=#d7d7ff gui=NONE cterm=NONE
 hi PmenuKindSel guifg=#000000 guibg=#d7d7ff gui=bold cterm=bold
-hi PmenuThumb guifg=#dadada guibg=#45475a gui=NONE cterm=NONE
+hi PmenuThumb guifg=#dadada guibg=#d7d7ff gui=NONE cterm=NONE
 hi Question guifg=#dadada guibg=NONE gui=NONE cterm=NONE
 hi QuickFixLine guifg=#ff5fff guibg=#000000 gui=reverse cterm=reverse
 hi Search guifg=#00afff guibg=#000000 gui=reverse cterm=reverse
@@ -87,7 +90,7 @@ hi SpellBad guifg=#d75f5f guibg=NONE guisp=#d75f5f gui=undercurl cterm=underline
 hi SpellCap guifg=#87afd7 guibg=NONE guisp=#87afd7 gui=undercurl cterm=underline
 hi SpellLocal guifg=#af87d7 guibg=NONE guisp=#af87d7 gui=undercurl cterm=underline
 hi SpellRare guifg=#5fafaf guibg=NONE guisp=#5fafaf gui=undercurl cterm=underline
-hi StatusLine guifg=#cdd6f4 guibg=#1e1e2e cterm=bold
+hi StatusLine guifg=#cdd6f4 guibg=#1e1e2e gui=NONE cterm=bold
 hi StatusLineNC guifg=#8787af guibg=#000000 gui=reverse cterm=reverse
 hi TabLine guifg=#8787af guibg=#000000 gui=reverse cterm=reverse
 hi TabLineFill guifg=#dadada guibg=NONE gui=NONE cterm=NONE
@@ -114,3 +117,300 @@ hi CursorIM guifg=#000000 guibg=#afff00 gui=NONE cterm=NONE
 hi ToolbarLine guifg=NONE guibg=#000000 gui=NONE cterm=NONE
 hi ToolbarButton guifg=#dadada guibg=#000000 gui=bold cterm=bold
 hi debugBreakpoint guifg=#8787af guibg=#000000 gui=bold,reverse cterm=bold,reverse
+
+if s:t_Co >= 256
+  hi Normal ctermfg=253 ctermbg=233 cterm=NONE
+  hi Added ctermfg=113 ctermbg=NONE cterm=NONE
+  hi Changed ctermfg=110 ctermbg=NONE cterm=NONE
+  hi Removed ctermfg=167 ctermbg=NONE cterm=NONE
+  hi ColorColumn ctermfg=NONE ctermbg=235 cterm=NONE
+  hi Conceal ctermfg=NONE ctermbg=NONE cterm=NONE
+  hi CurSearch ctermfg=207 ctermbg=16 cterm=reverse
+  hi Cursor ctermfg=NONE ctermbg=NONE cterm=reverse
+  hi CursorColumn ctermfg=NONE ctermbg=237 cterm=NONE
+  hi CursorLine ctermfg=NONE ctermbg=237 cterm=NONE
+  hi CursorLineNr ctermfg=189 ctermbg=237 cterm=NONE
+  hi DiffAdd ctermfg=35 ctermbg=16 cterm=reverse
+  hi DiffChange ctermfg=111 ctermbg=16 cterm=reverse
+  hi DiffDelete ctermfg=161 ctermbg=16 cterm=reverse
+  hi DiffText ctermfg=213 ctermbg=16 cterm=reverse
+  hi Directory ctermfg=253 ctermbg=NONE cterm=NONE
+  hi EndOfBuffer ctermfg=60 ctermbg=NONE cterm=NONE
+  hi FoldColumn ctermfg=103 ctermbg=NONE cterm=NONE
+  hi Folded ctermfg=60 ctermbg=233 cterm=NONE
+  hi IncSearch ctermfg=214 ctermbg=16 cterm=reverse
+  hi LineNr ctermfg=60 ctermbg=NONE cterm=NONE
+  hi MatchParen ctermfg=199 ctermbg=NONE cterm=bold
+  hi ModeMsg ctermfg=253 ctermbg=NONE cterm=bold
+  hi MoreMsg ctermfg=253 ctermbg=NONE cterm=NONE
+  hi NonText ctermfg=242 ctermbg=NONE cterm=NONE
+  hi Pmenu ctermfg=16 ctermbg=248 cterm=NONE
+  hi PmenuMatch ctermfg=161 ctermbg=248 cterm=NONE
+  hi PmenuExtra ctermfg=16 ctermbg=248 cterm=NONE
+  hi PmenuKind ctermfg=16 ctermbg=248 cterm=bold
+  hi PmenuSbar ctermfg=242 ctermbg=60 cterm=NONE
+  hi PmenuSel ctermfg=16 ctermbg=189 cterm=NONE
+  hi PmenuMatchSel ctermfg=161 ctermbg=189 cterm=bold
+  hi PmenuExtraSel ctermfg=16 ctermbg=189 cterm=NONE
+  hi PmenuKindSel ctermfg=16 ctermbg=189 cterm=bold
+  hi PmenuThumb ctermfg=253 ctermbg=189 cterm=NONE
+  hi Question ctermfg=253 ctermbg=NONE cterm=NONE
+  hi QuickFixLine ctermfg=207 ctermbg=16 cterm=reverse
+  hi Search ctermfg=39 ctermbg=16 cterm=reverse
+  hi SignColumn ctermfg=253 ctermbg=NONE cterm=NONE
+  hi SpecialKey ctermfg=60 ctermbg=NONE cterm=bold
+  hi SpellBad ctermfg=167 ctermbg=NONE cterm=underline
+  hi SpellCap ctermfg=110 ctermbg=NONE cterm=underline
+  hi SpellLocal ctermfg=140 ctermbg=NONE cterm=underline
+  hi SpellRare ctermfg=73 ctermbg=NONE cterm=underline
+  hi StatusLine ctermfg=16 ctermbg=189 cterm=bold
+  hi StatusLineNC ctermfg=103 ctermbg=16 cterm=reverse
+  hi TabLine ctermfg=103 ctermbg=16 cterm=reverse
+  hi TabLineFill ctermfg=253 ctermbg=NONE cterm=NONE
+  hi TabLineSel ctermfg=16 ctermbg=189 cterm=bold
+  hi Title ctermfg=NONE ctermbg=NONE cterm=NONE
+  hi VertSplit ctermfg=60 ctermbg=NONE cterm=NONE
+  hi Visual ctermfg=214 ctermbg=16 cterm=reverse
+  hi VisualNOS ctermfg=NONE ctermbg=237 cterm=NONE
+  hi WarningMsg ctermfg=253 ctermbg=NONE cterm=NONE
+  hi WildMenu ctermfg=189 ctermbg=233 cterm=bold
+  hi Comment ctermfg=140 ctermbg=NONE cterm=NONE
+  hi Constant ctermfg=167 ctermbg=NONE cterm=NONE
+  hi Error ctermfg=203 ctermbg=16 cterm=bold,reverse
+  hi Identifier ctermfg=113 ctermbg=NONE cterm=NONE
+  hi Ignore ctermfg=253 ctermbg=NONE cterm=NONE
+  hi PreProc ctermfg=110 ctermbg=NONE cterm=NONE
+  hi Special ctermfg=73 ctermbg=NONE cterm=NONE
+  hi Statement ctermfg=110 ctermbg=NONE cterm=NONE
+  hi String ctermfg=179 ctermbg=NONE cterm=NONE
+  hi Todo ctermfg=79 ctermbg=NONE cterm=bold,reverse
+  hi Type ctermfg=110 ctermbg=NONE cterm=NONE
+  hi Underlined ctermfg=253 ctermbg=NONE cterm=underline
+  hi CursorIM ctermfg=16 ctermbg=154 cterm=NONE
+  hi ToolbarLine ctermfg=NONE ctermbg=16 cterm=NONE
+  hi ToolbarButton ctermfg=253 ctermbg=16 cterm=bold
+  hi debugBreakpoint ctermfg=103 ctermbg=16 cterm=bold,reverse
+  unlet s:t_Co
+  finish
+endif
+
+if s:t_Co >= 16
+  hi CurSearch ctermfg=magenta ctermbg=black cterm=reverse
+  hi EndOfBuffer ctermfg=darkgrey ctermbg=NONE cterm=NONE
+  hi Folded ctermfg=darkgrey ctermbg=NONE cterm=NONE
+  hi IncSearch ctermfg=yellow ctermbg=black cterm=reverse
+  hi LineNr ctermfg=darkgrey ctermbg=NONE cterm=NONE
+  hi NonText ctermfg=darkgrey ctermbg=NONE cterm=NONE
+  hi PmenuSbar ctermfg=darkgrey ctermbg=NONE cterm=reverse
+  hi Search ctermfg=cyan ctermbg=black cterm=reverse
+  hi SpecialKey ctermfg=darkgrey ctermbg=NONE cterm=bold
+  hi StatusLineNC ctermfg=darkgrey ctermbg=NONE cterm=reverse
+  hi TabLine ctermfg=darkgrey ctermbg=NONE cterm=reverse
+  hi VertSplit ctermfg=darkgrey ctermbg=NONE cterm=NONE
+  hi Normal ctermfg=NONE ctermbg=NONE cterm=NONE
+  hi Added ctermfg=darkgreen ctermbg=NONE cterm=NONE
+  hi Changed ctermfg=darkblue ctermbg=NONE cterm=NONE
+  hi Removed ctermfg=darkred ctermbg=NONE cterm=NONE
+  hi ColorColumn ctermfg=NONE ctermbg=NONE cterm=reverse
+  hi Conceal ctermfg=NONE ctermbg=NONE cterm=NONE
+  hi Cursor ctermfg=NONE ctermbg=NONE cterm=reverse
+  hi CursorColumn ctermfg=NONE ctermbg=NONE cterm=NONE
+  hi CursorLine ctermfg=NONE ctermbg=NONE cterm=NONE
+  hi CursorLineNr ctermfg=NONE ctermbg=NONE cterm=bold
+  hi DiffAdd ctermfg=darkgreen ctermbg=black cterm=reverse
+  hi DiffChange ctermfg=darkblue ctermbg=black cterm=reverse
+  hi DiffDelete ctermfg=darkred ctermbg=black cterm=reverse
+  hi DiffText ctermfg=darkmagenta ctermbg=black cterm=reverse
+  hi Directory ctermfg=NONE ctermbg=NONE cterm=NONE
+  hi FoldColumn ctermfg=NONE ctermbg=NONE cterm=NONE
+  hi MatchParen ctermfg=NONE ctermbg=NONE cterm=bold,underline
+  hi ModeMsg ctermfg=NONE ctermbg=NONE cterm=bold
+  hi MoreMsg ctermfg=NONE ctermbg=NONE cterm=NONE
+  hi Pmenu ctermfg=NONE ctermbg=NONE cterm=reverse
+  hi PmenuMatch ctermfg=NONE ctermbg=darkred cterm=reverse
+  hi PmenuExtra ctermfg=NONE ctermbg=NONE cterm=reverse
+  hi PmenuKind ctermfg=NONE ctermbg=NONE cterm=bold,reverse
+  hi PmenuSel ctermfg=NONE ctermbg=NONE cterm=bold
+  hi PmenuMatchSel ctermfg=darkred ctermbg=NONE cterm=bold
+  hi PmenuExtraSel ctermfg=NONE ctermbg=NONE cterm=bold
+  hi PmenuKindSel ctermfg=NONE ctermbg=NONE cterm=bold
+  hi PmenuThumb ctermfg=NONE ctermbg=NONE cterm=NONE
+  hi Question ctermfg=NONE ctermbg=NONE cterm=standout
+  hi QuickFixLine ctermfg=darkmagenta ctermbg=black cterm=reverse
+  hi SignColumn ctermfg=NONE ctermbg=NONE cterm=NONE
+  hi SpellBad ctermfg=darkred ctermbg=NONE cterm=underline
+  hi SpellCap ctermfg=darkblue ctermbg=NONE cterm=underline
+  hi SpellLocal ctermfg=darkmagenta ctermbg=NONE cterm=underline
+  hi SpellRare ctermfg=darkcyan ctermbg=NONE cterm=underline
+  hi StatusLine ctermfg=NONE ctermbg=NONE cterm=bold,reverse
+  hi TabLineFill ctermfg=NONE ctermbg=NONE cterm=NONE
+  hi TabLineSel ctermfg=NONE ctermbg=NONE cterm=bold,reverse
+  hi Title ctermfg=NONE ctermbg=NONE cterm=NONE
+  hi Visual ctermfg=darkyellow ctermbg=black cterm=reverse
+  hi VisualNOS ctermfg=NONE ctermbg=NONE cterm=NONE
+  hi WarningMsg ctermfg=NONE ctermbg=NONE cterm=standout
+  hi WildMenu ctermfg=NONE ctermbg=NONE cterm=bold
+  hi Comment ctermfg=darkmagenta ctermbg=NONE cterm=NONE
+  hi Constant ctermfg=darkred ctermbg=NONE cterm=NONE
+  hi Error ctermfg=darkred ctermbg=black cterm=bold,reverse
+  hi Identifier ctermfg=darkgreen ctermbg=NONE cterm=NONE
+  hi Ignore ctermfg=NONE ctermbg=NONE cterm=NONE
+  hi PreProc ctermfg=darkblue ctermbg=NONE cterm=NONE
+  hi Special ctermfg=darkcyan ctermbg=NONE cterm=NONE
+  hi Statement ctermfg=darkblue ctermbg=NONE cterm=NONE
+  hi String ctermfg=darkyellow ctermbg=NONE cterm=NONE
+  hi Todo ctermfg=darkgreen ctermbg=black cterm=bold,reverse
+  hi Type ctermfg=darkblue ctermbg=NONE cterm=NONE
+  hi Underlined ctermfg=NONE ctermbg=NONE cterm=underline
+  hi CursorIM ctermfg=NONE ctermbg=NONE cterm=NONE
+  hi ToolbarLine ctermfg=NONE ctermbg=NONE cterm=reverse
+  hi ToolbarButton ctermfg=NONE ctermbg=NONE cterm=bold,reverse
+  hi debugBreakpoint ctermfg=NONE ctermbg=NONE cterm=bold,reverse
+  unlet s:t_Co
+  finish
+endif
+
+if s:t_Co >= 8
+  hi CurSearch ctermfg=darkmagenta ctermbg=black cterm=reverse
+  hi EndOfBuffer ctermfg=NONE ctermbg=NONE cterm=NONE
+  hi Folded ctermfg=NONE ctermbg=NONE cterm=NONE
+  hi IncSearch ctermfg=darkyellow ctermbg=black cterm=reverse
+  hi LineNr ctermfg=NONE ctermbg=NONE cterm=NONE
+  hi NonText ctermfg=NONE ctermbg=NONE cterm=NONE
+  hi PmenuSbar ctermfg=NONE ctermbg=NONE cterm=reverse
+  hi Search ctermfg=darkcyan ctermbg=black cterm=reverse
+  hi SpecialKey ctermfg=NONE ctermbg=NONE cterm=bold
+  hi StatusLineNC ctermfg=NONE ctermbg=NONE cterm=bold,underline
+  hi TabLine ctermfg=NONE ctermbg=NONE cterm=bold,underline
+  hi VertSplit ctermfg=NONE ctermbg=NONE cterm=NONE
+  hi Normal ctermfg=NONE ctermbg=NONE cterm=NONE
+  hi Added ctermfg=darkgreen ctermbg=NONE cterm=NONE
+  hi Changed ctermfg=darkblue ctermbg=NONE cterm=NONE
+  hi Removed ctermfg=darkred ctermbg=NONE cterm=NONE
+  hi ColorColumn ctermfg=NONE ctermbg=NONE cterm=reverse
+  hi Conceal ctermfg=NONE ctermbg=NONE cterm=NONE
+  hi Cursor ctermfg=NONE ctermbg=NONE cterm=reverse
+  hi CursorColumn ctermfg=NONE ctermbg=NONE cterm=NONE
+  hi CursorLine ctermfg=NONE ctermbg=NONE cterm=NONE
+  hi CursorLineNr ctermfg=NONE ctermbg=NONE cterm=bold
+  hi DiffAdd ctermfg=darkgreen ctermbg=black cterm=reverse
+  hi DiffChange ctermfg=darkblue ctermbg=black cterm=reverse
+  hi DiffDelete ctermfg=darkred ctermbg=black cterm=reverse
+  hi DiffText ctermfg=darkmagenta ctermbg=black cterm=reverse
+  hi Directory ctermfg=NONE ctermbg=NONE cterm=NONE
+  hi FoldColumn ctermfg=NONE ctermbg=NONE cterm=NONE
+  hi MatchParen ctermfg=NONE ctermbg=NONE cterm=bold,underline
+  hi ModeMsg ctermfg=NONE ctermbg=NONE cterm=bold
+  hi MoreMsg ctermfg=NONE ctermbg=NONE cterm=NONE
+  hi Pmenu ctermfg=NONE ctermbg=NONE cterm=reverse
+  hi PmenuMatch ctermfg=NONE ctermbg=darkred cterm=reverse
+  hi PmenuExtra ctermfg=NONE ctermbg=NONE cterm=reverse
+  hi PmenuKind ctermfg=NONE ctermbg=NONE cterm=bold,reverse
+  hi PmenuSel ctermfg=NONE ctermbg=NONE cterm=bold
+  hi PmenuMatchSel ctermfg=darkred ctermbg=NONE cterm=bold
+  hi PmenuExtraSel ctermfg=NONE ctermbg=NONE cterm=bold
+  hi PmenuKindSel ctermfg=NONE ctermbg=NONE cterm=bold
+  hi PmenuThumb ctermfg=NONE ctermbg=NONE cterm=NONE
+  hi Question ctermfg=NONE ctermbg=NONE cterm=standout
+  hi QuickFixLine ctermfg=darkmagenta ctermbg=black cterm=reverse
+  hi SignColumn ctermfg=NONE ctermbg=NONE cterm=NONE
+  hi SpellBad ctermfg=darkred ctermbg=NONE cterm=underline
+  hi SpellCap ctermfg=darkblue ctermbg=NONE cterm=underline
+  hi SpellLocal ctermfg=darkmagenta ctermbg=NONE cterm=underline
+  hi SpellRare ctermfg=darkcyan ctermbg=NONE cterm=underline
+  hi StatusLine ctermfg=NONE ctermbg=NONE cterm=bold,reverse
+  hi TabLineFill ctermfg=NONE ctermbg=NONE cterm=NONE
+  hi TabLineSel ctermfg=NONE ctermbg=NONE cterm=bold,reverse
+  hi Title ctermfg=NONE ctermbg=NONE cterm=NONE
+  hi Visual ctermfg=darkyellow ctermbg=black cterm=reverse
+  hi VisualNOS ctermfg=NONE ctermbg=NONE cterm=NONE
+  hi WarningMsg ctermfg=NONE ctermbg=NONE cterm=standout
+  hi WildMenu ctermfg=NONE ctermbg=NONE cterm=bold
+  hi Comment ctermfg=darkmagenta ctermbg=NONE cterm=NONE
+  hi Constant ctermfg=darkred ctermbg=NONE cterm=NONE
+  hi Error ctermfg=darkred ctermbg=black cterm=bold,reverse
+  hi Identifier ctermfg=darkgreen ctermbg=NONE cterm=NONE
+  hi Ignore ctermfg=NONE ctermbg=NONE cterm=NONE
+  hi PreProc ctermfg=darkblue ctermbg=NONE cterm=NONE
+  hi Special ctermfg=darkcyan ctermbg=NONE cterm=NONE
+  hi Statement ctermfg=darkblue ctermbg=NONE cterm=NONE
+  hi String ctermfg=darkyellow ctermbg=NONE cterm=NONE
+  hi Todo ctermfg=darkgreen ctermbg=black cterm=bold,reverse
+  hi Type ctermfg=darkblue ctermbg=NONE cterm=NONE
+  hi Underlined ctermfg=NONE ctermbg=NONE cterm=underline
+  hi CursorIM ctermfg=NONE ctermbg=NONE cterm=NONE
+  hi ToolbarLine ctermfg=NONE ctermbg=NONE cterm=reverse
+  hi ToolbarButton ctermfg=NONE ctermbg=NONE cterm=bold,reverse
+  hi debugBreakpoint ctermfg=NONE ctermbg=NONE cterm=bold,reverse
+  unlet s:t_Co
+  finish
+endif
+
+if s:t_Co >= 0
+  hi Normal term=NONE
+  hi ColorColumn term=reverse
+  hi Conceal term=NONE
+  hi Cursor term=reverse
+  hi CursorColumn term=NONE
+  hi CursorLine term=underline
+  hi CursorLineNr term=bold
+  hi DiffAdd term=reverse
+  hi DiffChange term=NONE
+  hi DiffDelete term=reverse
+  hi DiffText term=reverse
+  hi Directory term=NONE
+  hi EndOfBuffer term=NONE
+  hi ErrorMsg term=bold,reverse
+  hi FoldColumn term=NONE
+  hi Folded term=NONE
+  hi IncSearch term=bold,reverse,underline
+  hi LineNr term=NONE
+  hi MatchParen term=bold,underline
+  hi ModeMsg term=bold
+  hi MoreMsg term=NONE
+  hi NonText term=NONE
+  hi Pmenu term=reverse
+  hi PmenuSbar term=reverse
+  hi PmenuSel term=bold
+  hi PmenuThumb term=NONE
+  hi Question term=standout
+  hi Search term=reverse
+  hi SignColumn term=reverse
+  hi SpecialKey term=bold
+  hi SpellBad term=underline
+  hi SpellCap term=underline
+  hi SpellLocal term=underline
+  hi SpellRare term=underline
+  hi StatusLine term=bold,reverse
+  hi StatusLineNC term=bold,underline
+  hi TabLine term=bold,underline
+  hi TabLineFill term=NONE
+  hi Terminal term=NONE
+  hi TabLineSel term=bold,reverse
+  hi Title term=NONE
+  hi VertSplit term=NONE
+  hi Visual term=reverse
+  hi VisualNOS term=NONE
+  hi WarningMsg term=standout
+  hi WildMenu term=bold
+  hi CursorIM term=NONE
+  hi ToolbarLine term=reverse
+  hi ToolbarButton term=bold,reverse
+  hi CurSearch term=reverse
+  hi CursorLineFold term=underline
+  hi CursorLineSign term=underline
+  hi Comment term=bold
+  hi Constant term=NONE
+  hi Error term=bold,reverse
+  hi Identifier term=NONE
+  hi Ignore term=NONE
+  hi PreProc term=NONE
+  hi Special term=NONE
+  hi Statement term=NONE
+  hi Todo term=bold,reverse
+  hi Type term=NONE
+  hi Underlined term=underline
+  unlet s:t_Co
+  finish
+endif
+
