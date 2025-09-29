@@ -32,15 +32,15 @@ vim.cmd([[
     hi ModeMsg guifg=#dadada guibg=NONE ctermfg=253 ctermbg=NONE gui=bold cterm=bold
     hi MoreMsg guifg=#dadada guibg=NONE ctermfg=253 ctermbg=NONE gui=NONE cterm=NONE
     hi NonText guifg=#707070 guibg=NONE ctermfg=242 ctermbg=NONE gui=NONE cterm=NONE
-    hi Pmenu guifg=#cdd6f4 guibg=#1e1e2e ctermfg=189 ctermbg=235 gui=NONE cterm=NONE
-    hi PmenuMatch guifg=#cba6f7 guibg=#1e1e2e ctermfg=183 ctermbg=235 gui=NONE cterm=NONE
-    hi PmenuExtra guifg=#161821 guibg=#a6a8b1 ctermfg=233 ctermbg=248 gui=NONE cterm=NONE
-    hi PmenuKind guifg=#161821 guibg=#a6a8b1 ctermfg=233 ctermbg=248 gui=bold cterm=bold
+    hi Pmenu guifg=#cdd6f4 guibg=#11111b ctermfg=189 ctermbg=233 gui=NONE cterm=NONE
+    hi PmenuMatch guifg=#cba6f7 guibg=#11111b ctermfg=183 ctermbg=233 gui=bold cterm=bold
+    hi PmenuExtra guifg=#585870 guibg=#11111b ctermfg=60 ctermbg=233 gui=NONE cterm=NONE
+    hi PmenuKind guifg=#8787af guibg=#11111b ctermfg=103 ctermbg=233 gui=bold cterm=bold
     hi PmenuSbar guifg=#707070 guibg=#11111b ctermfg=242 ctermbg=233 gui=NONE cterm=NONE
-    hi PmenuSel guifg=#ffffff guibg=#313244 ctermfg=15 ctermbg=237 gui=NONE cterm=NONE
-    hi PmenuMatchSel guifg=#cba6f7 guibg=#313244 ctermfg=183 ctermbg=237 gui=bold cterm=bold
-    hi PmenuExtraSel guifg=#161821 guibg=#d7d7ff ctermfg=233 ctermbg=189 gui=NONE cterm=NONE
-    hi PmenuKindSel guifg=#161821 guibg=#d7d7ff ctermfg=233 ctermbg=189 gui=bold cterm=bold
+    hi PmenuSel guifg=#ffffff guibg=#45475a ctermfg=15 ctermbg=239 gui=NONE cterm=NONE
+    hi PmenuMatchSel guifg=#cba6f7 guibg=#45475a ctermfg=183 ctermbg=239 gui=bold cterm=bold
+    hi PmenuExtraSel guifg=#a8a8c0 guibg=#45475a ctermfg=146 ctermbg=239 gui=NONE cterm=NONE
+    hi PmenuKindSel guifg=#b7b7d7 guibg=#45475a ctermfg=146 ctermbg=239 gui=bold cterm=bold
     hi PmenuThumb guifg=#dadada guibg=#45475a ctermfg=253 ctermbg=239 gui=NONE cterm=NONE
     hi Question guifg=#dadada guibg=NONE ctermfg=253 ctermbg=NONE gui=NONE cterm=NONE
     hi QuickFixLine guifg=#ff5fff guibg=#000000 ctermfg=207 ctermbg=16 gui=reverse cterm=reverse
@@ -112,5 +112,12 @@ vim.cmd([[
     hi! link Typedef Type
     hi! link lCursor Cursor
     hi! link debugPC CursorLine
+
+    " diagnostic undercurl
+    hi DiagnosticUnderlineError gui=undercurl
+    hi DiagnosticUnderlineWarn gui=undercurl
+    hi DiagnosticUnderlineInfo gui=undercurl
+    hi DiagnosticUnderlineHint gui=undercurl
+    hi DiagnosticUnderlineOk gui=undercurl
 
 ]])
