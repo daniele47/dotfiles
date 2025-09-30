@@ -169,3 +169,8 @@ hi_link("Whitespace", "Conceal")
 -- hi("WildMenu")
 -- hi("WinBar")
 -- hi("WinBarNC")
+
+-- :h diagnostic-highlights
+-- :h treesitter-highlight-groups
+-- :h lsp-semantic-highlight
+-- TODO: decide if define them all, or only the ones in particular that i dislike
