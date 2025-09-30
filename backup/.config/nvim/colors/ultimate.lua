@@ -1,11 +1,148 @@
+vim.opt.background = "dark"
+vim.g.colors_name = "ultimate"
+vim.cmd.highlight("clear")
+
+-- color palette
+local col = {
+    fg = {
+        white = { gui = "#ffffff", tui = "15" },
+        none = { gui = "NONE", tui = "NONE" },
+    },
+    bg = {
+        none = { gui = "NONE", tui = "NONE" },
+    },
+}
+
+-- util function to assign colors
+local function hi(hl, fg, bg, other) 
+    local values = other or {}
+    values.fg = fg.gui
+    values.ctermfg = fg.tui
+    values.bg = bg.gui
+    values.ctermbg = bg.tui
+    vim.api.nvim_set_hl(0, hl, values)
+end
+local function hi_link(hl_linked, hl_base)
+    vim.api.nvim_set_hl(0, hl_linked, {link = hl_base}) 
+end
+
+-- :h group-name
+hi("Comment")
+hi("Constant")
+hi("Character")
+hi("Number")
+hi("Boolean")
+hi("Float")
+hi("Identifier")
+hi("Function")
+hi("Statement")
+hi("Conditional")
+hi("Repeat")
+hi("Label")
+hi("Operator")
+hi("Keyword")
+hi("Exception")
+hi("PreProc")
+hi("Include")
+hi("Define")
+hi("Macro")
+hi("PreCondit")
+hi("Type")
+hi("StorageClass")
+hi("Structure")
+hi("Typedef")
+hi("Special")
+hi("SpecialChar")
+hi("Tag")
+hi("Delimiter")
+hi("SpecialComment")
+hi("Debug")
+hi("Underlined")
+hi("Ignore")
+hi("Error")
+hi("Todo")
+hi("Added")
+hi("Changed")
+hi("Removed")
+
+-- :h highlight-groups
+hi("ColorColumn")
+hi("Conceal")
+hi("CurSearch")
+hi("Cursor")
+hi("lCursor")
+hi("CursorIM")
+hi("CursorColumn")
+hi("CursorLine")
+hi("Directory")
+hi("DiffAdd")
+hi("DiffChange")
+hi("DiffDelete")
+hi("DiffText")
+hi("EndOfBuffer")
+hi("TermCursor")
+hi("ErrorMsg")
+hi("WinSeparator")
+hi("Folded")
+hi("FoldColumn")
+hi("SignColumn")
+hi("IncSearch")
+hi("Substitute")
+hi("LineNr")
+hi("LineNrAbove")
+hi("LineNrBelow")
+hi("CursorLineNr")
+hi("CursorLineFold")
+hi("CursorLineSign")
+hi("MatchParen")
+hi("ModeMsg")
+hi("MsgArea")
+hi("MsgSeparator")
+hi("MoreMsg")
+hi("NonText")
+hi("Normal")
+hi("NormalFloat")
+hi("FloatBorder")
+hi("FloatTitle")
+hi("FloatFooter")
+hi("NormalNC")
+hi("Pmenu")
+hi("PmenuSel")
+hi("PmenuKind")
+hi("PmenuKindSel")
+hi("PmenuExtra")
+hi("PmenuExtraSel")
+hi("PmenuSbar")
+hi("PmenuThumb")
+hi("PmenuMatch")
+hi("PmenuMatchSel")
+hi("ComplMatchIns")
+hi("Question")
+hi("QuickFixLine")
+hi("Search")
+hi("SnippetTabstop")
+hi("SpecialKey")
+hi("SpellBad")
+hi("SpellCap")
+hi("SpellLocal")
+hi("SpellRare")
+hi("StatusLine")
+hi("StatusLineNC")
+hi("StatusLineTerm")
+hi("StatusLineTermNC")
+hi("TabLine")
+hi("TabLineFill")
+hi("TabLineSel")
+hi("Title")
+hi("Visual")
+hi("VisualNOS")
+hi("WarningMsg")
+hi("Whitespace")
+hi("WildMenu")
+hi("WinBar")
+hi("WinBarNC")
+
 vim.cmd([[
-
-    set background=dark
-    let g:colors_name = 'ultimate'
-
-    " lsp/treesitter highlight groups reused from default colorscheme
-    source $VIMRUNTIME/colors/vim.lua
-
     " builtin highlight groups
     hi Normal guifg=#dadada guibg=#161821 ctermfg=253 ctermbg=233 gui=NONE cterm=NONE
     hi Added guifg=#87d75f guibg=NONE ctermfg=113 ctermbg=NONE gui=NONE cterm=NONE
