@@ -171,6 +171,13 @@ hi_link("Whitespace", "Conceal")
 -- hi("WinBarNC")
 
 -- :h diagnostic-highlights
--- :h treesitter-highlight-groups
--- :h lsp-semantic-highlight
--- TODO: decide if define them all, or only the ones in particular that i dislike
+hi("DiagnosticError", col.fg.red)
+hi("DiagnosticWarn", col.fg.orange)
+hi("DiagnosticInfo", col.fg.blue)
+hi("DiagnosticHint", col.fg.lblue)
+hi("DiagnosticOk", col.fg.green)
+hi("DiagnosticUnderlineError", nil, nil, { sp = col.fg.red.gui , undercurl = true, cterm = { underline = true}})
+hi("DiagnosticUnderlineWarn", nil, nil, { sp = col.fg.orange.gui , undercurl = true, cterm = { underline = true}})
+hi("DiagnosticUnderlineInfo", nil, nil, { sp = col.fg.blue.gui , undercurl = true, cterm = { underline = true}})
+hi("DiagnosticUnderlineHint", nil, nil, { sp = col.fg.lblue.gui , undercurl = true, cterm = { underline = true}})
+hi("DiagnosticUnderlineOk", nil, nil, { sp = col.fg.green.gui , undercurl = true, cterm = { underline = true}})
