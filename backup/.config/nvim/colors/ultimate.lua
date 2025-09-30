@@ -143,6 +143,7 @@ hi("WinBar")
 hi("WinBarNC")
 
 vim.cmd([[
+
     " builtin highlight groups
     hi Normal guifg=#dadada guibg=#161821 ctermfg=253 ctermbg=233 gui=NONE cterm=NONE
     hi Added guifg=#87d75f guibg=NONE ctermfg=113 ctermbg=NONE gui=NONE cterm=NONE
@@ -191,12 +192,12 @@ vim.cmd([[
     hi TabLineSel guifg=#000000 guibg=#d7d7ff ctermfg=16 ctermbg=189 gui=bold cterm=bold
     hi Title guifg=NONE guibg=NONE ctermfg=NONE ctermbg=NONE gui=NONE ctermfg=NONE ctermbg=NONE cterm=NONE
     hi VertSplit guifg=#5f5f87 guibg=NONE ctermfg=60 ctermbg=NONE gui=NONE cterm=NONE
-    hi Visual guifg=#ffaf00 guibg=#000000 ctermfg=214 ctermbg=16 gui=reverse cterm=reverse
-    hi VisualNOS guifg=NONE guibg=#363841 ctermfg=NONE ctermbg=237 gui=NONE cterm=NONE
+    hi Visual guifg=NONE guibg=#3a3a5f ctermfg=NONE ctermbg=60 gui=NONE cterm=NONE
+    hi VisualNOS guifg=NONE guibg=#2a2a3f ctermfg=NONE ctermbg=236 gui=NONE cterm=NONE
     hi WildMenu guifg=#d7d7ff guibg=#161821 ctermfg=189 ctermbg=233 gui=bold cterm=bold
-    hi Comment guifg=#8787af guibg=NONE ctermfg=103 ctermbg=NONE gui=italic cterm=NONE
+    hi Comment guifg=#8787af guibg=NONE ctermfg=103 ctermbg=NONE gui=NONE cterm=NONE
     hi Constant guifg=#d75f5f guibg=NONE ctermfg=167 ctermbg=NONE gui=NONE cterm=NONE
-    hi Error guifg=#ff5f5f guibg=#000000 ctermfg=203 ctermbg=16 gui=bold,reverse cterm=bold,reverse
+    hi Error guifg=#ff5f5f guibg=NONE ctermfg=203 ctermbg=NONE gui=bold cterm=bold
     hi Identifier guifg=#87d75f guibg=NONE ctermfg=113 ctermbg=NONE gui=NONE cterm=NONE
     hi Function guifg=#cf6fdf guibg=NONE ctermfg=170 ctermbg=NONE gui=NONE cterm=NONE
     hi Statement guifg=#5fd7d7 guibg=NONE ctermfg=80 ctermbg=NONE gui=NONE cterm=NONE
@@ -248,6 +249,7 @@ vim.cmd([[
     hi! link TabLineFill Question
     hi! link WarningMsg Question
     hi! link Ignore Question
+    hi! link WinSeparator VertSplit
 
     " diagnostic undercurl
     hi DiagnosticUnderlineError gui=undercurl
