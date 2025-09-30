@@ -26,8 +26,10 @@ local col = {
         black = { gui = "#1a1a1a", tui = 234 },
     },
     bg = {
+        pink = { gui = "#ff87ff", tui = 213 },
         red = { gui = "#ff5f5f", tui = 203 },
-        lblue = { gui = "#5fd7af", tui = 79 },
+        green = { gui = "#00af5f", tui = 35 },
+        lblue = { gui = "#87afff", tui = 111 },
         grey = { gui = "#303030", tui = 236 },
         -- following ones have different colors in 24bit vs 256 palette
         diff_blue = { gui = "#161821", tui = 233 }
@@ -101,10 +103,10 @@ hi_link("CursorIM", "Cursor")
 -- hi("CursorColumn")
 -- hi("CursorLine")
 hi_link("Directory", "Normal")
--- hi("DiffAdd")
--- hi("DiffChange")
--- hi("DiffDelete")
--- hi("DiffText")
+hi("DiffAdd", col.fg.black, col.bg.green)
+hi("DiffChange", col.fg.black, col.bg.lblue)
+hi("DiffDelete", col.fg.black, col.bg.red)
+hi("DiffText", col.fg.black, col.bg.pink)
 hi_link("EndOfBuffer", "Conceal")
 hi_link("TermCursor", "Cursor")
 hi_link("ErrorMsg", "Error")
