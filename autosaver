@@ -504,14 +504,19 @@ def backup(flags):
                                         pathlib.Path(new).read_text().splitlines(keepends=True),
                                         fromfile=new,
                                         tofile=old,
+                                        n=3,
                                     )
+                                    counter = 0
                                     for line in diff:
-                                        if line.startswith("---") or line.startswith("+++") or line.startswith("@@"):
-                                            pass
-                                        elif line.startswith("-"):
+                                        if counter < 2:
+                                            counter += 1
+                                            continue
+                                        if line.startswith("-"):
                                             print(f"\x1b[31m{line}\x1b[0m", end="")
                                         elif line.startswith("+"):
                                             print(f"\x1b[32m{line}\x1b[0m", end="")
+                                        elif line.startswith("@"):
+                                            print(f"\x1b[36m{line}\x1b[0m", end="")
                                         else:
                                             print(line, end="")
                                 except UnicodeDecodeError:
