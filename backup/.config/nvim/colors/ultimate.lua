@@ -12,7 +12,7 @@ local col = {
     fg = {
         white = { gui = "#dadada", tui = 253 },
         yellow = { gui = "#d7d75f", tui = 185 },
-        orange = { gui = "#d78700", tui = 172 },
+        orange = { gui = "#d7af5f", tui = 179 },
         lpink = { gui = "#d75fd7", tui = 170 },
         pink = { gui = "#ff00af", tui = 199 },
         red = { gui = "#d75f5f", tui = 167 },
@@ -72,7 +72,7 @@ hi_link("Include", "PreProc")
 hi_link("Define", "PreProc")
 hi_link("Macro", "PreProc")
 hi_link("PreCondit", "PreProc")
-hi("Type", col.fg.green)
+hi("Type", col.fg.green, nil, { bold = true })
 hi_link("StorageClass", "Type")
 hi_link("Structure", "Type")
 hi_link("Typedef", "Type")
