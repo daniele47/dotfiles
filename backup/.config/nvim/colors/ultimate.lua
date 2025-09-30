@@ -13,7 +13,8 @@ local col = {
         white = { gui = "#ffffff", tui = 15 },
         yellow = { gui = "#d7d75f", tui = 185 },
         gold = { gui = "#d7af5f", tui = 179 },
-        pink = { gui = "#d75fd7", tui = 170 },
+        lpink = { gui = "#d75fd7", tui = 170 },
+        pink = { gui = "#ff00af", tui = 199 },
         red = { gui = "#d75f5f", tui = 167 },
         purple = { gui = "#af87d7", tui = 140 },
         lgreen = { gui = "#87d75f", tui = 113 },
@@ -21,6 +22,7 @@ local col = {
         lblue = { gui = "#5fd7d7", tui = 80 },
         blue = { gui = "#5f87d7", tui = 68 },
         grey = { gui = "#8787af", tui = 103 },
+        black = { gui = "#000000", tui = 0 }
     },
     bg = {
     },
@@ -52,7 +54,7 @@ hi_link("Number", "Constant")
 hi_link("Boolean", "Constant")
 hi_link("Float", "Constant")
 hi("Identifier", col.fg.lgreen)
-hi("Function", col.fg.pink)
+hi("Function", col.fg.lpink)
 hi("Statement", col.fg.blue)
 hi_link("Conditional", "Statement")
 hi_link("Repeat", "Statement")
