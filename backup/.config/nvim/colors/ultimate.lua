@@ -12,7 +12,7 @@ local col = {
     fg = {
         white = { gui = "#dadada", tui = 253 },
         yellow = { gui = "#d7d75f", tui = 185 },
-        gold = { gui = "#d7af5f", tui = 179 },
+        orange = { gui = "#d78700", tui = 172 },
         lpink = { gui = "#d75fd7", tui = 170 },
         pink = { gui = "#ff00af", tui = 199 },
         red = { gui = "#d75f5f", tui = 167 },
@@ -25,6 +25,7 @@ local col = {
         black = { gui = "#1a1a1a", tui = 234 },
     },
     bg = {
+        diff_blue = { gui = "#161821", tui = 233 }
     },
 }
 
@@ -48,7 +49,7 @@ end
 -- :h group-name
 hi("Comment", col.fg.grey)
 hi("Constant", col.fg.red)
-hi("String", col.fg.gold)
+hi("String", col.fg.orange)
 hi_link("Character", "Constant")
 hi_link("Number", "Constant")
 hi_link("Boolean", "Constant")
@@ -120,7 +121,7 @@ hi("Removed", col.fg.red)
 -- hi("MsgSeparator")
 -- hi("MoreMsg")
 -- hi("NonText")
--- hi("Normal")
+hi("Normal", col.fg.white, col.bg.diff_blue)
 -- hi("NormalFloat")
 -- hi("FloatBorder")
 -- hi("FloatTitle")
