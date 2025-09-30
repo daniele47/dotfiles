@@ -10,7 +10,7 @@ end
 -- color palette
 local col = {
     fg = {
-        white = { gui = "#ffffff", tui = 15 },
+        white = { gui = "#dadada", tui = 253 },
         yellow = { gui = "#d7d75f", tui = 185 },
         gold = { gui = "#d7af5f", tui = 179 },
         lpink = { gui = "#d75fd7", tui = 170 },
@@ -22,7 +22,7 @@ local col = {
         lblue = { gui = "#5fd7d7", tui = 80 },
         blue = { gui = "#5f87d7", tui = 68 },
         grey = { gui = "#8787af", tui = 103 },
-        black = { gui = "#000000", tui = 0 }
+        black = { gui = "#1a1a1a", tui = 234 },
     },
     bg = {
     },
