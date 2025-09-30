@@ -10,7 +10,6 @@ end
 -- color palette
 local col = {
     fg = {
-        none = { gui = NONE, tui = NONE },
         white = { gui = "#ffffff", tui = 15 },
         yellow = { gui = "#d7d75f", tui = 185 },
         gold = { gui = "#d7af5f", tui = 179 },
@@ -23,15 +22,16 @@ local col = {
         grey = { gui = "#8787af", tui = 103 },
     },
     bg = {
-        none = { gui = NONE, tui = NONE },
     },
 }
 
 -- util function to assign colors
 local function hi(hl, fg, bg, other) 
     local values = other or {}
-    values.fg = fg.gui
-    values.ctermfg = fg.tui
+    if fg ~= nil then
+        values.fg = fg.gui
+        values.ctermfg = fg.tui
+    end
     if bg ~= nil then
         values.bg = bg.gui
         values.ctermbg = bg.tui
