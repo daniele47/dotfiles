@@ -15,6 +15,7 @@ local col = {
         gold = { gui = "#d7af5f", tui = 179 },
         pink = { gui = "#d75fd7", tui = 170 },
         red = { gui = "#d75f5f", tui = 167 },
+        purple = { gui = "#af87d7", tui = 140 },
         lgreen = { gui = "#87d75f", tui = 113 },
         green = { gui = "#5fa75f", tui = 71 },
         lblue = { gui = "#5fd7d7", tui = 80 },
@@ -139,10 +140,10 @@ hi("Removed", col.fg.red)
 -- hi("Search")
 -- hi("SnippetTabstop")
 -- hi("SpecialKey")
--- hi("SpellBad")
--- hi("SpellCap")
--- hi("SpellLocal")
--- hi("SpellRare")
+hi("SpellBad", col.fg.red, nil, { undercurl = true, cterm = { underline = true }})
+hi("SpellCap", col.fg.blue, nil, { undercurl = true, cterm = { underline = true }})
+hi("SpellLocal", col.fg.purple, nil, { undercurl = true, cterm = { underline = true }})
+hi("SpellRare", col.fg.lblue, nil, { undercurl = true, cterm = { underline = true }})
 -- hi("StatusLine")
 -- hi("StatusLineNC")
 -- hi("StatusLineTerm")
