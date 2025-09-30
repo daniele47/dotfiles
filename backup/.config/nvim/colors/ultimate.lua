@@ -11,11 +11,15 @@ end
 local col = {
     fg = {
         white = { gui = "#ffffff", tui = 15 },
+        green = { gui = "#5f875f", tui = 65 },
+        blue = { gui = "#5f87ff", tui = 69 },
         lgrey = { gui = "#8787af", tui = 103 },
-        green = { gui = "#87d75f", tui = 113 },
+        lblue = { gui = "#87afff", tui = 111 },
+        lgreen = { gui = "#87d75f", tui = 113 },
         red = { gui = "#d75f5f", tui = 167 },
         pink = { gui = "#d75fd7", tui = 170 },
         lgold = { gui = "#d7af5f", tui = 179 },
+        yellow = { gui = "#d7d75f", tui = 185 },
         none = { gui = NONE, tui = NONE },
     },
     bg = {
@@ -28,8 +32,10 @@ local function hi(hl, fg, bg, other)
     local values = other or {}
     values.fg = fg.gui
     values.ctermfg = fg.tui
-    values.bg = bg.gui
-    values.ctermbg = bg.tui
+    if bg ~= nil then
+        values.bg = bg.gui
+        values.ctermbg = bg.tui
+    end
     vim.api.nvim_set_hl(0, hl, values)
 end
 local function hi_link(hl_linked, hl_base)
@@ -37,32 +43,32 @@ local function hi_link(hl_linked, hl_base)
 end
 
 -- :h group-name
-hi("Comment", col.fg.lgrey, col.bg.none)
-hi("Constant", col.fg.red, col.bg.none)
-hi("String", col.fg.lgold, col.bg.none)
+hi("Comment", col.fg.lgrey)
+hi("Constant", col.fg.red)
+hi("String", col.fg.lgold)
 hi_link("Character", "Constant")
 hi_link("Number", "Constant")
 hi_link("Boolean", "Constant")
 hi_link("Float", "Constant")
-hi("Identifier", col.fg.green, col.bg.none)
-hi("Function", col.fg.pink, col.bg.none)
--- hi("Statement")
+hi("Identifier", col.fg.lgreen)
+hi("Function", col.fg.pink)
+hi("Statement", col.fg.blue)
 hi_link("Conditional", "Statement")
 hi_link("Repeat", "Statement")
 hi_link("Label", "Statement")
 hi_link("Operator", "Statement")
 hi_link("Keyword", "Statement")
 hi_link("Exception", "Statement")
--- hi("PreProc")
+hi("PreProc", col.fg.yellow)
 hi_link("Include", "PreProc")
 hi_link("Define", "PreProc")
 hi_link("Macro", "PreProc")
 hi_link("PreCondit", "PreProc")
--- hi("Type")
+hi("Type", col.fg.lblue)
 hi_link("StorageClass", "Type")
 hi_link("Structure", "Type")
 hi_link("Typedef", "Type")
--- hi("Special")
+hi("Special", col.fg.green)
 hi_link("SpecialChar", "Special")
 hi_link("Tag", "Special")
 hi_link("Delimiter", "Special")
