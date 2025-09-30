@@ -10,17 +10,17 @@ end
 -- color palette
 local col = {
     fg = {
-        white = { gui = "#ffffff", tui = 15 },
-        green = { gui = "#5f875f", tui = 65 },
-        blue = { gui = "#5f87ff", tui = 69 },
-        lgrey = { gui = "#8787af", tui = 103 },
-        lblue = { gui = "#87afff", tui = 111 },
-        lgreen = { gui = "#87d75f", tui = 113 },
-        red = { gui = "#d75f5f", tui = 167 },
-        pink = { gui = "#d75fd7", tui = 170 },
-        lgold = { gui = "#d7af5f", tui = 179 },
-        yellow = { gui = "#d7d75f", tui = 185 },
         none = { gui = NONE, tui = NONE },
+        white = { gui = "#ffffff", tui = 15 },
+        yellow = { gui = "#d7d75f", tui = 185 },
+        gold = { gui = "#d7af5f", tui = 179 },
+        pink = { gui = "#d75fd7", tui = 170 },
+        red = { gui = "#d75f5f", tui = 167 },
+        lgreen = { gui = "#87d75f", tui = 113 },
+        green = { gui = "#5fa75f", tui = 71 },
+        lblue = { gui = "#5fd7d7", tui = 80 },
+        blue = { gui = "#5f87d7", tui = 68 },
+        grey = { gui = "#8787af", tui = 103 },
     },
     bg = {
         none = { gui = NONE, tui = NONE },
@@ -43,9 +43,9 @@ local function hi_link(hl_linked, hl_base)
 end
 
 -- :h group-name
-hi("Comment", col.fg.lgrey)
+hi("Comment", col.fg.grey)
 hi("Constant", col.fg.red)
-hi("String", col.fg.lgold)
+hi("String", col.fg.gold)
 hi_link("Character", "Constant")
 hi_link("Number", "Constant")
 hi_link("Boolean", "Constant")
@@ -64,11 +64,11 @@ hi_link("Include", "PreProc")
 hi_link("Define", "PreProc")
 hi_link("Macro", "PreProc")
 hi_link("PreCondit", "PreProc")
-hi("Type", col.fg.lblue)
+hi("Type", col.fg.green)
 hi_link("StorageClass", "Type")
 hi_link("Structure", "Type")
 hi_link("Typedef", "Type")
-hi("Special", col.fg.green)
+hi("Special", col.fg.lblue)
 hi_link("SpecialChar", "Special")
 hi_link("Tag", "Special")
 hi_link("Delimiter", "Special")
