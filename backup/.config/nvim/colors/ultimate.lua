@@ -25,6 +25,9 @@ local col = {
         black = { gui = "#1a1a1a", tui = 234 },
     },
     bg = {
+        red = { gui = "#ff5f5f", tui = 203 },
+        lblue = { gui = "#5fd7af", tui = 79 },
+        -- following ones have different colors in 24bit vs 256 palette
         diff_blue = { gui = "#161821", tui = 233 }
     },
 }
@@ -80,8 +83,8 @@ hi_link("SpecialComment", "Special")
 hi_link("Debug", "Special")
 hi("Underlined", nil, nil, {underline = true})
 hi("Ignore")
--- hi("Error")
--- hi("Todo")
+hi("Error", col.bg.black, col.bg.red, { bold = true })
+hi("Todo", col.bg.black, col.bg.lblue, { bold = true })
 hi("Added", col.fg.lgreen)
 hi("Changed", col.fg.blue)
 hi("Removed", col.fg.red)
