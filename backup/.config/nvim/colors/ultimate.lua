@@ -182,3 +182,6 @@ hi("DiagnosticUnderlineWarn", nil, nil, { sp = col.fg.orange.gui , undercurl = t
 hi("DiagnosticUnderlineInfo", nil, nil, { sp = col.fg.blue.gui , undercurl = true, cterm = { underline = true}})
 hi("DiagnosticUnderlineHint", nil, nil, { sp = col.fg.lblue.gui , undercurl = true, cterm = { underline = true}})
 hi("DiagnosticUnderlineOk", nil, nil, { sp = col.fg.green.gui , undercurl = true, cterm = { underline = true}})
+
+-- extra fixes
+hi_link("@variable", "Identifier")
