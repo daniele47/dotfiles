@@ -17,20 +17,20 @@ local col = {
         red = { gui = "#d75f5f", tui = 167 },
         purple = { gui = "#af87d7", tui = 140 },
         lgreen = { gui = "#87d75f", tui = 113 },
-        green = { gui = "#5fa75f", tui = 71 },
+        green = { gui = "#5faf5f", tui = 71 },
         lblue = { gui = "#5fd7d7", tui = 80 },
         blue = { gui = "#5f87d7", tui = 68 },
         lgrey = { gui = "#8787af", tui = 103 },
         grey = { gui = "#5f5f87", tui = 60 },
-        black = { gui = "#1a1a1a", tui = 234 },
+        black = { gui = "#1c1c1c", tui = 234 },
     },
     bg = {
         pink = { gui = "#ff87ff", tui = 213 },
         red = { gui = "#ff5f5f", tui = 203 },
         green = { gui = "#00af5f", tui = 35 },
         lblue = { gui = "#87afff", tui = 111 },
-        grey = { gui = "#4c4f69", tui = 239 },
         -- following ones have different colors in 24bit vs 256 palette
+        diff_grey = { gui = "#4c4f69", tui = 239 },
         diff_blue = { gui = "#161821", tui = 233 }
     },
 }
@@ -161,7 +161,7 @@ hi("SpellRare", col.fg.lblue, nil, { undercurl = true, cterm = { underline = tru
 -- hi("TabLineFill")
 -- hi("TabLineSel")
 hi_link("Title", "Normal")
-hi("Visual", nil, col.bg.grey)
+hi("Visual", nil, col.bg.diff_grey)
 hi_link("VisualNOS", "Visual")
 hi("WarningMsg", col.fg.orange)
 hi_link("Whitespace", "Conceal")
