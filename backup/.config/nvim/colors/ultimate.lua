@@ -29,7 +29,7 @@ local col = {
         red = { gui = "#ff5f5f", tui = 203 },
         green = { gui = "#00af5f", tui = 35 },
         lblue = { gui = "#87afff", tui = 111 },
-        grey = { gui = "#303030", tui = 236 },
+        grey = { gui = "#4c4f69", tui = 239 },
         -- following ones have different colors in 24bit vs 256 palette
         diff_blue = { gui = "#161821", tui = 233 }
     },
@@ -93,14 +93,14 @@ hi("Changed", col.fg.blue)
 hi("Removed", col.fg.red)
 
 -- :h highlight-groups
--- hi("ColorColumn")
+hi_link("ColorColumn", "Visual")
 hi("Conceal", col.fg.grey)
 -- hi("CurSearch")
 hi("Cursor", col.fg.black, col.bg.white)
 hi_link("lCursor", "Cursor")
 hi_link("CursorIM", "Cursor")
--- hi("CursorColumn")
--- hi("CursorLine")
+hi_link("CursorColumn", "Visual")
+hi_link("CursorLine", "Visual")
 hi("Directory", col.fg.lblue)
 hi("DiffAdd", col.fg.black, col.bg.green)
 hi("DiffChange", col.fg.black, col.bg.lblue)
@@ -161,8 +161,8 @@ hi("SpellRare", col.fg.lblue, nil, { undercurl = true, cterm = { underline = tru
 -- hi("TabLineFill")
 -- hi("TabLineSel")
 hi_link("Title", "Normal")
--- hi("Visual")
--- hi("VisualNOS")
+hi("Visual", nil, col.bg.grey)
+hi_link("VisualNOS", "Visual")
 hi("WarningMsg", col.fg.orange)
 hi_link("Whitespace", "Conceal")
 -- hi("WildMenu")
