@@ -26,7 +26,7 @@ fi
 # zoxide init
 if exist zoxide; then
     eval "$(zoxide init bash --no-cmd)"
-    function z() {
+    function zz() {
         if (cd "$@" &>/dev/null); then 
             cd "$@" &>/dev/null
         else
@@ -36,7 +36,7 @@ if exist zoxide; then
             esac
         fi
     }
-    alias zz="__zoxide_z"
+    alias z="__zoxide_z"
     alias zi="__zoxide_zi"
 fi
 
