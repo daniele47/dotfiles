@@ -32,7 +32,8 @@ local col = {
         lblue = { gui = "#87afff", tui = 111 },
         -- following ones have different colors in 24bit vs 256 palette
         diff_grey = { gui = "#4c4f69", tui = 239 },
-        diff_blue = { gui = "#161821", tui = 233 }
+        diff_lblue = { gui = "#252842", tui = 235 },
+        diff_blue = { gui = "#161821", tui = 233 },
     },
 }
 
@@ -154,10 +155,10 @@ hi("SpellBad", col.fg.red, nil, { undercurl = true, cterm = { underline = true }
 hi("SpellCap", col.fg.blue, nil, { undercurl = true, cterm = { underline = true }})
 hi("SpellLocal", col.fg.purple, nil, { undercurl = true, cterm = { underline = true }})
 hi("SpellRare", col.fg.lblue, nil, { undercurl = true, cterm = { underline = true }})
--- hi("StatusLine")
--- hi("StatusLineNC")
--- hi("StatusLineTerm")
--- hi("StatusLineTermNC")
+hi("StatusLine", nil, col.bg.diff_lblue)
+hi_link("StatusLineNC", "Statusline")
+hi_link("StatusLineTerm", "Statusline")
+hi_link("StatusLineTermNC", "Statusline")
 -- hi("TabLine")
 -- hi("TabLineFill")
 -- hi("TabLineSel")
