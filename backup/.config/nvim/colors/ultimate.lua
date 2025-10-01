@@ -25,6 +25,7 @@ local col = {
         black = { gui = "#1c1c1c", tui = 234 },
     },
     bg = {
+        yellow = { gui = "#d7af5f", tui = 179 },
         pink = { gui = "#ff87ff", tui = 213 },
         red = { gui = "#ff5f5f", tui = 203 },
         green = { gui = "#00af5f", tui = 35 },
@@ -95,7 +96,7 @@ hi("Removed", col.fg.red)
 -- :h highlight-groups
 hi_link("ColorColumn", "Visual")
 hi("Conceal", col.fg.grey)
--- hi("CurSearch")
+hi_link("CurSearch", "Search")
 hi("Cursor", col.fg.black, col.bg.white)
 hi_link("lCursor", "Cursor")
 hi_link("CursorIM", "Cursor")
@@ -113,7 +114,7 @@ hi_link("WinSeparator", "Conceal")
 hi_link("Folded", "Conceal")
 hi_link("FoldColumn", "Conceal")
 hi_link("SignColumn", "Conceal")
--- hi("IncSearch")
+hi_link("IncSearch", "Search")
 -- hi("Substitute")
 hi_link("LineNr", "Conceal")
 hi_link("LineNrAbove", "Conceal")
@@ -146,8 +147,8 @@ hi_link("NormalNC", "Normal")
 -- hi("ComplMatchIns")
 hi_link("Question", "Normal")
 hi("QuickFixLine", col.fg.lblue)
--- hi("Search")
--- hi("SnippetTabstop")
+hi("Search", col.fg.black, col.bg.yellow)
+hi_link("SnippetTabstop", "Visual")
 hi_link("SpecialKey", "Conceal")
 hi("SpellBad", col.fg.red, nil, { undercurl = true, cterm = { underline = true }})
 hi("SpellCap", col.fg.blue, nil, { undercurl = true, cterm = { underline = true }})
