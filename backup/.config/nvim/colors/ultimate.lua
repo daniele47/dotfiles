@@ -96,7 +96,7 @@ hi("Removed", col.fg.red)
 -- :h highlight-groups
 hi_link("ColorColumn", "Visual")
 hi("Conceal", col.fg.grey)
-hi_link("CurSearch", "Search")
+hi("CurSearch", col.fg.black, col.bg.pink)
 hi("Cursor", col.fg.black, col.bg.white)
 hi_link("lCursor", "Cursor")
 hi_link("CursorIM", "Cursor")
