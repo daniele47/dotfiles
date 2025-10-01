@@ -11,7 +11,6 @@ end
 local col = {
     fg = {
         white = { gui = "#dadada", tui = 253 },
-        yellow = { gui = "#d7d75f", tui = 185 },
         orange = { gui = "#d7af5f", tui = 179 },
         lpink = { gui = "#d75fd7", tui = 170 },
         pink = { gui = "#ff00af", tui = 199 },
@@ -119,9 +118,9 @@ hi_link("SignColumn", "Conceal")
 hi_link("LineNr", "Conceal")
 hi_link("LineNrAbove", "Conceal")
 hi_link("LineNrBelow", "Conceal")
-hi_link("CursorLineNr", "Normal")
-hi_link("CursorLineFold", "Normal")
-hi_link("CursorLineSign", "Normal")
+hi_link("CursorLineNr", "Conceal")
+hi_link("CursorLineFold", "Conceal")
+hi_link("CursorLineSign", "Conceal")
 hi("MatchParen", col.fg.pink, nil, { bold = true })
 hi_link("ModeMsg", "Normal")
 hi_link("MsgArea", "Normal")
@@ -146,7 +145,7 @@ hi_link("NormalNC", "Normal")
 -- hi("PmenuMatchSel")
 -- hi("ComplMatchIns")
 hi_link("Question", "Normal")
--- hi("QuickFixLine")
+hi("QuickFixLine", col.fg.lblue)
 -- hi("Search")
 -- hi("SnippetTabstop")
 hi_link("SpecialKey", "Conceal")
@@ -164,7 +163,7 @@ hi("SpellRare", col.fg.lblue, nil, { undercurl = true, cterm = { underline = tru
 hi_link("Title", "Normal")
 -- hi("Visual")
 -- hi("VisualNOS")
--- hi("WarningMsg")
+hi("WarningMsg", col.fg.orange)
 hi_link("Whitespace", "Conceal")
 -- hi("WildMenu")
 -- hi("WinBar")
