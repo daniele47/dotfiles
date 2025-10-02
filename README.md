@@ -13,6 +13,8 @@ sudo -v &&
     "${TMP_DIR}/dotfiles-fedora-kde/autosaver" run &&
     { killall firefox; rm -rf ~/.mozilla; } &>/dev/null &&
     "${TMP_DIR}/dotfiles-fedora-kde/autosaver" restoreall &&
+    rm -rf "$HOME/.config/nvim" &&
+    git clone https://daniele47@github.com/daniele47/nvim "$HOME/.config/nvim" &&
     for i in {30..1}; do
         echo -en "\r\e[Krebooting in $i seconds... ctrl+c to skip"
         sleep 1
