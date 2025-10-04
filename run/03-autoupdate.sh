@@ -23,8 +23,7 @@ Description=Run automatic updates on a schedule
 Requires=autoupdate.service    
     
 [Timer]    
-OnCalendar=weekly    
-Persistent=true    
+OnCalendar=Mon 03:00:00
 RandomizedDelaySec=3600    
     
 [Install]    
