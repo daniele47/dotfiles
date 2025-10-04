@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 echo '[Unit]    
 Description=Automatically update the system          
 After=network.target            
