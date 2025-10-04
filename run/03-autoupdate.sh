@@ -14,7 +14,6 @@ ExecStart=/usr/bin/apt-get autoremove -y
 ExecStart=/usr/bin/apt-get autoclean -y
 ExecStart=/usr/bin/sync   
 ExecStart=/usr/bin/sleep 5
-ExecStart=/usr/sbin/reboot
 
 [Install]
 WantedBy=multi-user.target' | sudo tee /etc/systemd/system/autoupdate.service >/dev/null 
