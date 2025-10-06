@@ -79,8 +79,8 @@ if command -v xdg-open &>/dev/null; then
 fi
 
 if command -v tmux &>/dev/null; then
-    local -r session_name=bg
     function run() {
+        local -r session_name=bg
         if [[ "$#" -gt 0 ]]; then
             if ! tmux has-session -t "$session_name" 2>/dev/null; then
                 tmux new-session -ds "$session_name" -n "$1" "$@"
@@ -90,6 +90,10 @@ if command -v tmux &>/dev/null; then
         else
             tmux attach-session -t "$session_name"
         fi
+    }
+    function work(){
+        local -r session_name=work
+        tmux new-session -As "$session_name"
     }
     complete -F _command run
 fi
