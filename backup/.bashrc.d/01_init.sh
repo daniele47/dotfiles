@@ -13,12 +13,16 @@ fi
 # lsd init
 if exist lsd; then
     function tree() {
-        timeout 0.2 lsd --group-dirs first --tree "$@" &>/dev/null
-        if [[ $? -ne "124" ]]; then
-            lsd --group-dirs first --tree "$@"
+        if exist tree; then
+            timeout 0.2 lsd --group-dirs first --tree "$@" &>/dev/null
+            if [[ $? -ne "124" ]]; then
+                lsd --group-dirs first --tree "$@"
+            else
+                /usr/bin/tree "$@"
+            fi 2>/dev/null
         else
-            /usr/bin/tree "$@"
-        fi 2>/dev/null
+            lsd --group-dirs first --tree "$@" &>/dev/null
+        fi
     }
     alias ls='lsd --group-dirs first'
 fi
