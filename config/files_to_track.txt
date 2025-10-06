@@ -1,5 +1,6 @@
 // vim:commentstring=//\ %s
 
 .bashrc.d
-.config/mpv
 .gitconfig
+.config/mpv
+.config/tmux
