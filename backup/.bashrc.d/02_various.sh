@@ -8,22 +8,9 @@ export GOPATH="$HOME/.local/share/go"
 export RUSTUP_HOME="$HOME/.local/share/rustup"
 export CARGO_HOME="$HOME/.local/share/cargo"
 
-function open() {
-    local file=
-    case "$#" in
-    0) xdg-open "$PWD" ;;
-    1) xdg-open "$1" ;;
-    *) for file in "$@"; do xdg-open "$file"; done ;;
-    esac
-}
-function run() {
-    (: && nohup "$@" &>/dev/null &)
-}
-
 alias la='ls -A'
 alias ll='ls -l'
 alias lla='ls -lA'
-alias time='/usr/bin/time -f "time elapsed: %es"'
 
 unset command_not_found_handle
 if [[ $- == *i* ]]; then

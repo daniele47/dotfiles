@@ -1,19 +1,12 @@
 #!/bin/bash
 
-# util function
-function exist() {
-    command -v "$@" &>/dev/null
-}
-
-# bat init
-if exist bat; then
+if command -v bat &>/dev/null; then
     alias cat='bat'
 fi
 
-# lsd init
-if exist lsd; then
+if command -v lsd &>/dev/null; then
     function tree() {
-        if exist tree; then
+        if command -v tree &>/dev/null; then
             timeout 0.2 lsd --group-dirs first --tree "$@" &>/dev/null
             if [[ $? -ne "124" ]]; then
                 lsd --group-dirs first --tree "$@"
@@ -27,8 +20,7 @@ if exist lsd; then
     alias ls='lsd --group-dirs first'
 fi
 
-# zoxide init
-if exist zoxide; then
+if command -v zoxide &>/dev/null; then
     eval "$(zoxide init bash --no-cmd)"
     function zz() {
         if (cd "$@" &>/dev/null); then 
@@ -44,8 +36,7 @@ if exist zoxide; then
     alias zi="__zoxide_zi"
 fi
 
-# kitten init
-if exist kitten; then
+if command -v kitten &>/dev/null; then
     function preview() {
         [[ "$FPREVIEW" == "true" ]] && local -r FULLSCREEN="--scale-up"
         [[ "$FPREVIEW" == "true" ]] || local -r FULLSCREEN=""
@@ -73,4 +64,32 @@ if exist kitten; then
     function fpreview() {
         FPREVIEW="true" preview "${@}"
     }
+fi
+
+if command -v xdg-open &>/dev/null; then
+    function open() {
+        local file=""
+        case "$#" in
+            0) ;;
+            1) xdg-open "$1" ;;
+            *) for file in "$@"; do xdg-open "$file"; done ;;
+        esac
+    }
+    complete -f open
+fi
+
+if command -v tmux &>/dev/null; then
+    local -r session_name=bg
+    function run() {
+        if [[ "$#" -gt 0 ]]; then
+            if ! tmux has-session -t "$session_name" 2>/dev/null; then
+                tmux new-session -ds "$session_name" -n "$1" "$@"
+            else
+                tmux new-window -dt "$session_name" -n "$1" "$@"
+            fi
+        else
+            tmux attach-session -t "$session_name"
+        fi
+    }
+    complete -F _command run
 fi
