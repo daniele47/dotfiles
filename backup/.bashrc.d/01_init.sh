@@ -96,5 +96,4 @@ if command -v tmux &>/dev/null; then
     }
     complete -F _command run
     complete -F _command arun
-    complete -F _command krun
 fi
