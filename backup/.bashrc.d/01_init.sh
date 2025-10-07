@@ -90,6 +90,5 @@ if command -v tmux &>/dev/null; then
         fi
     }
     complete -F _command run
-   ear
    ! ps -o comm= -p $PPID | grep -q tmux && exec tmux new-session -As work
 fi
