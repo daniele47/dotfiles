@@ -89,6 +89,8 @@ if command -v tmux &>/dev/null; then
             fi
         fi
     }
+    function work(){
+        tmux new-session -As work
+    }
     complete -F _command run
-   ! ps -o comm= -p $PPID | grep -q tmux && exec tmux new-session -As work
 fi
