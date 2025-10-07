@@ -82,18 +82,19 @@ if command -v tmux &>/dev/null; then
     function run() {
         local -r session_name=bg
         if [[ "$#" -gt 0 ]]; then
-            if ! tmux has-session -t "$session_name" 2>/dev/null; then
-                tmux new-session -ds "$session_name" -n "$1" "$@"
+            if ! tmux -L "$session_name" has-session -t "$session_name" 2>/dev/null; then
+                tmux -L "$session_name" new-session -ds "$session_name" -n "$1" "$@"
             else
-                tmux new-window -dt "$session_name" -n "$1" "$@"
+                tmux -L "$session_name" new-window -dt "$session_name" -n "$1" "$@"
             fi
-        else
-            tmux attach-session -t "$session_name"
         fi
     }
-    function work(){
-        local -r session_name=work
-        tmux new-session -As "$session_name"
+    function arun(){
+        local -r session_name=bg
+        run "$@"
+        tmux -L "$session_name" attach-session -t "$session_name"
     }
     complete -F _command run
+    complete -F _command arun
+    complete -F _command krun
 fi
