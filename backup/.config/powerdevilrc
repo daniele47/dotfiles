@@ -20,6 +20,3 @@ AutoSuspendIdleTimeoutSec=900
 [BatteryManagement]
 BatteryCriticalLevel=15
 BatteryLowLevel=30
-
-[LowBattery][Performance]
-PowerProfile=power-saver
