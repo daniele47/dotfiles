@@ -38,6 +38,7 @@ fi
 
 if command -v kitten &>/dev/null; then
     function preview() {
+        [[ -n "$TMUX" ]] && echo 'kitten protocol not works well inside a tmux session!' && return 1
         [[ "$FPREVIEW" == "true" ]] && local -r FULLSCREEN="--scale-up"
         [[ "$FPREVIEW" == "true" ]] || local -r FULLSCREEN=""
         local -r oldPwd="$PWD"
