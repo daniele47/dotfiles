@@ -16,7 +16,7 @@ sudo dnf --assumeyes remove kcharselect firewall-config qrca
 sudo dnf --assumeyes remove setroubleshoot* hplip* toolbox
 
 # install needed programs
-sudo dnf --assumeyes install mpv podman kitten neovim htop tmux
+sudo dnf --assumeyes install mpv podman neovim htop tmux
 sudo dnf --assumeyes install zoxide bat ripgrep lsd jq git
 
 # enable rpm-fusion and install multimedia codecs

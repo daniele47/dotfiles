@@ -36,37 +36,6 @@ if command -v zoxide &>/dev/null; then
     alias zi="__zoxide_zi"
 fi
 
-if command -v kitten &>/dev/null; then
-    function preview() {
-        [[ -n "$TMUX" ]] && echo 'kitten protocol not works well inside a tmux session!' && return 1
-        [[ "$FPREVIEW" == "true" ]] && local -r FULLSCREEN="--scale-up"
-        [[ "$FPREVIEW" == "true" ]] || local -r FULLSCREEN=""
-        local -r oldPwd="$PWD"
-        local FILE="${1}"
-        if [[ $# == 0 || -d "$FILE" ]]; then
-            [[ -d "${FILE}" ]] && ! cd "${1}" &>/dev/null && return 1
-            FILE="$(
-                find . -type f \( -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.png' -o -iname '*.gif' \
-                    -o -iname '*.webp' -o -iname '*.bmp' -o -iname '*.tiff' \) 2>/dev/null |
-                    cut -b 3- |
-                    fzf --exit-0 --select-1 --height=40% --layout=reverse --border
-            )"
-        fi
-        if [[ "$(xdg-mime query filetype "${FILE}" 2>/dev/null)" =~ "image/" ]]; then
-            printf '\e[?1049h'
-            kitten icat --align=center --place "$(tput cols)"x"$(tput lines)"@0x0 "${FULLSCREEN}" "${FILE}"
-            printf '\e[?25l'
-            read -rn 1
-            clear
-            printf '\e[?1049l\e[?25h'
-        fi
-        cd "${oldPwd}" &>/dev/null || return 1
-    }
-    function fpreview() {
-        FPREVIEW="true" preview "${@}"
-    }
-fi
-
 if command -v xdg-open &>/dev/null; then
     function open() {
         local file=""
