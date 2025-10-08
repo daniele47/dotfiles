@@ -4,7 +4,7 @@ function __cleanup_prompt__() {
     local -r retval="$?"
 
     # force exit from not existing directories
-    local TMPOLD=$OLDPWD
+    local TMPOLD="$OLDPWD"
     local TMPPWD="$PWD"
     until [[ -d "$TMPPWD" ]]; do TMPPWD="$(dirname "$TMPPWD")"; done
     cd "$TMPPWD"
@@ -25,7 +25,7 @@ function __cleanup_prompt__() {
     [[ -n "$VIRTUAL_ENV" ]] && pyvenv="${yellow}(venv) "
     ###############################################
     local branch=""
-    GITDIR="$PWD"
+    local GITDIR="$PWD"
     until [[ -z "$GITDIR" || -d "$GITDIR/.git" ]]; do GITDIR="${GITDIR%/*}"; done
     if [[ -d "$GITDIR/.git" ]]; then
         read -r file <"$GITDIR/.git/HEAD"
