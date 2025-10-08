@@ -89,8 +89,8 @@ if command -v tmux &>/dev/null; then
             fi
         fi
     }
-    function work(){
-        tmux new-session -As work
+    function tn(){
+        tmux new-session -As "${1:-work}"
     }
     complete -F _command run
 fi
