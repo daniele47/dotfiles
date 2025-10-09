@@ -59,19 +59,5 @@ if command -v tmux &>/dev/null; then
             fi
         fi
     }
-    function work(){
-        tmux new-session -As "${1:-work}"
-    }
-    _work_completion() {
-        local IFS=$'\n'
-        local cur="${COMP_WORDS[COMP_CWORD]}"
-        if [[ $COMP_CWORD -eq 1 ]]; then
-            local sessions=$(tmux list-sessions -F "#{session_name}" 2>/dev/null)
-            COMPREPLY=($(compgen -W "$sessions" -- "$cur"))
-        else
-            COMPREPLY=()
-        fi
-    }
     complete -F _command run
-    complete -F _work_completion work
 fi
