@@ -10,4 +10,3 @@ sudo flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flat
 # install flatpaks
 flatpak install flathub com.github.wwmm.easyeffects -y
 flatpak install flathub com.protonvpn.www -y
-flatpak install flathub com.bitwarden.desktop -y
