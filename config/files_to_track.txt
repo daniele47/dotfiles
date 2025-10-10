@@ -4,3 +4,4 @@
 .gitconfig
 .config/mpv
 .config/tmux
+.config/nvim
