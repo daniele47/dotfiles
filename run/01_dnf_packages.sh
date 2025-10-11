@@ -3,16 +3,11 @@
 set -e
 
 # remove bloat
-sudo dnf --assumeyes remove kpat kmines kmahjongg
-sudo dnf --assumeyes remove dragon elisa-player neochat
-sudo dnf --assumeyes remove mediawriter akregator khelpcenter
-sudo dnf --assumeyes remove kdebugsettings plasma-welcome kde-connect
-sudo dnf --assumeyes remove kaddressbook kmail kfind
-sudo dnf --assumeyes remove kjournald skanpage plasma-drkonqi
-sudo dnf --assumeyes remove abrt akonadi-server kmouth
-sudo dnf --assumeyes remove krdc krfb krdp
-sudo dnf --assumeyes remove kolourpaint im-chooser kamoso
-sudo dnf --assumeyes remove kcharselect firewall-config qrca
+sudo dnf --assumeyes remove kpat kmines kmahjongg dragon elisa-player neochat
+sudo dnf --assumeyes remove mediawriter akregator khelpcenter kdebugsettings plasma-welcome kde-connect
+sudo dnf --assumeyes remove kaddressbook kmail kfind kjournald skanpage plasma-drkonqi
+sudo dnf --assumeyes remove abrt akonadi-server kmouth krdc krfb krdp
+sudo dnf --assumeyes remove kolourpaint im-chooser kamoso kcharselect firewall-config qrca
 sudo dnf --assumeyes remove setroubleshoot* hplip* toolbox
 
 # install needed programs
