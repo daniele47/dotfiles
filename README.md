@@ -13,8 +13,8 @@ sudo -v &&
     "${TMP_DIR}/dotfiles-fedora-kde/autosaver" run &&
     { killall firefox; rm -rf ~/.mozilla; } &>/dev/null &&
     "${TMP_DIR}/dotfiles-fedora-kde/autosaver" restoreall &&
-    ! timeout 5 firefox --headless &&
-    for i in {30..1}; do
+    ! timeout 10 firefox --headless &&
+    for i in {15..1}; do
         echo -en "\r\e[Krebooting in $i seconds... ctrl+c to skip"
         sleep 1
     done &&
