@@ -12,7 +12,7 @@ sudo dnf --assumeyes remove setroubleshoot* hplip* toolbox
 
 # install needed programs
 sudo dnf --assumeyes install mpv podman neovim htop tmux
-sudo dnf --assumeyes install zoxide bat ripgrep lsd jq git
+sudo dnf --assumeyes install zoxide bat ripgrep lsd git
 
 # enable rpm-fusion and install multimedia codecs
 sudo dnf --assumeyes install "https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm"
