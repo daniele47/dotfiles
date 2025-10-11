@@ -6,7 +6,7 @@ fi
 
 if command -v lsd &>/dev/null; then
     function tree() {
-        if command -v tree &>/dev/null; then
+        if command -v /usr/bin/tree &>/dev/null; then
             timeout 0.2 lsd --group-dirs first --tree "$@" &>/dev/null
             if [[ $? -ne "124" ]]; then
                 lsd --group-dirs first --tree "$@"
