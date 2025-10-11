@@ -37,7 +37,6 @@ user_pref("dom.security.https_only_mode", true);
 user_pref("dom.security.https_only_mode_ever_enabled", true);
 user_pref("browser.contentblocking.category", "custom"); 
 user_pref("privacy.fingerprintingProtection", true);
-user_pref("privacy.globalprivacycontrol.enabled", true);
 user_pref("privacy.globalprivacycontrol.was_ever_enabled", true);
 user_pref("privacy.trackingprotection.emailtracking.enabled", true);
 user_pref("privacy.trackingprotection.enabled", true);
