@@ -1,6 +1,6 @@
-## fedora kde configuration
+# fedora kde configuration
 
-- to initialize, run the following:
+## initialize
 
 ```bash
 sudo -v &&
@@ -21,3 +21,14 @@ sudo -v &&
     tuned-adm profile powersave &&
     reboot || echo -e "\e[1;31mfailed to download and run init scripts\e[m"
 ```
+
+## automatic disk unlocking
+
+```bash
+sudo systemd-cryptenroll --tpm2-device=auto --tpm2-pcrs=0,7 <encrypted-partition-path>
+```
+
+- <encrypted-partition-path>
+    - a path like `/dev/nvme0n1p3`, that indicates the encrypted partition
+    - can be found with `lsblk`
+
