@@ -8,11 +8,10 @@ sudo dnf --assumeyes remove mediawriter akregator khelpcenter kdebugsettings pla
 sudo dnf --assumeyes remove kaddressbook kmail kfind kjournald skanpage plasma-drkonqi
 sudo dnf --assumeyes remove abrt akonadi-server kmouth krdc krfb krdp
 sudo dnf --assumeyes remove kolourpaint im-chooser kamoso kcharselect firewall-config qrca
-sudo dnf --assumeyes remove setroubleshoot* hplip* toolbox
+sudo dnf --assumeyes remove setroubleshoot* hplip* toolbox plasma-discover
 
 # install needed programs
-sudo dnf --assumeyes install mpv podman neovim htop tmux git
-sudo dnf --assumeyes install zoxide bat lsd
+sudo dnf --assumeyes install mpv neovim htop tmux podman flatpak git zoxide bat lsd
 
 # enable rpm-fusion and install multimedia codecs
 sudo dnf --assumeyes install "https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm"
