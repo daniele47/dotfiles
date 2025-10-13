@@ -33,3 +33,16 @@ vim.opt.mousemodel = "extend"
 vim.opt.swapfile = false
 vim.opt.fillchars = { eob = " " }
 vim.opt.signcolumn = "no"
+
+-- clipboard via osc52 (works guiless)
+vim.g.clipboard = {
+	name = "OSC52",
+	copy = {
+		["+"] = require("vim.ui.clipboard.osc52").copy("+"),
+		["*"] = require("vim.ui.clipboard.osc52").copy("*"),
+	},
+	paste = {
+		["+"] = function() end,
+		["*"] = function() end,
+	},
+}
