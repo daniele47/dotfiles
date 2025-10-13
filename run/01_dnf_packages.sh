@@ -17,9 +17,7 @@ sudo dnf --assumeyes install mpv neovim htop tmux podman flatpak git zoxide bat 
 sudo dnf --assumeyes install "https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm"
 sudo dnf --assumeyes install "https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm"
 sudo dnf --assumeyes install ffmpeg --allowerasing
-sudo dnf --assumeyes install mpv-mpris libheif-freeworld
-sudo dnf --assumeyes install mesa-va-drivers-freeworld libavcodec-freeworld # amd
-sudo dnf --assumeyes install intel-media-driver                             # intel
+sudo dnf --assumeyes install mpv-mpris libheif-freeworld mesa-va-drivers-freeworld libavcodec-freeworld intel-media-driver
 
 # update and cleanup
 sudo dnf --assumeyes upgrade
