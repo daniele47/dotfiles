@@ -42,6 +42,10 @@ if command -v zoxide &>/dev/null; then
     alias zi="__zoxide_zi"
 fi
 
+if command -v nvim &>/dev/null; then
+    export EDITOR=nvim
+fi
+
 # prompt
 function __cleanup_prompt__() {
     local -r retval="$?"
