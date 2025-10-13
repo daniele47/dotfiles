@@ -62,7 +62,7 @@ function __cleanup_prompt__() {
     local -r green="\[\e[1;36m\]"
     local -r wipe="\[\e[0m\]"
     ###############################################
-    builtin local -r podman="${red}[󱚿 netbird] "
+    builtin local -r podman="${red}[ raspberrypi] "
     ###############################################
     local -r workdir="${green}\w "
     ###############################################
