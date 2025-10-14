@@ -51,11 +51,13 @@ fi
 if command -v tmux &>/dev/null; then
     function run() {
         local -r session_name=bg
+        local first_word=""
+        read -r first_word _ <<< "$*"
         if [[ "$#" -gt 0 ]]; then
             if ! tmux -L "$session_name" has-session -t "$session_name" 2>/dev/null; then
-                tmux -L "$session_name" new-session -ds "$session_name" -n "${1%% *}" "$@"
+                tmux -L "$session_name" new-session -ds "$session_name" -n "$first_word" "$@"
             else
-                tmux -L "$session_name" new-window -dt "$session_name" -n "${1%% *}" "$@"
+                tmux -L "$session_name" new-window -dt "$session_name" -n "$first_word" "$@"
             fi
         fi
     }
