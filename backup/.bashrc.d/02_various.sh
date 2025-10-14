@@ -13,11 +13,11 @@ alias ll='ls -l'
 alias lla='ls -lA'
 
 function update() {
-    echo -e '\e[1;34mInstalling flatpak updates if available...\e[m'
+    sudo sh -c 'echo -e "\e[1;34mInstalling flatpak updates if available...\e[m"
     flatpak update -y
-    echo -e '\e[1;34mInstalling firmware updates if available...\e[m'
+    echo -e "\e[1;34mInstalling firmware updates if available...\e[m"
     fwupdmgr refresh
-    sudo sh -c 'fwupdmgr update
+    fwupdmgr update
     echo -e "\e[1;34mInstalling system updates if available...\e[m"
     dnf offline-upgrade download -y
     dnf offline-upgrade reboot'
