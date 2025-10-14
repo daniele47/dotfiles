@@ -13,14 +13,38 @@ alias ll='ls -l'
 alias lla='ls -lA'
 
 function update() {
-    sudo sh -c 'echo -e "\e[1;34mInstalling flatpak updates if available...\e[m"
-    flatpak update -y
-    echo -e "\e[1;34mInstalling firmware updates if available...\e[m"
-    fwupdmgr refresh
-    fwupdmgr update
-    echo -e "\e[1;34mInstalling system updates if available...\e[m"
-    dnf offline-upgrade download -y
-    dnf offline-upgrade reboot'
+    case "$@" in
+    "")
+        sudo -k sh -c 'echo -e "\e[1;34mChecking if flatpak updates are available...\e[m"
+        flatpak remote-ls --updates
+        echo -e "\e[1;34mChecking if firmware updates are available...\e[m"
+        fwupdmgr refresh
+        fwupdmgr get-updates
+        echo -e "\e[1;34mChecking if system updates are available...\e[m"
+        dnf check-upgrade'
+    ;;
+    reboot)
+        sudo -k sh -c 'echo -e "\e[1;34mInstalling flatpak updates if available...\e[m"
+        flatpak update -y
+        echo -e "\e[1;34mInstalling firmware updates if available...\e[m"
+        fwupdmgr refresh
+        fwupdmgr update
+        echo -e "\e[1;34mInstalling system updates if available...\e[m"
+        dnf offline-upgrade download -y
+        dnf offline-upgrade reboot -y'
+    ;;
+    poweroff)
+        sudo -k sh -c 'echo -e "\e[1;34mInstalling flatpak updates if available...\e[m"
+        flatpak update -y
+        echo -e "\e[1;34mInstalling firmware updates if available...\e[m"
+        fwupdmgr refresh
+        fwupdmgr update
+        echo -e "\e[1;34mInstalling system updates if available...\e[m"
+        dnf offline-upgrade download -y
+        dnf offline-upgrade reboot --poweroff -y'
+    ;;
+    *) echo -e "\e[1;31mInvalid argoment passed: '$@'\e[m" ;;
+    esac
 }
 
 unset command_not_found_handle
