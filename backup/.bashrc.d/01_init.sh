@@ -61,7 +61,9 @@ if command -v tmux &>/dev/null; then
     }
     function arun() {
         local -r session_name=bg
+        run "$@"
         tmux -L "$session_name" attach-session -t "$session_name"
     }
     complete -F _command run
+    complete -F _command arun
 fi
