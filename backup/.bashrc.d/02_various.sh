@@ -28,7 +28,7 @@ function update() {
         flatpak update -y
         echo -e "\e[1;34mInstalling firmware updates if available...\e[m"
         fwupdmgr refresh
-        fwupdmgr update
+        fwupdmgr update -y
         echo -e "\e[1;34mInstalling system updates if available...\e[m"
         dnf offline-upgrade download -y
         dnf offline-upgrade reboot -y'
@@ -38,7 +38,7 @@ function update() {
         flatpak update -y
         echo -e "\e[1;34mInstalling firmware updates if available...\e[m"
         fwupdmgr refresh
-        fwupdmgr update
+        fwupdmgr update -y
         echo -e "\e[1;34mInstalling system updates if available...\e[m"
         dnf offline-upgrade download -y
         dnf offline-upgrade reboot --poweroff -y'
