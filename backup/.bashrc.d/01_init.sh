@@ -53,9 +53,9 @@ if command -v tmux &>/dev/null; then
         local -r session_name=bg
         if [[ "$#" -gt 0 ]]; then
             if ! tmux -L "$session_name" has-session -t "$session_name" 2>/dev/null; then
-                tmux -L "$session_name" new-session -ds "$session_name" -n "$1" "$@"
+                tmux -L "$session_name" new-session -ds "$session_name" -n "${1%% *}" "$@"
             else
-                tmux -L "$session_name" new-window -dt "$session_name" -n "$1" "$@"
+                tmux -L "$session_name" new-window -dt "$session_name" -n "${1%% *}" "$@"
             fi
         fi
     }
