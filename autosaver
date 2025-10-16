@@ -59,6 +59,7 @@ DIRS = {
 FILES = {
     "track": os.path.join(DIRS["config"], "files_to_track.txt"),
     "notdiff": os.path.join(DIRS["config"], "files_to_notdiff.txt"),
+    "delete": os.path.join(DIRS["config"], "files_to_delete.txt")
 }
 
 
@@ -104,7 +105,7 @@ SHORTCUTS = {
     "save": Flag([Action.SAVE], [Option.YES, Option.VERBOSE]),
     "restore": Flag([Action.BACKUP], [Option.YES, Option.VERBOSE]),
     "saveall": Flag([Action.SAVE], [Option.YES, Option.VERBOSE, Option.TOGGLE]),
-    "restoreall": Flag([Action.BACKUP], [Option.YES, Option.VERBOSE, Option.TOGGLE]),
+    "restoreall": Flag([Action.BACKUP], [Option.YES, Option.VERBOSE, Option.TOGGLE, Option.FORCE]),
     "untracked": Flag([Action.UNTRACKED], []),
     "init": Flag([Action.INIT], [Option.YES]),
     "purge": Flag([Action.INIT], [Option.YES, Option.TOGGLE]),
@@ -461,6 +462,7 @@ def backup(flags):
     opt_verbose = flags.has_option(Option.VERBOSE)
     tracked = load_config_files(FILES["track"])
     notdiff = load_config_files(FILES["notdiff"])
+    delete = sorted(load_config_basic(FILES["delete"]))
     all = sorted(tracked | notdiff)
 
     def fout(file, stat=None):
@@ -469,6 +471,15 @@ def backup(flags):
             print(msg_file + " : " + stat)
         else:
             print(msg_file)
+
+    if opt_toggle:
+        for file in delete:
+            ofile = os.path.join(odir, file)
+            if exist(ofile):
+                fout(ofile, "path is present")
+                if act_backup and opt_force: 
+                    if ask_user(color("msg", "[DANGER] Do you really want to purge path? "), flags):
+                        purge_path(ofile, True)
 
     for file in all:
         try:
