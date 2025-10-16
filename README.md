@@ -10,9 +10,7 @@ sudo -v &&
     TMP_DIR="$(mktemp -d)" &&
     wget -O "$TMP_DIR/dotfiles.zip" https://github.com/daniele47/dotfiles/archive/refs/heads/fedora-kde.zip &&
     unzip -d "$TMP_DIR" "$TMP_DIR/dotfiles.zip" &&
-    "${TMP_DIR}/dotfiles-fedora-kde/autosaver" run &&
-    { killall firefox; rm -rf ~/.mozilla; } &>/dev/null &&
-    "${TMP_DIR}/dotfiles-fedora-kde/autosaver" restoreall &&
+    "${TMP_DIR}/dotfiles-fedora-kde/autosaver" run -- restoreall &&
     ! timeout 10 firefox --headless &&
     for i in {15..1}; do
         echo -en "\r\e[Krebooting in $i seconds... ctrl+c to skip"
