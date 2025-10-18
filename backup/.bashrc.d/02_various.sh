@@ -19,7 +19,7 @@ function update() {
         flatpak remote-ls --updates
         echo -e "\e[1;34mChecking if firmware updates are available...\e[m"
         fwupdmgr refresh
-        fwupdmgr get-updates
+        fwupdmgr get-updates -y
         echo -e "\e[1;34mChecking if system updates are available...\e[m"
         dnf check-upgrade'
     ;;
