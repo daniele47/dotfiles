@@ -11,7 +11,6 @@ sudo -v &&
     wget -O "$TMP_DIR/dotfiles.zip" https://github.com/daniele47/dotfiles/archive/refs/heads/fedora-kde.zip &&
     unzip -d "$TMP_DIR" "$TMP_DIR/dotfiles.zip" &&
     "${TMP_DIR}/dotfiles-fedora-kde/autosaver" run -- restoreall &&
-    { killall firefox; timeout 10 firefox --headless; true; } &&
     for i in {15..1}; do echo -en "\r\e[Krebooting in $i seconds... ctrl+c to skip"; sleep 1; done &&
     tuned-adm profile powersave &&
     reboot || echo -e "\e[1;31mfailed to download and run init scripts\e[m"
