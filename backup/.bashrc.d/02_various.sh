@@ -12,14 +12,6 @@ alias la='ls -A'
 alias ll='ls -l'
 alias lla='ls -lA'
 
-function update(){
-    sudo sh -c '
-        fwupdmgr update -y
-        dnf offline-upgrade download -y
-        dnf offline-upgrade reboot --poweroff  -y        
-    '
-}
-
 unset command_not_found_handle
 if [[ $- == *i* ]]; then
     for i in - {0..9}; do bind -r "\e$i"; done
