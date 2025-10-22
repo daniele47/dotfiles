@@ -1,11 +1,14 @@
 #!/bin/bash
 
-# handy aliases
 alias la='ls -A'
 alias ll='ls -l'
 alias lla='ls -lA'
 
-# command init
+if [[ $- == *i* ]]; then
+    for i in - {0..9}; do bind -r "\e$i"; done
+    bind -x '"\C-l": clear'
+fi
+
 if command -v bat &>/dev/null; then
     alias cat='bat'
 fi
