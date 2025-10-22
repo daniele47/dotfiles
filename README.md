@@ -19,10 +19,13 @@ sudo -v &&
 ## automatic disk unlocking
 
 ```bash
-sudo systemd-cryptenroll --tpm2-device=auto --tpm2-pcrs=0,7 <encrypted-partition-path>
+sudo systemd-cryptenroll --tpm2-device=auto --tpm2-pcrs=0,7 
 ```
 
-- <encrypted-partition-path>
-    - a path like `/dev/nvme0n1p3`, that indicates the encrypted partition
-    - can be found with `lsblk`
+## remove fractional scaling
 
+```bash
+kscreen-doctor -o
+read -p "Write screen to remove fractional scaling from: " SCREEN
+kscreen-doctor "output.$SCREEN.scale.1"
+```
