@@ -21,7 +21,7 @@ if command -v lsd &>/dev/null; then
 fi
 
 if command -v zoxide &>/dev/null; then
-    eval "$(zoxide init bash --no-cmd)"
+    eval "$(zoxide init bash)"
     function zz() {
         if (cd "$@" &>/dev/null); then 
             cd "$@" &>/dev/null
@@ -32,8 +32,6 @@ if command -v zoxide &>/dev/null; then
             esac
         fi
     }
-    alias z="__zoxide_z"
-    alias zi="__zoxide_zi"
 fi
 
 if command -v xdg-open &>/dev/null; then
