@@ -16,12 +16,6 @@ sudo -v &&
     reboot || echo -e "\e[1;31mfailed to download and run init scripts\e[m"
 ```
 
-## automatic disk unlocking
-
-```bash
-sudo systemd-cryptenroll --tpm2-device=auto --tpm2-pcrs=0,7 
-```
-
 ## remove fractional scaling
 
 ```bash
