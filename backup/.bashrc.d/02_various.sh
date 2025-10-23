@@ -15,9 +15,8 @@ alias lla='ls -lA'
 function updateshutdown() {
     sudo sh -c '
         fwupdmgr update -y
-        dnf offline-upgrade download
-        dnf offline-upgrade reboot --poweroff
-        poweroff
+        dnf offline-upgrade download -y
+        dnf offline-upgrade reboot --poweroff -y
     '
 }
 
