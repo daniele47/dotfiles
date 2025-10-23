@@ -11,13 +11,13 @@ sudo dnf --assumeyes remove kolourpaint im-chooser kamoso kcharselect firewall-c
 sudo dnf --assumeyes remove setroubleshoot* hplip* toolbox plasma-discover
 
 # install needed programs
-sudo dnf --assumeyes install mpv neovim htop podman git zoxide bat lsd
+sudo dnf --assumeyes install haruna neovim htop podman git zoxide bat lsd
 
 # enable rpm-fusion and install multimedia codecs
 sudo dnf --assumeyes install "https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm"
 sudo dnf --assumeyes install "https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm"
 sudo dnf --assumeyes install ffmpeg --allowerasing
-sudo dnf --assumeyes install mpv-mpris libheif-freeworld mesa-va-drivers-freeworld libavcodec-freeworld intel-media-driver
+sudo dnf --assumeyes install libheif-freeworld mesa-va-drivers-freeworld libavcodec-freeworld intel-media-driver
 
 # update and cleanup
 sudo dnf --assumeyes upgrade
