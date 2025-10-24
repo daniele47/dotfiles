@@ -17,6 +17,7 @@
 
 // apps config files
 .config/htop/htoprc
+.config/haruna/
 .config/dolphinrc
 .config/krunnerrc
 .config/okularpartrc
