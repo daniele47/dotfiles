@@ -23,3 +23,10 @@ kscreen-doctor -o
 read -p "Write screen to remove fractional scaling from: " SCREEN
 kscreen-doctor "output.$SCREEN.scale.1"
 ```
+
+## fix bluetooth stuttering on realtek chips
+
+```bash
+echo -e "options rtw88_core disable_lps_deep=y\noptions rtw88_pci disable_aspm=y" | sudo tee /etc/modprobe.d/rtw88-fix.conf
+sudo systemctl reboot
+```
