@@ -8,7 +8,7 @@ sudo dnf --assumeyes remove mediawriter akregator khelpcenter kdebugsettings pla
 sudo dnf --assumeyes remove kaddressbook kmail kfind kjournald skanpage plasma-drkonqi
 sudo dnf --assumeyes remove abrt akonadi-server kmouth krdc krfb krdp
 sudo dnf --assumeyes remove kolourpaint im-chooser kamoso kcharselect firewall-config qrca
-sudo dnf --assumeyes remove setroubleshoot* hplip* toolbox plasma-discover
+sudo dnf --assumeyes remove setroubleshoot* hplip* toolbox flatpak
 
 # install needed programs
 sudo dnf --assumeyes install haruna neovim htop podman git zoxide bat lsd
