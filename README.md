@@ -16,14 +16,6 @@ sudo -v &&
     reboot || echo -e "\e[1;31mfailed to download and run init scripts\e[m"
 ```
 
-## remove fractional scaling
-
-```bash
-kscreen-doctor -o
-read -p "Write screen to remove fractional scaling from: " SCREEN
-kscreen-doctor "output.$SCREEN.scale.1"
-```
-
 ## fix bluetooth stuttering on realtek chips
 
 ```bash
