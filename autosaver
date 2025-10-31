@@ -511,8 +511,8 @@ def backup(flags):
                                 new = bfile if act_backup else ofile
                                 try:
                                     diff = difflib.unified_diff(
-                                        pathlib.Path(old).read_text().splitlines(keepends=True),
-                                        pathlib.Path(new).read_text().splitlines(keepends=True),
+                                        pathlib.Path(old).read_text().splitlines(),
+                                        pathlib.Path(new).read_text().splitlines(),
                                         fromfile=new,
                                         tofile=old,
                                         n=3,
@@ -523,13 +523,13 @@ def backup(flags):
                                             counter += 1
                                             continue
                                         if line.startswith("-"):
-                                            print(f"\x1b[31m{line}\x1b[0m", end="")
+                                            print(f"\x1b[31m{line}\x1b[0m")
                                         elif line.startswith("+"):
-                                            print(f"\x1b[32m{line}\x1b[0m", end="")
+                                            print(f"\x1b[32m{line}\x1b[0m")
                                         elif line.startswith("@"):
-                                            print(f"\x1b[36m{line}\x1b[0m", end="")
+                                            print(f"\x1b[36m{line}\x1b[0m")
                                         else:
-                                            print(line, end="")
+                                            print(line)
                                 except UnicodeDecodeError:
                                     print("\x1b[33mbinary files differ\x1b[0m")
                             if act_save:
