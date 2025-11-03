@@ -11,16 +11,13 @@ end
 local col = {
     fg = {
         white = { gui = "#dadada", tui = 253 },
-        orange = { gui = "#d7af5f", tui = 179 },
-        lpink = { gui = "#d75fd7", tui = 170 },
-        pink = { gui = "#ff00af", tui = 199 },
         red = { gui = "#d75f5f", tui = 167 },
-        purple = { gui = "#af87d7", tui = 140 },
-        lgreen = { gui = "#87d75f", tui = 113 },
-        green = { gui = "#5faf5f", tui = 71 },
+        yellow = { gui = "#d7d75f", tui = 185 },
+        green = { gui = "#87d75f", tui = 113 },
         lblue = { gui = "#5fd7d7", tui = 80 },
         blue = { gui = "#5f87d7", tui = 68 },
-        lgrey = { gui = "#8787af", tui = 103 },
+        pink = { gui = "#d75fd7", tui = 170 },
+        gold = { gui = "#d7af5f", tui = 179 },
         grey = { gui = "#5f5f87", tui = 60 },
         black = { gui = "#1c1c1c", tui = 234 },
     },
@@ -55,32 +52,32 @@ local function hi(hl, fg, bg, other)
 end
 
 -- :h group-name
-hi("Comment", col.fg.lgrey)
-hi("Constant", col.fg.orange)
+hi("Comment", col.fg.pink)
+hi("Constant", col.fg.gold)
 hi("String", "Constant")
 hi("Character", "Constant")
 hi("Number", "Constant")
 hi("Boolean", "Constant")
 hi("Float", "Constant")
-hi("Identifier", col.fg.lgreen)
+hi("Identifier", col.fg.blue)
 hi("Function", "Identifier")
-hi("Statement", col.fg.red)
+hi("Statement", col.fg.lblue)
 hi("Conditional", "Statement")
 hi("Repeat", "Statement")
 hi("Label", "Statement")
 hi("Operator", "Statement")
 hi("Keyword", "Statement")
 hi("Exception", "Statement")
-hi("PreProc", col.fg.lblue)
+hi("PreProc", "Normal")
 hi("Include", "PreProc")
 hi("Define", "PreProc")
 hi("Macro", "PreProc")
 hi("PreCondit", "PreProc")
-hi("Type", col.fg.lpink)
+hi("Type", "Normal")
 hi("StorageClass", "Type")
 hi("Structure", "Type")
 hi("Typedef", "Type")
-hi("Special", col.fg.blue)
+hi("Special", "Normal")
 hi("SpecialChar", "Special")
 hi("Tag", "Special")
 hi("Delimiter", "Special")
@@ -112,7 +109,7 @@ hi("DiffTextAdd", "DiffText")
 hi("EndOfBuffer", "Conceal")
 hi("TermCursor", "Cursor")
 hi("OkMsg", col.fg.lgreen)
-hi("WarningMsg", col.fg.orange)
+hi("WarningMsg", col.fg.yellow)
 hi("ErrorMsg", "Error")
 hi("StderrMsg", "Error")
 hi("StdoutMsg", "Normal")
@@ -181,17 +178,14 @@ hi("WinBarNC", "Statusline")
 
 -- :h diagnostic-highlights
 hi("DiagnosticError", col.fg.red)
-hi("DiagnosticWarn", col.fg.orange)
+hi("DiagnosticWarn", col.fg.yellow)
 hi("DiagnosticInfo", col.fg.blue)
 hi("DiagnosticHint", col.fg.lblue)
 hi("DiagnosticOk", col.fg.green)
 hi("DiagnosticUnderlineError", nil, nil, { sp = col.fg.red.gui, undercurl = true, cterm = { underline = true } })
-hi("DiagnosticUnderlineWarn", nil, nil, { sp = col.fg.orange.gui, undercurl = true, cterm = { underline = true } })
+hi("DiagnosticUnderlineWarn", nil, nil, { sp = col.fg.yellow.gui, undercurl = true, cterm = { underline = true } })
 hi("DiagnosticUnderlineInfo", nil, nil, { sp = col.fg.blue.gui, undercurl = true, cterm = { underline = true } })
 hi("DiagnosticUnderlineHint", nil, nil, { sp = col.fg.lblue.gui, undercurl = true, cterm = { underline = true } })
 hi("DiagnosticUnderlineOk", nil, nil, { sp = col.fg.green.gui, undercurl = true, cterm = { underline = true } })
 hi("DiagnosticDeprecated", nil, nil, { strikethrough = true })
 hi("DiagnosticUnnecessary", "Conceal")
-
--- various manual fixes
-hi("@variable", "Identifier")
