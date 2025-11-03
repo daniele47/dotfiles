@@ -12,6 +12,9 @@ InactivityDuration=5
 [Effect-overview]
 BorderActivate=9
 
+[Effect-zoom]
+EnableTextCaretTracking=true
+
 [NightColor]
 Active=true
 Mode=Times
