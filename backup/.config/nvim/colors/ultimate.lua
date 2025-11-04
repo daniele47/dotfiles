@@ -12,12 +12,11 @@ local col = {
     fg = {
         white = { gui = "#dadada", tui = 253 },
         red = { gui = "#d75f5f", tui = 167 },
-        yellow = { gui = "#d7d75f", tui = 185 },
+        gold = { gui = "#d7af5f", tui = 179 },
         green = { gui = "#87d75f", tui = 113 },
         lblue = { gui = "#5fd7d7", tui = 80 },
         blue = { gui = "#5f87d7", tui = 68 },
         pink = { gui = "#d75fd7", tui = 170 },
-        gold = { gui = "#d7af5f", tui = 179 },
         grey = { gui = "#5f5f87", tui = 60 },
         black = { gui = "#1c1c1c", tui = 234 },
     },
@@ -59,16 +58,16 @@ hi("Character", "Constant")
 hi("Number", "Constant")
 hi("Boolean", "Constant")
 hi("Float", "Constant")
-hi("Identifier", col.fg.blue)
+hi("Identifier", col.fg.green)
 hi("Function", "Identifier")
-hi("Statement", col.fg.lblue)
+hi("Statement", col.fg.blue)
 hi("Conditional", "Statement")
 hi("Repeat", "Statement")
 hi("Label", "Statement")
 hi("Operator", "Statement")
 hi("Keyword", "Statement")
 hi("Exception", "Statement")
-hi("PreProc", "Normal")
+hi("PreProc", col.fg.lblue)
 hi("Include", "PreProc")
 hi("Define", "PreProc")
 hi("Macro", "PreProc")
@@ -87,7 +86,7 @@ hi("Underlined", nil, nil, { underline = true })
 hi("Ignore", "Normal")
 hi("Error", col.fg.red, nil, { bold = true })
 hi("Todo", col.bg.lblue, nil, { bold = true })
-hi("Added", col.fg.lgreen)
+hi("Added", col.fg.green)
 hi("Changed", col.fg.blue)
 hi("Removed", col.fg.red)
 
@@ -109,7 +108,7 @@ hi("DiffTextAdd", "DiffText")
 hi("EndOfBuffer", "Conceal")
 hi("TermCursor", "Cursor")
 hi("OkMsg", col.fg.lgreen)
-hi("WarningMsg", col.fg.yellow)
+hi("WarningMsg", col.fg.gold)
 hi("ErrorMsg", "Error")
 hi("StderrMsg", "Error")
 hi("StdoutMsg", "Normal")
@@ -178,12 +177,12 @@ hi("WinBarNC", "Statusline")
 
 -- :h diagnostic-highlights
 hi("DiagnosticError", col.fg.red)
-hi("DiagnosticWarn", col.fg.yellow)
+hi("DiagnosticWarn", col.fg.gold)
 hi("DiagnosticInfo", col.fg.blue)
 hi("DiagnosticHint", col.fg.lblue)
 hi("DiagnosticOk", col.fg.green)
 hi("DiagnosticUnderlineError", nil, nil, { sp = col.fg.red.gui, undercurl = true, cterm = { underline = true } })
-hi("DiagnosticUnderlineWarn", nil, nil, { sp = col.fg.yellow.gui, undercurl = true, cterm = { underline = true } })
+hi("DiagnosticUnderlineWarn", nil, nil, { sp = col.fg.gold.gui, undercurl = true, cterm = { underline = true } })
 hi("DiagnosticUnderlineInfo", nil, nil, { sp = col.fg.blue.gui, undercurl = true, cterm = { underline = true } })
 hi("DiagnosticUnderlineHint", nil, nil, { sp = col.fg.lblue.gui, undercurl = true, cterm = { underline = true } })
 hi("DiagnosticUnderlineOk", nil, nil, { sp = col.fg.green.gui, undercurl = true, cterm = { underline = true } })
