@@ -28,7 +28,6 @@
 .local/state/konsolestaterc
 
 // plasma config files
-.config/bluedevilglobalrc
 .config/kactivitymanagerdrc
 .config/kactivitymanagerd-statsrc
 .config/kcminputrc
