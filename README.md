@@ -8,8 +8,8 @@ sudo -v &&
     wget -O "$TMP_DIR/dotfiles.zip" https://github.com/daniele47/dotfiles/archive/refs/heads/fedora-kiniote.zip &&
     unzip -d "$TMP_DIR" "$TMP_DIR/dotfiles.zip" &&
     "${TMP_DIR}/dotfiles-fedora-kiniote/autosaver" restoreall &&
-    tuned-adm profile powersave &&
-    reboot || echo -e "\e[1;31mfailed to download and init system\e[m"
+    tuned-adm profile powersave || 
+    echo -e "\e[1;31mfailed to download and init system\e[m"
 ```
 
 ## fix bluetooth stuttering on realtek chips
