@@ -66,4 +66,8 @@ if command -v tmux &>/dev/null; then
     }
     complete -F _command run
     complete -F _command arun
+else
+    function run() {
+        ( nohup "$@" &>/dev/null & : )
+    }
 fi

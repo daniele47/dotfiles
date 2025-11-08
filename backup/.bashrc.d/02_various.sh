@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export EDITOR="nvim"
+command -v nvim &>/dev/null && export EDITOR="nvim"
 export PYTHONDONTWRITEBYTECODE="true"
 export PYTHON_HISTORY="$HOME/.local/state/.python_history"
 export NODE_REPL_HISTORY="$HOME/.local/state/.node_history"
