@@ -13,7 +13,8 @@ sudo -v &&
     "${TMP_DIR}/dotfiles-fedora-kde/autosaver" run -- restoreall &&
     for i in {15..1}; do echo -en "\r\e[Krebooting in $i seconds... ctrl+c to skip"; sleep 1; done &&
     tuned-adm profile powersave &&
-    reboot || echo -e "\e[1;31mfailed to download and run init scripts\e[m"
+    reboot || 
+    echo -e "\e[1;31mfailed to download and run init scripts\e[m"
 ```
 
 ## fix bluetooth stuttering on realtek chips
