@@ -1,6 +1,10 @@
 #!/bin/bash
 
-command -v nvim &>/dev/null && export EDITOR="nvim"
+if command -v nvim &>/dev/null; then
+    export EDITOR="nvim"
+elif command -v vi &>/dev/null; then
+    export EDITOR="vi"
+fi
 export PYTHONDONTWRITEBYTECODE="true"
 export PYTHON_HISTORY="$HOME/.local/state/.python_history"
 export NODE_REPL_HISTORY="$HOME/.local/state/.node_history"

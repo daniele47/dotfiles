@@ -10,6 +10,12 @@ function __cleanup_prompt__() {
     cd "$TMPPWD"
     OLDPWD="$TMPOLD"
 
+    # redirect /var/home/... to /home/...
+    if [[ "${PWD}" != "${PWD/#\/var/home}" ]]; then
+        local -r NEWPWD="${PWD/#\/var/}"
+        [[ "$(realpath "$NEWPWD")" == "$(realpath "$PWD")" ]] && cd "$NEWPWD"
+    fi
+
     # change PS1
     local -r red="\[\e[1;31m\]"
     local -r lgreen="\[\e[1;32m\]"
