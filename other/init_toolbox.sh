@@ -1,7 +1,8 @@
 #!/bin/bash
 
 # cli tools used in bash init config
-sudo dnf install zoxide bat lsd tmux neovim
+sudo dnf install -y zoxide bat lsd tmux neovim
 
-# allow storing git passwords in git wallet
-sudo dnf install ksshaskpass
+# patch gui issues
+sudo dnf install -y ksshaskpass kde-runtime plasma-workspace
+
