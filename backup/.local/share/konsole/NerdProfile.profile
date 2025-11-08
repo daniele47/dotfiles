@@ -5,6 +5,7 @@ WordModeAscii=true
 WordModeAttr=false
 
 [General]
+Directory=/home/$USER
 Name=NerdProfile
 Parent=FALLBACK/
 ShowTerminalSizeHint=false

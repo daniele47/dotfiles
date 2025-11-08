@@ -1,19 +1,15 @@
-# fedora kde configuration
+# fedora kiniote configuration
 
 ## initialize
 
 ```bash
 sudo -v &&
-    { while sleep 200; do sudo -v; done & } &&
-    { systemd-inhibit --what=idle:sleep sleep infinity & } &&
-    tuned-adm profile throughput-performance &&
     TMP_DIR="$(mktemp -d)" &&
-    wget -O "$TMP_DIR/dotfiles.zip" https://github.com/daniele47/dotfiles/archive/refs/heads/fedora-kde.zip &&
+    wget -O "$TMP_DIR/dotfiles.zip" https://github.com/daniele47/dotfiles/archive/refs/heads/fedora-kiniote.zip &&
     unzip -d "$TMP_DIR" "$TMP_DIR/dotfiles.zip" &&
-    "${TMP_DIR}/dotfiles-fedora-kde/autosaver" run -- restoreall &&
-    for i in {15..1}; do echo -en "\r\e[Krebooting in $i seconds... ctrl+c to skip"; sleep 1; done &&
+    "${TMP_DIR}/dotfiles-fedora-kiniote/autosaver" restoreall &&
     tuned-adm profile powersave &&
-    reboot || echo -e "\e[1;31mfailed to download and run init scripts\e[m"
+    reboot || echo -e "\e[1;31mfailed to download and init system\e[m"
 ```
 
 ## fix bluetooth stuttering on realtek chips
