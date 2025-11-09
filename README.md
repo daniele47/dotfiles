@@ -18,9 +18,3 @@ sudo -v &&
 echo -e "options rtw88_core disable_lps_deep=y\noptions rtw88_pci disable_aspm=y" | sudo tee /etc/modprobe.d/rtw88-fix.conf
 sudo systemctl reboot
 ```
-
-## autounlock disk encryption by storing password on tpm
-
-```bash
-sudo systemd-cryptenroll --tpm2-device=auto --tpm2-pcrs=0,7
-```
