@@ -1,9 +1,15 @@
 [Core General]
 ObeyDRM=false
 
+[Desktop Entry]
+FullScreen=false
+
 [General]
+LockSidebar=true
 ShellOpenFileInTabs=true
-ttsVoice=English (Caribbean)
+ShowSidebar=true
+ttsEngine=mock
+ttsVoice=Bob
 
 [PageView]
 MouseMode=TextSelect

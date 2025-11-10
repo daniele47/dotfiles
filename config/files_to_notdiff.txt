@@ -19,13 +19,13 @@
 .config/htop/htoprc
 .config/dolphinrc
 .config/krunnerrc
-.config/okularpartrc
 .config/konsolerc
 .local/share/konsole/NerdProfileNoLigatures.profile
 .local/share/konsole/NerdProfile.profile
 .local/share/kxmlgui5/konsole
 .local/state/konsolestaterc
 .var/app/org.kde.haruna/config/haruna
+.var/app/org.kde.okular/config/okularpartrc
 
 // plasma config files
 .config/kactivitymanagerdrc
