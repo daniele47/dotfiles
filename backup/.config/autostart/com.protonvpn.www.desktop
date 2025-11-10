@@ -1,7 +1,7 @@
 [Desktop Entry]
 Categories=Network;
 Comment=Proton VPN GUI client
-Exec=/usr/bin/flatpak run --branch=stable --arch=x86_64 --command=protonvpn-app --file-forwarding com.protonvpn.www @@u %u @@
+Exec=/usr/bin/flatpak run --branch=stable --command=protonvpn-app --file-forwarding com.protonvpn.www @@u %u @@
 Icon=com.protonvpn.www
 Name=Proton VPN
 StartupWMClass=protonvpn-app
