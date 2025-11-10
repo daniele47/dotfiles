@@ -20,6 +20,7 @@
 .config/dolphinrc
 .config/krunnerrc
 .config/konsolerc
+.config/kdeconnect/config
 .local/share/konsole/NerdProfileNoLigatures.profile
 .local/share/konsole/NerdProfile.profile
 .local/share/kxmlgui5/konsole

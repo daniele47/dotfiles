@@ -3,7 +3,7 @@ ActivateWhenTypingOnDesktop=false
 FreeFloating=true
 
 [Plugins]
-baloosearchEnabled=false
+baloosearchEnabled=true
 browserhistoryEnabled=false
 browsertabsEnabled=false
 krunner_appstreamEnabled=false
