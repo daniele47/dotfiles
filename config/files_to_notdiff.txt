@@ -17,7 +17,6 @@
 
 // apps config files
 .config/htop/htoprc
-.config/haruna/
 .config/dolphinrc
 .config/krunnerrc
 .config/okularpartrc
@@ -26,6 +25,7 @@
 .local/share/konsole/NerdProfile.profile
 .local/share/kxmlgui5/konsole
 .local/state/konsolestaterc
+.var/app/org.kde.haruna/config/haruna
 
 // plasma config files
 .config/kactivitymanagerdrc
