@@ -41,7 +41,6 @@
 .config/kwinrc
 .config/kxkbrc
 .config/networkmanagement.notifyrc
-.config/PlasmaDiscoverUpdates
 .config/plasma-localerc
 .config/plasma-org.kde.plasma.desktop-appletsrc
 .config/plasmaparc
