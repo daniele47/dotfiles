@@ -109,7 +109,14 @@ function __cleanup_prompt__() {
     esac
     ###############################################
     local toolbox=""
-    [[ -f /run/.toolboxenv ]] && toolbox="${red}[toolbox] "
+    if [[ -f /run/.toolboxenv ]]; then
+        tbname="$(source /run/.containerenv && echo "$name")"
+        if [[ "$tbname" == "fedora-toolbox-$(rpm -E %fedora)" ]]; then
+            toolbox="${red}[⬢] "
+        else
+            toolbox="${red}[${tbname}] "
+        fi
+    fi
     ###############################################
     PS1="${wipe}${toolbox}${workdir}${pyvenv}${gitbranch}${gitstate}${gitstatus}${status}${symbol}${wipe}"
 
