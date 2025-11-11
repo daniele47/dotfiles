@@ -4,30 +4,31 @@
 .local/share/fonts/FiraCode
 
 // mozilla files
-.mozilla/firefox/kvgujw0x.customized/extension-settings.json
-.mozilla/firefox/kvgujw0x.customized/extensions.json
-.mozilla/firefox/kvgujw0x.customized/places.sqlite
-.mozilla/firefox/kvgujw0x.customized/prefs.js
-.mozilla/firefox/kvgujw0x.customized/search.json.mozlz4
-.mozilla/firefox/kvgujw0x.customized/extensions/addon@darkreader.org.xpi
-.mozilla/firefox/kvgujw0x.customized/extensions/uBlock0@raymondhill.net.xpi
-.mozilla/firefox/kvgujw0x.customized/extensions/{446900e4-71c2-419f-a6a7-df9c091e268b}.xpi
-.mozilla/firefox/kvgujw0x.customized/extensions/sponsorBlocker@ajay.app.xpi
 .mozilla/firefox/profiles.ini
+.mozilla/firefox/kvgujw0x.customized/search.json.mozlz4
+.mozilla/firefox/kvgujw0x.customized/prefs.js
+.mozilla/firefox/kvgujw0x.customized/places.sqlite
+.mozilla/firefox/kvgujw0x.customized/extensions/uBlock0@raymondhill.net.xpi
+.mozilla/firefox/kvgujw0x.customized/extensions/sponsorBlocker@ajay.app.xpi
+.mozilla/firefox/kvgujw0x.customized/extensions.json
+.mozilla/firefox/kvgujw0x.customized/extension-settings.json
+.mozilla/firefox/kvgujw0x.customized/extensions/addon@darkreader.org.xpi
+.mozilla/firefox/kvgujw0x.customized/extensions/{446900e4-71c2-419f-a6a7-df9c091e268b}.xpi
 
 // apps config files
-.config/htop/htoprc
 .config/dolphinrc
-.config/krunnerrc
-.config/konsolerc
+.config/htop/htoprc
 .config/kdeconnect/config
+.config/konsolerc
+.config/krunnerrc
+.config/ktrashrc
 .local/share/konsole/NerdProfileNoLigatures.profile
 .local/share/konsole/NerdProfile.profile
 .local/share/kxmlgui5/konsole
 .local/state/konsolestaterc
+.var/app/com.protonvpn.www/config/Proton/VPN
 .var/app/org.kde.haruna/config/haruna
 .var/app/org.kde.okular/config/okularpartrc
-.var/app/com.protonvpn.www/config/Proton/VPN
 
 // plasma config files
 .config/kactivitymanagerdrc
