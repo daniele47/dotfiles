@@ -35,13 +35,31 @@ if command -v zoxide &>/dev/null; then
 fi
 
 if command -v xdg-open &>/dev/null; then
+    function __universal_opener__(){
+        if [[ -f /run/.toolboxenv ]]; then 
+            if [[ -e "$@" ]]; then
+                tmp_arg="$(realpath -- "$@")"
+                if [[ "$tmp_arg" == "/home/$USER"* || "$tmp_arg" == "/var/home/$USER"* || "$tmp_arg" == "/tmp"* ]]; then
+                    systemd-run --user --wait --quiet xdg-open "$tmp_arg" 
+                    return 0
+                else
+                    echo "path '$@' is outside shared directories!"
+                    return 1
+                fi
+            fi
+            systemd-run --user --wait --quiet xdg-open "$@"
+        else
+            xdg-open "$@"
+        fi
+    }
     function open() {
         local file=""
         case "$#" in
             0) ;;
-            1) xdg-open "$1" ;;
-            *) for file in "$@"; do xdg-open "$file"; done ;;
+            1) __universal_opener__ "$1" ;;
+            *) for file in "$@"; do __universal_opener__ "$file"; done ;;
         esac
+        return 0
     }
     complete -f open
 fi
