@@ -92,6 +92,6 @@ fi
 
 if [[ -f /run/host/bin/konsole && -f /run/.toolboxenv ]]; then
     function konsole-builtin() {
-        systemd-run --user --wait --quiet sh -c 'konsole --builtin-profile '
+        ( nohup systemd-run --user --wait --quiet sh -c 'konsole --builtin-profile ' &>/dev/null & : )
     }
 fi
