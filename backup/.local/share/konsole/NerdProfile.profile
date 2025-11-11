@@ -5,7 +5,7 @@ WordModeAscii=true
 WordModeAttr=false
 
 [General]
-Command=/bin/toolbox enter
+Command=/bin/toolbox enter -y
 Name=NerdProfile
 Parent=FALLBACK/
 ShowTerminalSizeHint=false
