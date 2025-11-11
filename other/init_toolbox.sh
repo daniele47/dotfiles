@@ -10,7 +10,7 @@ sudo dnf -y install ksshaskpass kde-runtime plasma-workspace
 sudo dnf -y install htop
 
 # development tools
-sudo dnf install @c-development
+sudo dnf -y install @c-development dig
 
 # download cloudflared
 curl -fsSl https://pkg.cloudflare.com/cloudflared.repo | sudo tee /etc/yum.repos.d/cloudflared.repo
