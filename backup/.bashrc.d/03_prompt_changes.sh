@@ -109,7 +109,7 @@ function __cleanup_prompt__() {
     esac
     ###############################################
     local toolbox=""
-    [[ -f /run/.toolboxenv ]] && toolbox="${red}[⬢] "
+    [[ -f /run/.toolboxenv ]] && toolbox="${red}[toolbox] "
     ###############################################
     PS1="${wipe}${toolbox}${workdir}${pyvenv}${gitbranch}${gitstate}${gitstatus}${status}${symbol}${wipe}"
 
