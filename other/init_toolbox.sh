@@ -7,7 +7,7 @@ sudo dnf -y install zoxide bat lsd tmux neovim
 sudo dnf -y install ksshaskpass kde-runtime plasma-workspace
 
 # nice to have
-sudo dnf -y install htop
+sudo dnf -y install htop flatpak
 
 # development tools
 sudo dnf -y install @c-development dig
