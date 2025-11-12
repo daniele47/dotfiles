@@ -4,16 +4,6 @@
 .local/share/fonts/FiraCode
 
 // mozilla files
-.mozilla/firefox/profiles.ini
-.mozilla/firefox/kvgujw0x.customized/search.json.mozlz4
-.mozilla/firefox/kvgujw0x.customized/prefs.js
-.mozilla/firefox/kvgujw0x.customized/places.sqlite
-.mozilla/firefox/kvgujw0x.customized/extensions/uBlock0@raymondhill.net.xpi
-.mozilla/firefox/kvgujw0x.customized/extensions/sponsorBlocker@ajay.app.xpi
-.mozilla/firefox/kvgujw0x.customized/extensions.json
-.mozilla/firefox/kvgujw0x.customized/extension-settings.json
-.mozilla/firefox/kvgujw0x.customized/extensions/addon@darkreader.org.xpi
-.mozilla/firefox/kvgujw0x.customized/extensions/{446900e4-71c2-419f-a6a7-df9c091e268b}.xpi
 .var/app/org.mozilla.firefox/.mozilla/firefox/profiles.ini
 .var/app/org.mozilla.firefox/.mozilla/firefox/installs.ini
 .var/app/org.mozilla.firefox/.mozilla/firefox/kvgujw0x.customized/search.json.mozlz4
