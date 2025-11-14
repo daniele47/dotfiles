@@ -8,9 +8,9 @@ sudo -v &&
     { systemd-inhibit --what=idle:sleep sleep infinity & } &&
     tuned-adm profile throughput-performance &&
     TMP_DIR="$(mktemp -d)" &&
-    wget -O "$TMP_DIR/dotfiles.zip" https://github.com/daniele47/dotfiles/archive/refs/heads/fedora-kiniote.zip &&
+    wget -O "$TMP_DIR/dotfiles.zip" https://github.com/daniele47/dotfiles/archive/refs/heads/kiniote.zip &&
     unzip -d "$TMP_DIR" "$TMP_DIR/dotfiles.zip" &&
-    "${TMP_DIR}/dotfiles-fedora-kiniote/autosaver" run -- restoreall &&
+    "${TMP_DIR}/dotfiles-kiniote/autosaver" run -- restoreall &&
     for i in {15..1}; do echo -en "\r\e[Krebooting in $i seconds... ctrl+c to skip"; sleep 1; done &&
     tuned-adm profile powersave &&
     reboot || 
