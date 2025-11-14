@@ -1,6 +1,10 @@
 #!/bin/bash
 
+# checks
 [[ -z "$WAIT_UNTIL" ]] && echo 'WAIT_UNTIL was not specified!' && exit 1
+! date -d "$WAIT_UNTIL" &>/dev/null && echo 'WAIT_UNTIL is invalid date!' && exit 1
+
+# countdown timer
 secs=1
 while [[ "$secs" -gt 0 ]]; do 
     secs="$(expr $(date -d "$WAIT_UNTIL" +%s) - $(date +%s))"
@@ -9,4 +13,5 @@ while [[ "$secs" -gt 0 ]]; do
 done
 echo -e "\r\e[KTime $WAIT_UNTIL reached!"
 
+# assert correct exit value
 exit 0
