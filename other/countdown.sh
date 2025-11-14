@@ -1,6 +1,6 @@
 #!/bin/bash
 
-[[ -z "$WAIT_UNTIL" ]] && WAIT_UNTIL="9:44"
+[[ -z "$WAIT_UNTIL" ]] && echo 'WAIT_UNTIL was not specified!' && exit 1
 secs=1
 while [[ "$secs" -gt 0 ]]; do 
     secs="$(expr $(date -d "$WAIT_UNTIL" +%s) - $(date +%s))"
