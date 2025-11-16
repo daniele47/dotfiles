@@ -31,7 +31,7 @@ sudo systemctl reboot
 ```bash
 echo -e "[Daemon]\nAutomaticUpdatePolicy=stage" | sudo tee /etc/rpm-ostreed.conf
 rpm-ostree reload
-systemctl enable rpm-ostreed-automatic.timer --now
+sudo systemctl enable rpm-ostreed-automatic.timer --now
 ```
 
 ## disable automagical updates
@@ -39,5 +39,5 @@ systemctl enable rpm-ostreed-automatic.timer --now
 ```bash
 sudo cp /usr/etc/rpm-ostreed.conf /etc/rpm-ostreed.conf
 rpm-ostree reload
-systemctl disable rpm-ostreed-automatic.timer --now
+sudo systemctl disable rpm-ostreed-automatic.timer --now
 ```
