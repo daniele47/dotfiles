@@ -29,7 +29,7 @@ secs=1
 while [[ "$secs" -gt 0 ]]; do 
     secs="$(expr "$WAIT_UNTIL_SECS" - $(date +%s))"
     [[ "$secs" -gt 0 ]] && echo -en "\r\e[KStill $(sec2dhms $secs) (${secs}s) missing to $WAIT_UNTIL. Please wait..."
-    sleep 0.9;
+    sleep 0.1;
 done
 echo -e "\r\e[KTime $WAIT_UNTIL has been reached!"
 
