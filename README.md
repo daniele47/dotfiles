@@ -25,19 +25,3 @@ sudo -v &&
 echo -e "options rtw88_core disable_lps_deep=y\noptions rtw88_pci disable_aspm=y" | sudo tee /etc/modprobe.d/rtw88-fix.conf
 sudo systemctl reboot
 ```
-
-## enable automagical updates
-
-```bash
-echo -e "[Daemon]\nAutomaticUpdatePolicy=stage" | sudo tee /etc/rpm-ostreed.conf
-rpm-ostree reload
-sudo systemctl enable rpm-ostreed-automatic.timer --now
-```
-
-## disable automagical updates
-
-```bash
-sudo cp /usr/etc/rpm-ostreed.conf /etc/rpm-ostreed.conf
-rpm-ostree reload
-sudo systemctl disable rpm-ostreed-automatic.timer --now
-```
