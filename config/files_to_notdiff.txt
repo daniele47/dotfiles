@@ -33,6 +33,7 @@
 
 // plasma config files
 .config/baloofilerc
+.config/bluedevilglobalrc
 .config/kactivitymanagerdrc
 .config/kactivitymanagerd-statsrc
 .config/kcminputrc
