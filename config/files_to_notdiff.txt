@@ -17,7 +17,7 @@
 .var/app/org.mozilla.firefox/.mozilla/firefox/kvgujw0x.customized/extensions/{446900e4-71c2-419f-a6a7-df9c091e268b}.xpi
 
 // apps config files
-.config/autostart
+.config/autostart/com.protonvpn.www.desktop
 .config/dolphinrc
 .config/htop/htoprc
 .config/kdeconnect/config
