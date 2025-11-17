@@ -27,6 +27,7 @@
 .local/share/konsole/NerdProfile.profile
 .local/share/kxmlgui5/konsole
 .local/state/konsolestaterc
+.local/share/applications/net.local.konsole.desktop
 .var/app/com.protonvpn.www/config/Proton/VPN
 .var/app/org.kde.haruna/config/haruna
 .var/app/org.kde.okular/config/okularpartrc

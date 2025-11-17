@@ -16,10 +16,6 @@ alias la='ls -A'
 alias ll='ls -l'
 alias lla='ls -lA'
 
-if [[ -f /run/.toolboxenv ]]; then
-    alias escape-toolbox='systemd-run --user --shell --quiet'
-fi
-
 unset command_not_found_handle
 if [[ $- == *i* ]]; then
     for i in - {0..9}; do bind -r "\e$i"; done
