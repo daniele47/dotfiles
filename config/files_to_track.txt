@@ -4,4 +4,3 @@
 .gitconfig
 .config/tmux
 .config/nvim
-.config/autostart

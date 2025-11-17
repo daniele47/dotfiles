@@ -17,17 +17,18 @@
 .var/app/org.mozilla.firefox/.mozilla/firefox/kvgujw0x.customized/extensions/{446900e4-71c2-419f-a6a7-df9c091e268b}.xpi
 
 // apps config files
+.config/autostart
 .config/dolphinrc
 .config/htop/htoprc
 .config/kdeconnect/config
 .config/konsolerc
 .config/krunnerrc
 .config/ktrashrc
+.local/share/applications/net.local.konsole.desktop
 .local/share/konsole/NerdProfileNoLigatures.profile
 .local/share/konsole/NerdProfile.profile
 .local/share/kxmlgui5/konsole
 .local/state/konsolestaterc
-.local/share/applications/net.local.konsole.desktop
 .var/app/com.protonvpn.www/config/Proton/VPN
 .var/app/org.kde.haruna/config/haruna
 .var/app/org.kde.okular/config/okularpartrc
