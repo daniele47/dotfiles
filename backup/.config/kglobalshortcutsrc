@@ -252,9 +252,6 @@ switch to next activity=none,,Switch to Next Activity
 switch to previous activity=none,,Switch to Previous Activity
 toggle do not disturb=none,,Toggle do not disturb
 
-[services][net.local.konsole.desktop]
-_launch=Ctrl+Alt+T
-
 [services][org.kde.konsole.desktop]
 _launch=Meta+T
 

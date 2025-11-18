@@ -24,7 +24,6 @@
 .config/konsolerc
 .config/krunnerrc
 .config/ktrashrc
-.local/share/applications/net.local.konsole.desktop
 .local/share/konsole/NerdProfileNoLigatures.profile
 .local/share/konsole/NerdProfile.profile
 .local/share/kxmlgui5/konsole
