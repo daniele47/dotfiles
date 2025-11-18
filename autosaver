@@ -105,7 +105,7 @@ SHORTCUTS = {
     "save": Flag([Action.SAVE], [Option.YES, Option.VERBOSE]),
     "restore": Flag([Action.BACKUP], [Option.YES, Option.VERBOSE]),
     "saveall": Flag([Action.SAVE], [Option.YES, Option.VERBOSE, Option.TOGGLE]),
-    "restoreall": Flag([Action.BACKUP], [Option.YES, Option.VERBOSE, Option.TOGGLE, Option.FORCE]),
+    "restoreall": Flag([Action.BACKUP], [Option.YES, Option.VERBOSE, Option.TOGGLE]),
     "untracked": Flag([Action.UNTRACKED], []),
     "init": Flag([Action.INIT], [Option.YES]),
     "purge": Flag([Action.INIT], [Option.YES, Option.TOGGLE]),
