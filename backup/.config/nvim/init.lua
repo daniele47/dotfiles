@@ -33,7 +33,3 @@ vim.opt.mousemodel = "extend"
 vim.opt.swapfile = false
 vim.opt.fillchars = { eob = " " }
 vim.opt.signcolumn = "no"
-
--- disabled gui opening commands
-vim.ui.open = function(path) end
-vim.g.netrw_browsex_viewer = "echo /dev/null --"
