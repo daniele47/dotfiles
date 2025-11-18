@@ -4,8 +4,6 @@
     email = -
 [init]
     defaultBranch = main
-[core]
-    editor = nvim
 [pager]
     diff = false
 [alias]
