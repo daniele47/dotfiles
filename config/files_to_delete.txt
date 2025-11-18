@@ -1,2 +1,2 @@
 .mozilla
-.var/app/org.mozilla.firefox
+.var
