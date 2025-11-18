@@ -1,5 +1,7 @@
 # fedora kde configuration
 
+WARNING: THIS BRANCH IS CURRENTLY NOT MANTAINED!!! 
+
 ## initialize
 
 ```bash
