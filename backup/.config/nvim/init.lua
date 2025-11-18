@@ -34,9 +34,6 @@ vim.opt.swapfile = false
 vim.opt.fillchars = { eob = " " }
 vim.opt.signcolumn = "no"
 
--- fix gui open commands to ALWAYS work
-vim.ui.open = function(path) 
-    vim.fn.system("systemd-run --user --wait --quiet xdg-open " .. vim.fn.shellescape(path)) 
-end
-vim.g.netrw_browsex_viewer = "systemd-run --user --wait --quiet xdg-open"
-
+-- disabled gui opening commands
+vim.ui.open = function(path) end
+vim.g.netrw_browsex_viewer = "echo /dev/null --"
