@@ -64,14 +64,15 @@ FILES = {
 
 
 class Action(enum.Enum):
-    LIST = enum.auto()
-    UNTRACKED = enum.auto()
-    SAVE = enum.auto()
     BACKUP = enum.auto()
     EDIT = enum.auto()
-    INIT = enum.auto()
-    RUN = enum.auto()
     HELP = enum.auto()
+    INIT = enum.auto()
+    LIST = enum.auto()
+    PURGE = enum.auto()
+    RUN = enum.auto()
+    SAVE = enum.auto()
+    UNTRACKED = enum.auto()
     DEFAULT = LIST
 
 
@@ -79,9 +80,9 @@ class Option(enum.Enum):
     DIFF = enum.auto()
     FORCE = enum.auto()
     NO = enum.auto()
-    YES = enum.auto()
     TOGGLE = enum.auto()
     VERBOSE = enum.auto()
+    YES = enum.auto()
 
 
 ACTIONS = {
@@ -89,6 +90,7 @@ ACTIONS = {
     "e": Action.EDIT,
     "h": Action.HELP,
     "i": Action.INIT,
+    "p": Action.PURGE,
     "r": Action.RUN,
     "s": Action.SAVE,
     "u": Action.UNTRACKED,
@@ -105,16 +107,18 @@ SHORTCUTS = {
     "save": Flag([Action.SAVE], [Option.YES, Option.VERBOSE]),
     "restore": Flag([Action.BACKUP], [Option.YES, Option.VERBOSE]),
     "saveall": Flag([Action.SAVE], [Option.YES, Option.VERBOSE, Option.TOGGLE]),
-    "restoreall": Flag([Action.BACKUP], [Option.YES, Option.VERBOSE, Option.TOGGLE, Option.FORCE]),
+    "restoreall": Flag([Action.BACKUP], [Option.YES, Option.VERBOSE, Option.TOGGLE]),
     "untracked": Flag([Action.UNTRACKED], []),
     "init": Flag([Action.INIT], [Option.YES]),
-    "purge": Flag([Action.INIT], [Option.YES, Option.TOGGLE]),
+    "deinit": Flag([Action.INIT], [Option.YES, Option.TOGGLE]),
+    "purge": Flag([Action.PURGE], [Option.YES]),
     "run": Flag([Action.RUN], [Option.YES]),
     "edit": Flag([Action.EDIT], []),
     "help": Flag([Action.HELP], []),
 }
 SHORTCUTS |= {"sa": SHORTCUTS["save"]}
 SHORTCUTS |= {"re": SHORTCUTS["restore"]}
+SHORTCUTS |= {"un": SHORTCUTS["untracked"]}
 
 
 # OUTPUT UTILITIES
@@ -342,14 +346,15 @@ def help(flags):
 \x1b[1mUsage: ./autosaver\x1b[m [flag] [shortcut] [--] [...]
 
 \x1b[1;4mAction flags:\x1b[m
-  \x1b[1m- \x1b[m                    list all tracked files, which are to be copied backup
-  \x1b[1m-b\x1b[m                    list all tracked files, and for each one allows to restore from backup
-  \x1b[1m-s\x1b[m                    list all tracked files, and for each one allows to save to backup
-  \x1b[1m-u\x1b[m                    list all untracked files, and can allows to delete them
-  \x1b[1m-e\x1b[m                    allows to edit files
-  \x1b[1m-i\x1b[m                    creates necessary directories and files
-  \x1b[1m-r\x1b[m                    runs init scripts
-  \x1b[1m-h\x1b[m                    show this help message
+  \x1b[1m-       [d yntv]\x1b[m      list all tracked files, which are to be copied backup
+  \x1b[1m-b      [dfyntv]\x1b[m      list all tracked files, and for each one allows to restore from backup
+  \x1b[1m-s      [d yntv]\x1b[m      list all tracked files, and for each one allows to save to backup
+  \x1b[1m-u      [ fynt ]\x1b[m      list all untracked files, and can allows to delete them
+  \x1b[1m-p      [ fyn  ]\x1b[m      list all file to purge, and for each allow to purge them
+  \x1b[1m-e      [  yn  ]\x1b[m      allows to edit files
+  \x1b[1m-i      [    t ]\x1b[m      creates necessary directories and files
+  \x1b[1m-r      [  yn  ]\x1b[m      runs init scripts
+  \x1b[1m-h      [      ]\x1b[m      show this help message
 
 \x1b[1;4mOption flags:\x1b[m
   \x1b[1m-d\x1b[m                    show diffs
@@ -364,9 +369,10 @@ def help(flags):
   \x1b[1msaveall         \x1b[m      save all files to backup (even the `notdiff` ones)
   \x1b[1mrestore       re\x1b[m      restore all files from backup
   \x1b[1mrestoreall      \x1b[m      restore all files from backup (even the `notdiff` ones)
-  \x1b[1muntracked       \x1b[m      list untracked files
+  \x1b[1muntracked     un\x1b[m      list untracked files
+  \x1b[1mpurge           \x1b[m      purge all files specified in delete config
   \x1b[1minit            \x1b[m      initialize needed directories and config files
-  \x1b[1mpurge           \x1b[m      delete all config file and directories managed by the script
+  \x1b[1mdeinit          \x1b[m      deinitialize needed directories and config files
   \x1b[1medit            \x1b[m      allow to edit all files
   \x1b[1mrun             \x1b[m      run all init scripts
   \x1b[1mhelp            \x1b[m      show this help message
@@ -462,7 +468,6 @@ def backup(flags):
     opt_verbose = flags.has_option(Option.VERBOSE)
     tracked = load_config_files(FILES["track"])
     notdiff = load_config_files(FILES["notdiff"])
-    delete = sorted(load_config_basic(FILES["delete"]))
     all = sorted(tracked | notdiff)
 
     def fout(file, stat=None):
@@ -471,15 +476,6 @@ def backup(flags):
             print(msg_file + " : " + stat)
         else:
             print(msg_file)
-
-    if opt_toggle:
-        for file in delete:
-            ofile = os.path.join(odir, file)
-            if exist(ofile):
-                fout(ofile, "path is present")
-                if act_backup and opt_force: 
-                    if ask_user(color("msg", "[DANGER] Do you really want to purge path? "), flags):
-                        purge_path(ofile, True)
 
     for file in all:
         try:
@@ -555,7 +551,7 @@ def untracked(flags):
         try:
             ofile = os.path.join(HOME, file)
             bfile = os.path.join(DIRS["backup"], file)
-            print(color("file", ofile))
+            color("file", ofile, True)
             if opt_toggle:
                 if ask_user(bmsg, flags):
                     delete_file(bfile)
@@ -564,6 +560,20 @@ def untracked(flags):
                         delete_file(ofile)
         except Exception:
             warn_msg("operation failed!", True)
+
+
+def purge(flags):
+    opt_force = flags.has_option(Option.FORCE)
+    delete = sorted(load_config_basic(FILES["delete"]))
+
+    for file in delete:
+        ofile = os.path.join(HOME, file)
+        if exist(ofile):
+            color("file", ofile, True)
+            if opt_force: 
+                if ask_user(color("msg", "[DANGER] Do you really want to purge path? "), flags):
+                    purge_path(ofile, True)
+
 
 
 # ACTION UTILITIES
@@ -630,6 +640,8 @@ def execute(flags):
             run(flags)
         case Action.UNTRACKED:
             untracked(flags)
+        case Action.PURGE:
+            purge(flags)
 
 
 # EXECUTION
