@@ -12,7 +12,7 @@ sudo -v &&
     TMP_DIR="$(mktemp -d)" &&
     wget -O "$TMP_DIR/dotfiles.zip" https://github.com/daniele47/dotfiles/archive/refs/heads/kiniote.zip &&
     unzip -d "$TMP_DIR" "$TMP_DIR/dotfiles.zip" &&
-    "${TMP_DIR}/dotfiles-kiniote/autosaver" run -- restoreall -f &&
+    "${TMP_DIR}/dotfiles-kiniote/autosaver" run -- purge -f -- restoreall -f &&
     for i in {15..1}; do echo -en "\r\e[Krebooting in $i seconds... ctrl+c to skip"; sleep 1; done &&
     tuned-adm profile powersave &&
     reboot || 
