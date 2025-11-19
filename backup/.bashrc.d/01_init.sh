@@ -35,7 +35,7 @@ if command -v zoxide &>/dev/null; then
         fi
     }
 elif [[ ! -f /run/.toolboxenv ]]; then
-    function bz() {
+    function z() {
         cd "$(toolbox run zoxide query "$@")"
     }
 fi
