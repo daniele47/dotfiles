@@ -25,9 +25,7 @@ fi
 if command -v zoxide &>/dev/null; then
     eval "$(zoxide init bash)"
     function zz() {
-        if (cd "$@" &>/dev/null); then 
-            cd "$@" &>/dev/null
-        else
+        if ! cd "$@" &>/dev/null; then
             case "$(zoxide query -l "$@" | wc -l)" in
                 0|1) __zoxide_z "$@" &>/dev/null || return 1 ;;
                 *) __zoxide_zi "$@" &>/dev/null || return 1 ;;
@@ -36,13 +34,15 @@ if command -v zoxide &>/dev/null; then
     }
 elif [[ ! -f /run/.toolboxenv ]]; then
     function z() {
-        cd "$(toolbox run zoxide query "$@")"
+        if ! cd "$@" &>/dev/null; then
+            cd "$(toolbox run zoxide query "$@")"
+        fi
     }
 fi
 
 if command -v xdg-open &>/dev/null; then
     function __universal_opener__(){
-        if [[ -f /run/.toolboxenv ]]; then 
+        if [[ -f /run/.toolboxenv ]]; then
             if [[ -e "$@" ]]; then
                 tmp_arg="$(realpath -- "$@")"
                 if [[ "$tmp_arg" == "/home/$USER"* || "$tmp_arg" == "/var/home/$USER"* || "$tmp_arg" == "/tmp"* ]]; then
@@ -99,7 +99,9 @@ fi
 if command -v toolbox &>/dev/null; then
     if [[ ! -f /run/.toolboxenv ]]; then
         alias be='toolbox enter'
-        alias br='toolbox run'
+        function br() {
+            toolbox run bash -ilc -- "$*"
+        }
         complete -F _command br
     fi
 fi

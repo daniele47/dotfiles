@@ -5,6 +5,7 @@ if command -v nvim &>/dev/null; then
 elif command -v vi &>/dev/null; then
     export EDITOR="vi"
 fi
+export EXINIT="set noswapfile"
 export PYTHONDONTWRITEBYTECODE="true"
 export PYTHON_HISTORY="$HOME/.local/state/.python_history"
 export NODE_REPL_HISTORY="$HOME/.local/state/.node_history"
