@@ -1,8 +1,6 @@
-local function is_toolbox()
-    return vim.fn.filereadable('/run/.toolboxenv') == 1 and vim.fn.filereadable('/run/.containerenv') == 1
+if vim.fn.filereadable('/run/.toolboxenv') == 0 or vim.fn.filereadable('/run/.containerenv') == 0 then
+    return
 end
 
-if is_toolbox() then
-   vim.g.netrw_browsex_viewer = "TODO" 
-   vim.ui.open = function() vim.notify("TODO", 4) end
-end
+vim.g.netrw_browsex_viewer = "systemd-run --user --wait --quiet xdg-open"
+vim.ui.open = function(url) os.execute(vim.g.netrw_browsex_viewer .. url) end
