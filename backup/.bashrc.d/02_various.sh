@@ -21,4 +21,5 @@ unset command_not_found_handle
 if [[ $- == *i* ]]; then
     for i in - {0..9}; do bind -r "\e$i"; done
     bind -x '"\C-l": clear'
+    bind -x '"\C-r":'
 fi
