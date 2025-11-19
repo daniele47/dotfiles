@@ -91,3 +91,11 @@ else
         ( nohup "$@" &>/dev/null & : )
     }
 fi
+
+if command -v toolbox &>/dev/null; then
+    if [[ ! -f /run/.toolboxenv ]]; then
+        alias be='toolbox enter'
+        alias br='toolbox run'
+        complete -F _command br
+    fi
+fi
