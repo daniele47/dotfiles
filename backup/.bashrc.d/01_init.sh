@@ -34,6 +34,10 @@ if command -v zoxide &>/dev/null; then
             esac
         fi
     }
+elif [[ ! -f /run/.toolboxenv ]]; then
+    function bz() {
+        cd "$(toolbox run zoxide query "$@")"
+    }
 fi
 
 if command -v xdg-open &>/dev/null; then
