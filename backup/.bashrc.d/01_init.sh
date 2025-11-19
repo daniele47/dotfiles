@@ -44,7 +44,7 @@ if command -v xdg-open &>/dev/null; then
     function __universal_opener__(){
         if [[ -f /run/.toolboxenv ]]; then
             if [[ -e "$@" ]]; then
-                tmp_arg="$(realpath -- "$@")"
+                local -r tmp_arg="$(realpath -- "$@")"
                 if [[ "$tmp_arg" == "/home/$USER"* || "$tmp_arg" == "/var/home/$USER"* || "$tmp_arg" == "/tmp"* ]]; then
                     systemd-run --user --wait --quiet xdg-open "$tmp_arg" 
                     return 0
