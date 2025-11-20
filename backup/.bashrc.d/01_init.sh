@@ -19,7 +19,7 @@ if command -v lsd &>/dev/null; then
     }
     alias ls='lsd --group-dirs first'
 else
-    alias ls='ls --color=always --group-directories-first --sort=extension'
+    alias ls='ls -h --color=always --group-directories-first --sort=extension'
 fi
 
 if command -v zoxide &>/dev/null; then
