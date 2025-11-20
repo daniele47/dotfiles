@@ -3,9 +3,6 @@
 # cli tools used in bash init config
 sudo dnf -y install zoxide bat lsd tmux neovim
 
-# patch gui issues
-sudo dnf -y install ksshaskpass kde-runtime plasma-workspace
-
 # nice to have
 sudo dnf -y install htop trash entr jq vidir yt-dlp
 
