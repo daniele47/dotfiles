@@ -111,10 +111,12 @@ function __cleanup_prompt__() {
     *) symbol="${red}❯ " ;;
     esac
     ###############################################
-    local toolbox=""
-    [[ -f /run/.toolboxenv ]] && toolbox="${red}[toolbox] "
+    local container=""
+    if [[ -f /run/.toolboxenv ]]; then
+        container="${red}[toolbox] "
+    fi
     ###############################################
-    PS1="${wipe}${toolbox}${workdir}${pyvenv}${gitbranch}${gitstate}${gitstatus}${status}${symbol}${wipe}"
+    PS1="${wipe}${container}${workdir}${pyvenv}${gitbranch}${gitstate}${gitstatus}${status}${symbol}${wipe}"
 
     # exit with correct status code
     return "${retval}"

@@ -70,32 +70,6 @@ if command -v xdg-open &>/dev/null; then
     complete -f open
 fi
 
-if command -v tmux &>/dev/null; then
-    function run() {
-        local -r session_name=bg
-        local first_word=""
-        read -r first_word _ <<< "$*"
-        if [[ "$#" -gt 0 ]]; then
-            if ! tmux -L "$session_name" has-session -t "$session_name" 2>/dev/null; then
-                tmux -L "$session_name" new-session -ds "$session_name" -n "$first_word" "$@"
-            else
-                tmux -L "$session_name" new-window -dt "$session_name" -n "$first_word" "$@"
-            fi
-        fi
-    }
-    function arun() {
-        local -r session_name=bg
-        run "$@"
-        tmux -L "$session_name" attach-session -t "$session_name"
-    }
-    complete -F _command run
-    complete -F _command arun
-else
-    function run() {
-        ( nohup "$@" &>/dev/null & : )
-    }
-fi
-
 if command -v toolbox &>/dev/null; then
     if [[ ! -f /run/.toolboxenv ]]; then
         alias be='toolbox enter'
@@ -103,5 +77,7 @@ if command -v toolbox &>/dev/null; then
             toolbox run bash -ilc -- "$*"
         }
         complete -F _command br
+        alias nvim='toolbox run nvim'
+        alias tmux='toolbox run tmux'
     fi
 fi

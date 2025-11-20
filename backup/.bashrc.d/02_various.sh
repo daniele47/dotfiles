@@ -1,8 +1,8 @@
 #!/bin/bash
 
-if command -v nvim &>/dev/null; then
+if command -v /bin/nvim &>/dev/null; then
     export EDITOR="nvim"
-elif command -v vi &>/dev/null; then
+elif command -v /bin/vi &>/dev/null; then
     export EDITOR="vi"
 fi
 export EXINIT="set noswapfile"
@@ -16,6 +16,10 @@ export CARGO_HOME="$HOME/.local/share/cargo"
 alias la='ls -A'
 alias ll='ls -l'
 alias lla='ls -lA'
+
+function run() {
+    ( nohup "$@" &>/dev/null & : )
+}
 
 unset command_not_found_handle
 if [[ $- == *i* ]]; then
