@@ -2,6 +2,7 @@
 ShowCopyMoveMenu=true
 
 [General]
+RememberDisplaySettings=false
 RememberOpenedTabs=false
 
 [MainWindow]
