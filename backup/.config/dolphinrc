@@ -1,5 +1,7 @@
 [ContextMenu]
-ShowCopyMoveMenu=true
+ShowDuplicateHere=false
+ShowOpenInSplitView=false
+ShowViewMode=false
 
 [General]
 RememberDisplaySettings=false
@@ -9,7 +11,4 @@ RememberOpenedTabs=false
 MenuBar=Disabled
 
 [PreviewSettings]
-Plugins=audiothumbnail,blenderthumbnail,comicbookthumbnail,cursorthumbnail,djvuthumbnail,ebookthumbnail,exrthumbnail,directorythumbnail,fontthumbnail,imagethumbnail,jpegthumbnail,kraorathumbnail,windowsexethumbnail,windowsimagethumbnail,gsf-office,mobithumbnail,opendocumentthumbnail,gsthumbnail,rawthumbnail,svgthumbnail,ffmpegthumbs
-
-[VersionControl]
-enabledPlugins=Git
+Plugins=audiothumbnail,blenderthumbnail,comicbookthumbnail,cursorthumbnail,djvuthumbnail,ebookthumbnail,exrthumbnail,directorythumbnail,fontthumbnail,imagethumbnail,jpegthumbnail,kraorathumbnail,windowsexethumbnail,windowsimagethumbnail,mobithumbnail,opendocumentthumbnail,gsthumbnail,rawthumbnail,svgthumbnail,ffmpegthumbs
