@@ -13,5 +13,4 @@ sudo flatpak remote-delete fedora-testing || true
 sudo flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
 
 # install necessary flatpaks
-flatpak install -y org.kde.okular org.kde.haruna org.kde.gwenview com.protonvpn.www org.libreoffice.LibreOffice org.mozilla.firefox
-
+flatpak install -y org.kde.okular org.kde.haruna org.kde.gwenview com.protonvpn.www org.libreoffice.LibreOffice org.mozilla.firefox com.github.wwmm.easyeffects
