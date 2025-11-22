@@ -1,6 +1,7 @@
 [Desktop Entry]
 Type=Application
-Name=com.github.wwmm.easyeffects
-X-XDP-Autostart=com.github.wwmm.easyeffects
+Name=Easy Effects
 Exec=flatpak run --command=easyeffects com.github.wwmm.easyeffects --service-mode --hide-window
+Icon=com.github.wwmm.easyeffects
+X-XDP-Autostart=com.github.wwmm.easyeffects
 X-Flatpak=com.github.wwmm.easyeffects

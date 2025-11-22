@@ -1,11 +1,7 @@
 [Desktop Entry]
-Categories=Network;
-Comment=Proton VPN GUI client
-Exec=/usr/bin/flatpak run --branch=stable --command=protonvpn-app --file-forwarding com.protonvpn.www @@u %u @@
-Icon=com.protonvpn.www
-Name=Proton VPN
-StartupWMClass=protonvpn-app
-Terminal=false
 Type=Application
-X-Desktop-File-Install-Version=0.28
+Name=Proton VPN
+Exec=flatpak run --command=protonvpn-app com.protonvpn.www --start-minimized
+Icon=com.protonvpn.www
+X-XDP-Autostart=com.protonvpn.www
 X-Flatpak=com.protonvpn.www
