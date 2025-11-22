@@ -18,6 +18,7 @@
 
 // apps config files
 .config/autostart/com.protonvpn.www.desktop
+.config/autostart/com.github.wwmm.easyeffects.desktop
 .config/dolphinrc
 .config/htop/htoprc
 .config/kdeconnect/config
