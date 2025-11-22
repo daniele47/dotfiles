@@ -6,5 +6,5 @@
         "JP"
     ],
     "connect_at_app_startup": "FASTEST",
-    "start_app_minimized": true
+    "start_app_minimized": false
 }
