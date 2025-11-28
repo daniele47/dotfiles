@@ -1,0 +1,5 @@
+[Favorites-org.kde.plasma.kickoff.favorites.instance-29-80410a2c-9133-40ef-b06f-b228184626d6]
+ordering=preferred://browser,applications:systemsettings.desktop,applications:org.kde.dolphin.desktop,applications:org.kde.kwrite.desktop,applications:org.kde.konsole.desktop,applications:org.kde.gwenview.desktop,applications:org.kde.haruna.desktop,applications:htop.desktop,applications:libreoffice-writer.desktop,applications:libreoffice-calc.desktop,applications:org.kde.okular.desktop,applications:org.kde.plasma-systemmonitor.desktop
+
+[Favorites-org.kde.plasma.kickoff.favorites.instance-29-global]
+ordering=preferred://browser,applications:systemsettings.desktop,applications:org.kde.dolphin.desktop,applications:org.kde.kwrite.desktop,applications:org.kde.konsole.desktop,applications:org.kde.gwenview.desktop,applications:org.kde.haruna.desktop,applications:htop.desktop,applications:libreoffice-writer.desktop,applications:libreoffice-calc.desktop,applications:org.kde.okular.desktop,applications:org.kde.plasma-systemmonitor.desktop

@@ -1,0 +1,15 @@
+[user]
+    useConfigOnly = true
+    name = -
+    email = -
+[init]
+    defaultBranch = main
+[pager]
+    diff = false
+[alias]
+    lo = !git --no-pager log --oneline --graph -20
+    st = status -s
+    mi = merge --no-commit --no-ff
+    nuke = "!git reset --hard -q && git clean -fdq"
+[credential]
+	helper = store

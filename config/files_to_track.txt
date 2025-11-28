@@ -1,0 +1,6 @@
+// vim:commentstring=//\ %s
+
+.bashrc.d
+.config/git/config
+.config/tmux
+.config/nvim

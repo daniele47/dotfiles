@@ -1,0 +1,46 @@
+// vim:commentstring=//\ %s
+
+// mozilla files
+.var/app/org.mozilla.firefox/.mozilla/firefox/profiles.ini
+.var/app/org.mozilla.firefox/.mozilla/firefox/installs.ini
+.var/app/org.mozilla.firefox/.mozilla/firefox/kvgujw0x.customized/search.json.mozlz4
+.var/app/org.mozilla.firefox/.mozilla/firefox/kvgujw0x.customized/prefs.js
+.var/app/org.mozilla.firefox/.mozilla/firefox/kvgujw0x.customized/places.sqlite
+.var/app/org.mozilla.firefox/.mozilla/firefox/kvgujw0x.customized/extension-settings.json
+
+// apps config files
+.config/dolphinrc
+.config/htop/htoprc
+.config/kdeconnect/config
+.config/konsolerc
+.config/krunnerrc
+.config/ktrashrc
+.local/share/konsole/NerdProfileNoLigatures.profile
+.local/share/konsole/NerdProfile.profile
+.local/share/kxmlgui5/konsole
+.local/state/konsolestaterc
+.var/app/org.kde.haruna/config/haruna
+.var/app/org.kde.okular/config/okularpartrc
+.local/share/flatpak/overrides/org.kde.haruna
+
+// plasma config files
+.config/baloofilerc
+.config/bluedevilglobalrc
+.config/kactivitymanagerdrc
+.config/kactivitymanagerd-statsrc
+.config/kcminputrc
+.config/kded5rc
+.config/kdedefaults
+.config/kdeglobals
+.config/kglobalshortcutsrc
+.config/kscreenlockerrc
+.config/kwinrc
+.config/kxkbrc
+.config/plasma-localerc
+.config/plasma-org.kde.plasma.desktop-appletsrc
+.config/plasmaparc
+.config/plasmarc
+.config/plasmashellrc
+.config/powerdevilrc
+.config/systemsettingsrc
+.config/Trolltech.conf

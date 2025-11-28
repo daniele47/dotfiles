@@ -1,0 +1,2 @@
+[General]
+disabled_providers=LanLinkProvider, BluetoothLinkProvider
