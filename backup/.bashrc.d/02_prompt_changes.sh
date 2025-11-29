@@ -118,7 +118,7 @@ function __cleanup_prompt__() {
     fi
     ###############################################
     local status=
-    [[ "$retval" -ne 0 ]] && status="${red}❌${retval} "
+    [[ "$retval" -ne 0 ]] && status="${red}X ${retval} "
     ###############################################
     local symbol=""
     case "$retval" in
