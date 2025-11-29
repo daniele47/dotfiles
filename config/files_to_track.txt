@@ -1,0 +1,4 @@
+.bash_aliases
+.config/tmux
+.config/nvim
+.gitconfig
