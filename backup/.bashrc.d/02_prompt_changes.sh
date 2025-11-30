@@ -117,16 +117,13 @@ function __cleanup_prompt__() {
         [[ -n "$allstat" ]] && local -r gitstatus="${red}[${allstat}] "
     fi
     ###############################################
-    local status=
-    [[ "$retval" -ne 0 ]] && status="${red}X ${retval} "
-    ###############################################
     local symbol=""
     case "$retval" in
     0) symbol="${lgreen}❯ " ;;
     *) symbol="${red}❯ " ;;
     esac
     ###############################################
-    PS1="${wipe}${toolbox}${workdir}${gitbranch}${gitstate}${gitstatus}${status}${symbol}${wipe}"
+    PS1="${wipe}${toolbox}${workdir}${gitbranch}${gitstate}${gitstatus}${symbol}${wipe}"
 
     # exit with correct status code
     return "${retval}"
