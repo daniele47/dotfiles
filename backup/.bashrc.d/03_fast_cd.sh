@@ -91,8 +91,12 @@ function __fast_cd_utils__(){
             return $?
             ;;
         edit) 
-            "$EDITOR" "$DB_PATH"
-            "$FUNCNAME" check
+            "${EDITOR:-nano}" "$DB_PATH"
+            if ! "$FUNCNAME" check; then
+                echo -ne '\e[1;33mProblems were found. Do you want to continue editing? \e[m'
+                read -r answer
+                [[ "${answer,,}" == "y" ]] && "$FUNCNAME" edit
+            fi
             ;;
         list) 
             local line=""
