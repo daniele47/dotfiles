@@ -58,6 +58,12 @@ function __fast_cd_utils__(){
             ;;
         check)
             awk '{
+                # Check if line is just root path with redundant slashes
+                if ($0 ~ /^\/+\s*$/) {
+                    print "(" NR ") root path is not allowed: \x1b[3;34m" $0 "\x1b[0m"
+                    error = 1
+                    next
+                }
                 # Check if line is valid path
                 if (!($0 ~ /^\//) || system("[ -d \"" $0 "\" ]") != 0) {
                     print "(" NR ") invalid path: \x1b[3;34m" $0 "\x1b[0m"
