@@ -61,6 +61,7 @@ function __fast_cd_utils__(){
                 # Check if line is valid path
                 if (!($0 ~ /^\//) || system("[ -d \"" $0 "\" ]") != 0) {
                     print "(" NR ") invalid path: \x1b[3;34m" $0 "\x1b[0m"
+                    error = 1
                     next  # Skip duplicate checks for invalid lines
                 }
                 # Normalize path for full path duplicates
@@ -69,6 +70,7 @@ function __fast_cd_utils__(){
                     close(cmd)
                     if (seen_full[normalized]++) {
                         print "(" NR ") duplicated full path: \x1b[3;34m" $0 "\x1b[0m"
+                        error = 1
                         next  # Skip basename check if already reported as full path duplicate
                     }
                 }
@@ -80,8 +82,13 @@ function __fast_cd_utils__(){
                 if (path == "/") basename = "/"
                 if (seen_basename[basename]++) {
                     print "(" NR ") duplicated basename: \x1b[3;34m" $0 "\x1b[0m"
+                    error = 1
                 }
-            }' "$DB_PATH"
+            }
+            END {
+                exit error  # Return 1 if any error was found, 0 if clean
+            } ' "$DB_PATH"
+            return $?
             ;;
         edit) 
             "$EDITOR" "$DB_PATH"
