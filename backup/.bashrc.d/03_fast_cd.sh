@@ -79,6 +79,18 @@ function __fast_cd_utils__(){
             }' "$DB_PATH"
             ;;
         edit) "$EDITOR" "$DB_PATH" ;;
+        list) 
+            local line=""
+            local bname=""
+            while IFS= read -r line; do
+                if [[ "$line" == /* && -d "$line" ]]; then
+                    bname="${line%%+(/)}"
+                    bname="${bname##*/}"
+                    echo -n "$bname "
+                fi
+            done < "$DB_PATH" 
+            echo
+            ;;
         *) ;;
     esac
     return 0
@@ -88,3 +100,4 @@ alias z='__fast_cd_utils__ get'
 alias za='__fast_cd_utils__ add'
 alias zc='__fast_cd_utils__ check'
 alias ze='__fast_cd_utils__ edit'
+complete -o plusdirs -W "$(__fast_cd_utils__ list)" z
