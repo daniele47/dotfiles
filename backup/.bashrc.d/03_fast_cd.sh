@@ -57,28 +57,36 @@ function __fast_cd_utils__(){
             done
             ;;
         check)
-            # check for invalid lines
-            local counter=0
-            local line=""
-            while IFS= read -r line; do
-                ((counter++))
-                if ! [[ "$line" == /* && -d "$line" ]]; then
-                    echo "invalid line ${counter}: $line"
-                fi
-            done < "$DB_PATH" 
-            # check for duplicated lines (idk what is going on. awk magic)
             awk '{
+                # Check if line is valid path
+                if (!($0 ~ /^\//) || system("[ -d \"" $0 "\" ]") != 0) {
+                    print "(" NR ") invalid path: \x1b[3;34m" $0 "\x1b[0m"
+                    next  # Skip duplicate checks for invalid lines
+                }
+                # Normalize path for full path duplicates
                 cmd = "realpath -s -m \"" $0 "\" 2>/dev/null"
                 if ((cmd | getline normalized) > 0) {
                     close(cmd)
-                    if (seen[normalized]) {
-                        print "duplicated line " NR ": " $0
+                    if (seen_full[normalized]++) {
+                        print "(" NR ") duplicated full path: \x1b[3;34m" $0 "\x1b[0m"
+                        next  # Skip basename check if already reported as full path duplicate
                     }
-                    seen[normalized]++
+                }
+                # Get basename for basename duplicates (only if not already reported)
+                path = $0
+                sub(/\/+$/, "", path)
+                split(path, parts, "/")
+                basename = parts[length(parts)]
+                if (path == "/") basename = "/"
+                if (seen_basename[basename]++) {
+                    print "(" NR ") duplicated basename: \x1b[3;34m" $0 "\x1b[0m"
                 }
             }' "$DB_PATH"
             ;;
-        edit) "$EDITOR" "$DB_PATH" ;;
+        edit) 
+            "$EDITOR" "$DB_PATH"
+            "$FUNCNAME" check
+            ;;
         list) 
             local line=""
             local bname=""
