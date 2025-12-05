@@ -56,38 +56,30 @@ function __fast_cd_utils__(){
                 fi
             done
             ;;
-        check)
-            awk '{
-                # Check if line is just root path with redundant slashes
-                if ($0 ~ /^\/+\s*$/) {
-                    next
-                }
-                # Check if line is valid path
-                if (!($0 ~ /^\//) || system("[ -d \"" $0 "\" ]") != 0) {
-                    next  # Skip duplicate checks for invalid lines
-                }
-                # Normalize path for full path duplicates
-                cmd = "realpath -s -m \"" $0 "\" 2>/dev/null"
-                if ((cmd | getline normalized) > 0) {
-                    close(cmd)
-                    if (seen_full[normalized]++) {
-                        next  # Skip basename check if already reported as full path duplicate
-                    }
-                }
-                # Get basename for basename duplicates (only if not already reported)
-                path = $0
-                sub(/\/+$/, "", path)
-                split(path, parts, "/")
-                basename = parts[length(parts)]
-                if (path == "/") basename = "/"
-                if (seen_basename[basename]++) {
-                    next
-                }
-                print normalized
-            }' "$DB_PATH"
+        tidy)
+            declare -A seen_full seen_basename
+            while IFS= read -r line; do
+                # invalid paths
+                [[ "$line" =~ ^/+$ ]] && continue
+                [[ ! "$line" =~ ^/ ]] && continue
+                [[ ! -d "$line" ]] && continue
+                # get normalized path
+                normalized="$(realpath -s -m "$line" 2>/dev/null)"
+                [[ -z "$normalized" ]] && continue
+                # Full path duplicate check
+                [[ -n "${seen_full[$normalized]}" ]] && continue
+                seen_full[$normalized]=1
+                # Basename duplicate check
+                basename="${normalized##*/}"
+                [[ "$normalized" == "/" ]] && basename="/"
+                [[ -n "${seen_basename[$basename]}" ]] && continue
+                seen_basename[$basename]=1
+                # print normalized path
+                echo "$normalized"
+            done < "$DB_PATH"
             ;;
         fix) 
-            OUTPUT="$("$FUNCNAME" check)"
+            OUTPUT="$("$FUNCNAME" tidy)"
             if ! diff -u --color  "$DB_PATH" <(echo "$OUTPUT"); then
                 echo -en "\e[1;33mDo you want to apply fixes? [y/n] \e[m" 
                 read -r answer
