@@ -121,8 +121,18 @@ function __fast_cd_utils__(){
     return 0
 }
 
-alias z='__fast_cd_utils__ get'
-alias za='__fast_cd_utils__ add'
-alias zc='__fast_cd_utils__ check'
-alias ze='__fast_cd_utils__ edit'
+function z(){
+    __fast_cd_utils__ get "$@"
+}
+function za(){
+    __fast_cd_utils__ add "$@"
+    complete -o plusdirs -W "$(__fast_cd_utils__ list)" z
+}
+function zc(){
+    __fast_cd_utils__ check "$@"
+}
+function ze(){
+    __fast_cd_utils__ edit "$@"
+    complete -o plusdirs -W "$(__fast_cd_utils__ list)" z
+}
 complete -o plusdirs -W "$(__fast_cd_utils__ list)" z
