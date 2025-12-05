@@ -60,14 +60,10 @@ function __fast_cd_utils__(){
             awk '{
                 # Check if line is just root path with redundant slashes
                 if ($0 ~ /^\/+\s*$/) {
-                    print "(" NR ") root path is not allowed: \x1b[3;34m" $0 "\x1b[0m"
-                    error = 1
                     next
                 }
                 # Check if line is valid path
                 if (!($0 ~ /^\//) || system("[ -d \"" $0 "\" ]") != 0) {
-                    print "(" NR ") invalid path: \x1b[3;34m" $0 "\x1b[0m"
-                    error = 1
                     next  # Skip duplicate checks for invalid lines
                 }
                 # Normalize path for full path duplicates
@@ -75,8 +71,6 @@ function __fast_cd_utils__(){
                 if ((cmd | getline normalized) > 0) {
                     close(cmd)
                     if (seen_full[normalized]++) {
-                        print "(" NR ") duplicated full path: \x1b[3;34m" $0 "\x1b[0m"
-                        error = 1
                         next  # Skip basename check if already reported as full path duplicate
                     }
                 }
@@ -87,22 +81,22 @@ function __fast_cd_utils__(){
                 basename = parts[length(parts)]
                 if (path == "/") basename = "/"
                 if (seen_basename[basename]++) {
-                    print "(" NR ") duplicated basename: \x1b[3;34m" $0 "\x1b[0m"
-                    error = 1
+                    next
                 }
-            }
-            END {
-                exit error  # Return 1 if any error was found, 0 if clean
-            } ' "$DB_PATH"
-            return $?
+                print normalized
+            }' "$DB_PATH"
+            ;;
+        fix) 
+            OUTPUT="$("$FUNCNAME" check)"
+            if ! diff -u --color  "$DB_PATH" <(echo "$OUTPUT"); then
+                echo -en "\e[1;33mDo you want to apply fixes? [y/n] \e[m" 
+                read -r answer
+                [[ "${answer,,}" == "y" ]] && echo "$OUTPUT" > "$DB_PATH"
+            fi
             ;;
         edit) 
             "${EDITOR:-nano}" "$DB_PATH"
-            if ! "$FUNCNAME" check; then
-                echo -ne '\e[1;33mProblems were found. Do you want to continue editing? \e[m'
-                read -r answer
-                [[ "${answer,,}" == "y" ]] && "$FUNCNAME" edit
-            fi
+            "$FUNCNAME" fix
             ;;
         list) 
             local line=""
@@ -116,6 +110,7 @@ function __fast_cd_utils__(){
             done < "$DB_PATH" 
             echo
             ;;
+        show) cat "$DB_PATH" ;;
         *) ;;
     esac
     return 0
@@ -128,11 +123,14 @@ function za(){
     __fast_cd_utils__ add "$@"
     complete -o plusdirs -W "$(__fast_cd_utils__ list)" z
 }
-function zc(){
-    __fast_cd_utils__ check "$@"
-}
 function ze(){
     __fast_cd_utils__ edit "$@"
     complete -o plusdirs -W "$(__fast_cd_utils__ list)" z
+}
+function zf(){
+    __fast_cd_utils__ fix "$@" 
+}
+function zs(){
+    __fast_cd_utils__ show "$@"
 }
 complete -o plusdirs -W "$(__fast_cd_utils__ list)" z
