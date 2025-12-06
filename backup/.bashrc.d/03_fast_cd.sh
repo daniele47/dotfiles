@@ -56,53 +56,39 @@ function __fast_cd_utils__(){
                 fi
             done
             ;;
-        check)
-            awk '{
-                # Check if line is just root path with redundant slashes
-                if ($0 ~ /^\/+\s*$/) {
-                    print "(" NR ") root path is not allowed: \x1b[3;34m" $0 "\x1b[0m"
-                    error = 1
-                    next
-                }
-                # Check if line is valid path
-                if (!($0 ~ /^\//) || system("[ -d \"" $0 "\" ]") != 0) {
-                    print "(" NR ") invalid path: \x1b[3;34m" $0 "\x1b[0m"
-                    error = 1
-                    next  # Skip duplicate checks for invalid lines
-                }
-                # Normalize path for full path duplicates
-                cmd = "realpath -s -m \"" $0 "\" 2>/dev/null"
-                if ((cmd | getline normalized) > 0) {
-                    close(cmd)
-                    if (seen_full[normalized]++) {
-                        print "(" NR ") duplicated full path: \x1b[3;34m" $0 "\x1b[0m"
-                        error = 1
-                        next  # Skip basename check if already reported as full path duplicate
-                    }
-                }
-                # Get basename for basename duplicates (only if not already reported)
-                path = $0
-                sub(/\/+$/, "", path)
-                split(path, parts, "/")
-                basename = parts[length(parts)]
-                if (path == "/") basename = "/"
-                if (seen_basename[basename]++) {
-                    print "(" NR ") duplicated basename: \x1b[3;34m" $0 "\x1b[0m"
-                    error = 1
-                }
-            }
-            END {
-                exit error  # Return 1 if any error was found, 0 if clean
-            } ' "$DB_PATH"
-            return $?
+        tidy)
+            declare -A seen_full seen_basename
+            while IFS= read -r line; do
+                # invalid paths
+                [[ "$line" =~ ^/+$ ]] && continue
+                [[ ! "$line" =~ ^/ ]] && continue
+                [[ ! -d "$line" ]] && continue
+                # get normalized path
+                normalized="$(realpath -s -m "$line" 2>/dev/null)"
+                [[ -z "$normalized" ]] && continue
+                # Full path duplicate check
+                [[ -n "${seen_full[$normalized]}" ]] && continue
+                seen_full[$normalized]=1
+                # Basename duplicate check
+                basename="${normalized##*/}"
+                [[ "$normalized" == "/" ]] && basename="/"
+                [[ -n "${seen_basename[$basename]}" ]] && continue
+                seen_basename[$basename]=1
+                # print normalized path
+                echo "$normalized"
+            done < "$DB_PATH"
+            ;;
+        fix) 
+            OUTPUT="$("$FUNCNAME" tidy)"
+            if ! diff -u --color  "$DB_PATH" <(echo "$OUTPUT"); then
+                echo -en "\e[1;33mDo you want to apply fixes? [y/n] \e[m" 
+                read -r answer
+                [[ "${answer,,}" == "y" ]] && echo "$OUTPUT" > "$DB_PATH"
+            fi
             ;;
         edit) 
             "${EDITOR:-nano}" "$DB_PATH"
-            if ! "$FUNCNAME" check; then
-                echo -ne '\e[1;33mProblems were found. Do you want to continue editing? \e[m'
-                read -r answer
-                [[ "${answer,,}" == "y" ]] && "$FUNCNAME" edit
-            fi
+            "$FUNCNAME" fix
             ;;
         list) 
             local line=""
@@ -116,13 +102,27 @@ function __fast_cd_utils__(){
             done < "$DB_PATH" 
             echo
             ;;
+        show) cat "$DB_PATH" ;;
         *) ;;
     esac
     return 0
 }
 
-alias z='__fast_cd_utils__ get'
-alias za='__fast_cd_utils__ add'
-alias zc='__fast_cd_utils__ check'
-alias ze='__fast_cd_utils__ edit'
+function z(){
+    __fast_cd_utils__ get "$@"
+}
+function za(){
+    __fast_cd_utils__ add "$@"
+    complete -o plusdirs -W "$(__fast_cd_utils__ list)" z
+}
+function ze(){
+    __fast_cd_utils__ edit "$@"
+    complete -o plusdirs -W "$(__fast_cd_utils__ list)" z
+}
+function zf(){
+    __fast_cd_utils__ fix "$@" 
+}
+function zs(){
+    __fast_cd_utils__ show "$@"
+}
 complete -o plusdirs -W "$(__fast_cd_utils__ list)" z
