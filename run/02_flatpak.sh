@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -e
+set -euo pipefail
 
 # remove everything from flatpak and replace fedora flatpak with flathub
 if flatpak remotes | grep -q fedora; then
