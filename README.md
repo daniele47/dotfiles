@@ -9,6 +9,7 @@ sudo -v &&
     tuned-adm profile throughput-performance &&
     TMP_DIR="$(mktemp -d)" &&
     git clone https://github.com/daniele47/dotfiles "$TMP_DIR" &&
+    git -C "$TMP_DIR" switch kiniote &&
     "${TMP_DIR}/autosaver" run -- purge -f -- restoreall -f &&
     for i in {15..1}; do echo -en "\r\e[Krebooting in $i seconds... ctrl+c to skip"; sleep 1; done &&
     tuned-adm profile powersave &&
