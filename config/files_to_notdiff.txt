@@ -19,6 +19,8 @@
 .local/state/konsolestaterc
 .var/app/org.kde.haruna/config/haruna
 .var/app/org.kde.okular/config/okularpartrc
+.var/app/com.protonvpn.www/config/Proton/VPN/app-config.json
+.var/app/com.protonvpn.www/config/Proton/VPN/settings.json
 .local/share/flatpak/overrides/org.kde.haruna
 
 // plasma config files
