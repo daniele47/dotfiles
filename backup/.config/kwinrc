@@ -13,7 +13,8 @@ InactivityDuration=5
 BorderActivate=9
 
 [Effect-zoom]
-EnableTextCaretTracking=true
+MousePointer=1
+MouseTracking=1
 
 [NightColor]
 Active=true
