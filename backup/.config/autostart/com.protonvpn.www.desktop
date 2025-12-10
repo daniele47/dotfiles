@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=Proton VPN
+Exec=flatpak run --command=protonvpn-app com.protonvpn.www --start-minimized
+Icon=com.protonvpn.www
+X-XDP-Autostart=com.protonvpn.www
+X-Flatpak=com.protonvpn.www

@@ -11,4 +11,4 @@ if flatpak remotes | grep -q fedora; then
 fi
 
 # install necessary flatpaks
-flatpak install -y org.kde.okular org.kde.haruna org.kde.gwenview org.mozilla.firefox
+flatpak install -y org.kde.okular org.kde.haruna org.kde.gwenview org.mozilla.firefox com.protonvpn.www
