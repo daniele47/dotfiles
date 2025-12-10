@@ -37,9 +37,6 @@ function __cleanup_prompt__() {
     local -r green="\[\e[1;36m\]"
     local -r wipe="\[\e[0m\]"
     ###############################################
-    local toolbox=""
-    [[ -f /run/.toolboxenv ]] && toolbox="${red}[toolbox] "
-    ###############################################
     local -r workdir="${green}\w "
     ###############################################
     local branch=""
@@ -123,7 +120,7 @@ function __cleanup_prompt__() {
     *) symbol="${red}❯ " ;;
     esac
     ###############################################
-    PS1="${wipe}${toolbox}${workdir}${gitbranch}${gitstate}${gitstatus}${symbol}${wipe}"
+    PS1="${wipe}${workdir}${gitbranch}${gitstate}${gitstatus}${symbol}${wipe}"
 
     # exit with correct status code
     return "${retval}"
