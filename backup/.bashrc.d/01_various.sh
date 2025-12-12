@@ -30,7 +30,7 @@ function run() {
     ( nohup "$@" &>/dev/null & : )
 }
 function open() {
-    ( nohup xdg-open "$@" &>/dev/null & : )
+    ( for arg in "$@"; do nohup xdg-open "$arg" &>/dev/null & done && : )
 }
 
 unset command_not_found_handle
