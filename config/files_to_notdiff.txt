@@ -36,6 +36,7 @@
 .config/kscreenlockerrc
 .config/kwinrc
 .config/kxkbrc
+.config/networkmanagement.notifyrc
 .config/plasma-localerc
 .config/plasma-org.kde.plasma.desktop-appletsrc
 .config/plasmaparc
