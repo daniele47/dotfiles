@@ -88,7 +88,6 @@ function __fast_cd_utils__(){
             ;;
         edit) 
             "${EDITOR:-nano}" "$DB_PATH"
-            "$FUNCNAME" fix
             ;;
         list) 
             local line=""
@@ -113,16 +112,18 @@ function z(){
 }
 function za(){
     __fast_cd_utils__ add "$@"
+    __fast_cd_utils__ fix
     complete -o plusdirs -W "$(__fast_cd_utils__ list)" z
 }
 function ze(){
-    __fast_cd_utils__ edit "$@"
+    __fast_cd_utils__ edit
+    __fast_cd_utils__ fix
     complete -o plusdirs -W "$(__fast_cd_utils__ list)" z
 }
 function zf(){
-    __fast_cd_utils__ fix "$@" 
+    __fast_cd_utils__ fix
 }
 function zs(){
-    __fast_cd_utils__ show "$@"
+    __fast_cd_utils__ show
 }
 complete -o plusdirs -W "$(__fast_cd_utils__ list)" z
