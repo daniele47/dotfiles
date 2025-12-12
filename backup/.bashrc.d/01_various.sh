@@ -32,6 +32,7 @@ function run() {
 function open() {
     ( for arg in "$@"; do nohup xdg-open "$arg" &>/dev/null & done && : )
 }
+complete -c run
 
 unset command_not_found_handle
 if [[ $- == *i* ]]; then
