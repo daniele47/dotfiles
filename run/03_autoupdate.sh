@@ -13,8 +13,7 @@ Type=oneshot
 TimeoutStopSec=30m
 KillMode=mixed
 TimeoutStopFailureMode=kill
-ExecStart=/usr/bin/rpm-ostree upgrade --quiet
-ExecStart=/usr/bin/flatpak update -y --noninteractive' | sudo tee /etc/systemd/system/personal-autoupdate.service >/dev/null
+ExecStart=/usr/bin/sh -c "/usr/bin/rpm-ostree upgrade && /usr/bin/flatpak update -y --noninteractive"' | sudo tee /etc/systemd/system/personal-autoupdate.service >/dev/null
 
 echo '[Unit]
 Description=Automatic update timer
@@ -23,8 +22,7 @@ After=network-online.target
 Wants=network-online.target
 
 [Timer]
-OnBootSec=1h
-OnUnitInactiveSec=1d
+OnCalendar=daily
 Persistent=true
 RandomizedDelaySec=5m
 
