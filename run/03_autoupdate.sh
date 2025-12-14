@@ -10,6 +10,9 @@ Wants=network-online.target
 
 [Service]
 Type=oneshot
+TimeoutStopSec=30m
+KillMode=mixed
+TimeoutStopFailureMode=kill
 ExecStart=/usr/bin/rpm-ostree upgrade --quiet
 ExecStart=/usr/bin/flatpak update -y --noninteractive' | sudo tee /etc/systemd/system/personal-autoupdate.service >/dev/null
 
