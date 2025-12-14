@@ -6,8 +6,9 @@ FreeFloating=true
 baloosearchEnabled=true
 browserhistoryEnabled=false
 browsertabsEnabled=false
-krunner_appstreamEnabled=true
+krunner_appstreamEnabled=false
 krunner_keysEnabled=false
+krunner_webshortcutsEnabled=true
 
 [Plugins][Favorites]
 plugins=krunner_sessions,krunner_powerdevil,krunner_services,krunner_systemsettings
