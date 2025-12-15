@@ -34,13 +34,12 @@ function open() {
 }
 complete -c run
 
-function upgrade-shutdown(){
+function upgrade(){
     sudo sh -c '
         rpm-ostree update
         flatpak update -y
     '
     distrobox upgrade --all
-    systemctl poweroff
 }
 
 unset command_not_found_handle
