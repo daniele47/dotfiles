@@ -34,6 +34,15 @@ function open() {
 }
 complete -c run
 
+function upgrade-shutdown(){
+    sudo sh -c '
+        rpm-ostree update
+        flatpak update -y
+    '
+    distrobox upgrade --all
+    systemctl poweroff
+}
+
 unset command_not_found_handle
 if [[ $- == *i* ]]; then
     for i in - {0..9}; do bind -r "\e$i"; done
