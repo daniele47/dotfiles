@@ -3,3 +3,4 @@
 .mozilla
 .var
 .bash_logout
+.bash_profile
