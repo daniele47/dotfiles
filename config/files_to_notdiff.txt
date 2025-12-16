@@ -22,6 +22,7 @@
 .var/app/org.kde.okular/config/okularpartrc
 .var/app/com.protonvpn.www/config/Proton/VPN
 .config/autostart/com.protonvpn.www.desktop
+.local/share/flatpak/overrides/com.protonvpn.www
 
 // plasma config files
 .config/baloofilerc
