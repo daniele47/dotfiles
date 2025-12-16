@@ -30,7 +30,7 @@ function upgrade-check(){
             if [[ -z "$last_update" ]]; then
                 echo "EMPTY"
             else
-                local -r diff="$("$FUNCNAME" diff)"
+                local -r diff="$(( current_time - last_update ))"
                 local -r secs="$(( diff % 60 ))"
                 local -r minutes="$(( (diff / 60) % 60 ))"
                 local -r hours="$(( (diff / 3600) % 24 ))"
@@ -42,12 +42,11 @@ function upgrade-check(){
             fi
             ;;
         updated) date +%s > "$last_update_path" ;;
-        diff) echo "$(( current_time - last_update ))" ;;
         warn)
             if [[ -z "$last_update" ]]; then
                 echo -e "\e[1;33mLatest upgrade unknown. Run upgrade...\e[m"
             else
-                local -r diff="$("$FUNCNAME" diff)"
+                local -r diff="$(( current_time - last_update ))"
                 local -r days=3
                 if (( diff > days*24*60*60 )); then
                     echo -e "\e[1;33mMore then $days have passed since latest upgrade. run upgrade...\e[m"
