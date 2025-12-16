@@ -1,2 +1,4 @@
+// vim:commentstring=//\ %s
+
 .mozilla
 .var
