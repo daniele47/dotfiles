@@ -1,12 +1,6 @@
 #!/bin/bash
 
 function upgrade(){
-    sudo sh -c 'rpm-ostree update && flatpak update -y' && 
-        distrobox upgrade --all && 
-        upgrade-check updated
-}
-
-function upgrade-check(){
     local -r last_update_dir="${XDG_STATE_HOME:-$HOME/.local/state}"
     local -r last_update_path="${last_update_dir}/last_update_time"
     local -r current_time="$(date +%s)"
@@ -27,7 +21,11 @@ function upgrade-check(){
     # actual execution
     [[ "$#" -ge 2 ]] && echo -e '\e[1;31monly a single parameter is allowed\e[m' && return 1
     case "$1" in 
-        "") 
+        "")
+            sudo sh -c 'rpm-ostree update && flatpak update -y' && 
+                date +%s > "$last_update_path"
+            ;;
+        check) 
             if [[ -z "$last_update" ]]; then
                 echo "EMPTY"
             else
@@ -42,7 +40,6 @@ function upgrade-check(){
                 printf '%ds have passed since the latest time the upgrade\n' $secs
             fi
             ;;
-        updated) date +%s > "$last_update_path" ;;
         warn)
             if [[ -z "$last_update" ]]; then
                 echo -e "\e[1;33mLatest upgrade unknown. Run upgrade...\e[m"
@@ -58,4 +55,4 @@ function upgrade-check(){
     esac
 }
 
-upgrade-check warn
+upgrade warn
