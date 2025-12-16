@@ -3,5 +3,4 @@
 .mozilla
 .var
 .bash_logout
-.bash_profile
 .gtkrc-2.0
