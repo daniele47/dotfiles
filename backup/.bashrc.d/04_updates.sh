@@ -27,17 +27,17 @@ function upgrade(){
             ;;
         check) 
             if [[ -z "$last_update" ]]; then
-                echo "EMPTY"
+                echo "last update time is unknown"
             else
                 local -r diff="$(( current_time - last_update ))"
                 local -r secs="$(( diff % 60 ))"
                 local -r minutes="$(( (diff / 60) % 60 ))"
                 local -r hours="$(( (diff / 3600) % 24 ))"
                 local -r days="$(( diff / 86400 ))"
-                [[ $days -gt 0 ]] && printf '%dd ' $days
-                [[ $hours -gt 0 ]] && printf '%dh ' $hours
-                [[ $minutes -gt 0 ]] && printf '%dm ' $minutes
-                printf '%ds have passed since the latest time the upgrade\n' $secs
+                [[ $days -gt 0 ]] && echo "${days}d "
+                [[ $hours -gt 0 ]] && printf "${hours}h "
+                [[ $minutes -gt 0 ]] && printf "${minutes}m "
+                echo "${secs}s have passed since the latest time the upgrade\n"
             fi
             ;;
         warn)

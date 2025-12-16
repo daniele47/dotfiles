@@ -1,10 +1,7 @@
 #!/bin/bash
 
-if command -v nvim &>/dev/null; then
-    export EDITOR="nvim"
-elif command -v vi &>/dev/null; then
-    export EDITOR="vi"
-fi
+if command -v nvim &>/dev/null; then export EDITOR="nvim"
+elif command -v vi &>/dev/null; then export EDITOR="vi"; fi
 
 export EXINIT="set noswapfile tabstop=4 shiftwidth=4 expandtab"
 export PYTHONDONTWRITEBYTECODE="true"
