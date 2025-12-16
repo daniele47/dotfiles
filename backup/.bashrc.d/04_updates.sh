@@ -7,11 +7,12 @@ function upgrade(){
 }
 
 function upgrade-check(){
-    local -r last_update_path="${XDG_STATE_HOME:-$HOME/.local/state}/last_update_time"
+    local -r last_update_dir="${XDG_STATE_HOME:-$HOME/.local/state}"
+    local -r last_update_path="${last_update_dir}/last_update_time"
     local -r current_time="$(date +%s)"
 
     # create last upgrade file
-    mkdir -p "$(dirname "$last_update_path")"
+    mkdir -p "$last_update_dir"
     touch "$last_update_path"
     
     # clean file, if the content is invalid
@@ -19,9 +20,9 @@ function upgrade-check(){
     if [[ ! -s "$last_update_path" ]]; then
         if [[ ! "$last_update" =~ ^[0-9]+$ ]] || (( last_update <= 0 )) || (( last_update > current_time )); then
             echo > "$last_update_path"
+            last_update=""
         fi
     fi
-    last_update=$(<"$last_update_path")
 
     # actual execution
     [[ "$#" -ge 2 ]] && echo -e '\e[1;31monly a single parameter is allowed\e[m' && return 1
