@@ -34,9 +34,9 @@ function upgrade(){
                 local -r minutes="$(( (diff / 60) % 60 ))"
                 local -r hours="$(( (diff / 3600) % 24 ))"
                 local -r days="$(( diff / 86400 ))"
-                [[ $days -gt 0 ]] && echo "${days}d "
-                [[ $hours -gt 0 ]] && printf "${hours}h "
-                [[ $minutes -gt 0 ]] && printf "${minutes}m "
+                [[ $days -gt 0 ]] && echo -n "${days}d "
+                [[ $hours -gt 0 ]] && echo -n "${hours}h "
+                [[ $minutes -gt 0 ]] && echo -n "${minutes}m "
                 echo "${secs}s have passed since the latest time the upgrade\n"
             fi
             ;;
