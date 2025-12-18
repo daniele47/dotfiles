@@ -148,3 +148,13 @@ PROMPT_COMMAND="__cleanup_prompt__;"${PROMPT_COMMAND}
 
 [[ -f /root/.bash_init ]] && source /root/.bash_init
 true
+
+# launch tmux in interactive shells
+if [ -z "$TMUX" ]; then
+    if tmux has-session 2>/dev/null; then
+        exec tmux attach
+    else
+        exec tmux
+    fi
+fi
+
