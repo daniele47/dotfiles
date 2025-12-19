@@ -11,5 +11,3 @@
     st = status -s
     mi = merge --no-commit --no-ff
     nuke = "!git reset --hard -q && git clean -fdq"
-[credential]
-	helper = store
