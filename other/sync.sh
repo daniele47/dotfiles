@@ -14,15 +14,8 @@ until [[ -n "$SYNC_DIR" ]]; do read -rp "What is sync direction? " SYNC_DIR; don
 
 # sync with rclone remote
 case "$SYNC_DIR" in
-    get|pull) 
-        read -rp "WARNING: Are you sure you want to pull remote '$REMOTE_NAME:/sync' into local '$SCRIPT_DIR'? " answer
-        [[ "${answer,,}" != "y" ]] && exit 0
-        rclone sync "$REMOTE_NAME:/sync" "$SCRIPT_DIR" --progress 
-        ;;
-    put|push) 
-        read -rp "WARNING: Are you sure you want to push local '$SCRIPT_DIR' into remote '$REMOTE_NAME:/sync'? " answer
-        [[ "${answer,,}" != "y" ]] && exit 0
-        rclone sync "$SCRIPT_DIR" "$REMOTE_NAME:/sync" --progress 
-        ;;
+    get|pull) echo "local <--- remote" && rclone sync "$REMOTE_NAME:/sync" "$SCRIPT_DIR" -i ;;
+    put|push) echo "local ---> remote" && rclone sync "$SCRIPT_DIR" "$REMOTE_NAME:/sync" -i ;;
+    tree|show) rclone tree "$REMOTE_NAME:/sync" ;;
     *) echo 'invalid sync direction'; exit 1;;
 esac
