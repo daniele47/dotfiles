@@ -33,6 +33,8 @@ if command -v nvim &>/dev/null; then
     export EDITOR=nvim
 fi
 
+export RCLONE_PROGRESS=1
+
 # prompt
 function __cleanup_prompt__() {
     local -r retval="$?"
