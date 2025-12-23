@@ -47,7 +47,7 @@ function upgrade(){
                 local -r diff="$(( current_time - last_update ))"
                 local -r days=3
                 if (( diff > days*24*60*60 )); then
-                    echo -e "\e[1;33mMore then $days have passed since latest upgrade. run upgrade...\e[m"
+                    echo -e "\e[1;33mMore then $(( diff / (24*60*60) )) have passed since latest upgrade. run upgrade...\e[m"
                 fi
             fi
             ;;
