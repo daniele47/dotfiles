@@ -17,6 +17,20 @@ sudo -v &&
     echo -e "\e[1;31mfailed to download and run init scripts\e[m"
 ```
 
+## install rpm-fusion repos and codecs
+```bash
+rpm-ostree install \
+  https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm \
+  https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
+```
+
+- after it, reboot to apply the new repos
+
+```bash
+```
+
+## enable rpm-ostree automatic updates
+
 ## fix bluetooth stuttering on realtek chips
 
 ```bash
