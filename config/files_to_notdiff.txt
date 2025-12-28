@@ -11,12 +11,9 @@
 // apps config files
 .config/dolphinrc
 .config/haruna
-.config/htop/htoprc
-.config/kdeconnect/config
 .config/konsolerc
 .config/krunnerrc
 .config/okularpartrc
-.local/share/flatpak/overrides/org.kde.haruna
 .local/share/konsole/NerdProfile.profile
 .local/share/kxmlgui5/konsole
 .local/state/konsolestaterc
