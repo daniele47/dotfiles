@@ -16,14 +16,3 @@ sudo -v &&
     reboot || 
     echo -e "\e[1;31mfailed to download and run init scripts\e[m"
 ```
-
-## enable rpm-ostree automatic updates
-
-```bash
-echo '
-[Daemon]
-AutomaticUpdatePolicy=stage
-' | sudo tee /etc/rpm-ostreed.conf
-sudo systemctl restart rpm-ostreed
-sudo systemctl enable --now rpm-ostreed-automatic.timer
-```
