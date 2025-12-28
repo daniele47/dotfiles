@@ -17,23 +17,13 @@ sudo -v &&
     echo -e "\e[1;31mfailed to download and run init scripts\e[m"
 ```
 
-## install rpm-fusion repos and codecs
-```bash
-rpm-ostree install \
-  https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm \
-  https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
-```
-
-- after it, reboot to apply the new repos
-
-```bash
-```
-
 ## enable rpm-ostree automatic updates
 
-## fix bluetooth stuttering on realtek chips
-
 ```bash
-echo -e "options rtw88_core disable_lps_deep=y\noptions rtw88_pci disable_aspm=y" | sudo tee /etc/modprobe.d/rtw88-fix.conf
-sudo systemctl reboot
+echo '
+[Daemon]
+AutomaticUpdatePolicy=stage
+' | sudo tee /etc/rpm-ostreed.conf
+sudo systemctl restart rpm-ostreed
+sudo systemctl enable --now rpm-ostreed-automatic.timer
 ```
