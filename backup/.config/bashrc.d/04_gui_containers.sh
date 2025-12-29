@@ -10,8 +10,8 @@ function box() {
     case "$1" in 
         _create)
             local -r CONTAINER="$(podman run -d \
-                -v "$XDG_RUNTIME_DIR:$XDG_RUNTIME_DIR:ro" \
-                -v "/tmp/.X11-unix:/tmp/.X11-unix:ro" \
+                -v "$XDG_RUNTIME_DIR:$XDG_RUNTIME_DIR:rw" \
+                -v "/tmp/.X11-unix:/tmp/.X11-unix:rw" \
                 --security-opt "label=type:container_runtime_t" \
                 --name "gui-box-$(date +%Y-%m-%d-%H-%M-%S)" \
                 --device /dev/dri \
