@@ -25,10 +25,9 @@ function box() {
         _list_fmt) podman ps -a --filter "label=$label" ;;
         _count) "$FUNCNAME" _list | wc -l ;;
         _assert_not_multiple) [[ "$("$FUNCNAME" _count)" -gt 1 ]] && echo -e "\e[1;31mmultiple container running\e[m" 1>&2; return 1 ;;
-        _get_only) 
-            "$FUNCNAME" _assert_not_multiple
-            if [[ "$("$FUNCNAME" _count)" == 1 ]]; then "$FUNCNAME" _list; fi
-            ;;
+        _assert_not_missing) [[ "$("$FUNCNAME" _count)" -eq 0 ]] && echo -e "\e[1;31mno container running\e[m" 1>&2; return 1 ;;
+        _asser_single) "$FUNCNAME" _assert_not_missing ; "$FUNCNAME" _assert_not_multiple ;;
+        _get_only) "$FUNCNAME" _assert_single ; "$FUNCNAME" _list ;;
         _create_if_missing)
             "$FUNCNAME" _assert_not_multiple
             if [[ "$("$FUNCNAME" _count)" == 0 ]]; then "$FUNCNAME" _create; fi
