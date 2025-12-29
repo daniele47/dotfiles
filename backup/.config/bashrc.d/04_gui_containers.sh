@@ -10,24 +10,15 @@ function box() {
     case "$1" in 
         _create)
             podman run -d \
-                -e "WAYLAND_DISPLAY=$WAYLAND_DISPLAY" \
-                -e "DISPLAY=$DISPLAY" \
-                -e "XAUTHORITY=$XAUTHORITY" \
-                -e "XDG_RUNTIME_DIR=$XDG_RUNTIME_DIR" \
-                -e "PIPEWIRE_SOCKET=$XDG_RUNTIME_DIR/pipewire-0" \
-                -v "$XDG_RUNTIME_DIR/$WAYLAND_DISPLAY:$XDG_RUNTIME_DIR/$WAYLAND_DISPLAY:ro" \
+                -v "$XDG_RUNTIME_DIR:$XDG_RUNTIME_DIR:ro" \
                 -v "/tmp/.X11-unix:/tmp/.X11-unix:ro" \
-                -v "$XAUTHORITY:$XAUTHORITY:ro" \
-                -v "$XDG_RUNTIME_DIR/pulse/native:$XDG_RUNTIME_DIR/pulse/native:ro" \
-                -v "$XDG_RUNTIME_DIR/pipewire-0:$XDG_RUNTIME_DIR/pipewire-0:ro" \
-                -v "$XDG_RUNTIME_DIR/bus:$XDG_RUNTIME_DIR/bus:ro" \
                 --security-opt "label=type:container_runtime_t" \
                 --name "gui-box-$(date +%Y-%m-%d-%H-%M-%S)" \
                 --device /dev/dri \
                 --workdir /root \
                 --label "$label" \
                 --init \
-                archlinux \
+                fedora \
                 sleep infinity
             ;;
         _list) podman ps -aq --filter "label=$label" ;;
@@ -52,14 +43,20 @@ function box() {
         run|"") 
             "$FUNCNAME" _create_if_missing >/dev/null
             podman start "$("$FUNCNAME" _get_only)" >/dev/null
-            podman exec -it "$("$FUNCNAME" _get_only)" bash
+            podman exec -it \
+                -e "WAYLAND_DISPLAY=$WAYLAND_DISPLAY" \
+                -e "DISPLAY=$DISPLAY" \
+                -e "XAUTHORITY=$XAUTHORITY" \
+                -e "XDG_RUNTIME_DIR=$XDG_RUNTIME_DIR" \
+                -e "PIPEWIRE_SOCKET=$XDG_RUNTIME_DIR/pipewire-0" \
+                "$("$FUNCNAME" _get_only)" bash
             ;;
         stop)  
             "$FUNCNAME" _assert_not_multiple
             for container in $("$FUNCNAME" _list); do podman stop "$container"; done >/dev/null
             ;;
         *) echo -e "\e[1;31minvalid args\e[m" 1>&2; return 1 ;;
-    esac
-}
+        esac
+    }
 
 complete -W "rm run stop" box
