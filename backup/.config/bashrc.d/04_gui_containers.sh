@@ -24,14 +24,6 @@ function box() {
         _list) podman ps -aq --filter "label=$label" ;;
         _list_fmt) podman ps -a --filter "label=$label" ;;
         _count) "$FUNCNAME" _list | wc -l ;;
-        _assert_not_multiple) [[ "$("$FUNCNAME" _count)" -gt 1 ]] && echo -e "\e[1;31mmultiple container running\e[m" 1>&2; return 1 ;;
-        _assert_not_missing) [[ "$("$FUNCNAME" _count)" -eq 0 ]] && echo -e "\e[1;31mno container running\e[m" 1>&2; return 1 ;;
-        _asser_single) "$FUNCNAME" _assert_not_missing ; "$FUNCNAME" _assert_not_multiple ;;
-        _get_only) "$FUNCNAME" _assert_single ; "$FUNCNAME" _list ;;
-        _create_if_missing)
-            "$FUNCNAME" _assert_not_multiple
-            if [[ "$("$FUNCNAME" _count)" == 0 ]]; then "$FUNCNAME" _create; fi
-            ;;
         ls) "$FUNCNAME" _list_fmt ;;
         rm) 
             if [[ "$("$FUNCNAME" _count)" -gt 0 ]]; then
@@ -42,20 +34,21 @@ function box() {
             fi
             ;;
         run|"") 
-            "$FUNCNAME" _create_if_missing >/dev/null
-            podman start "$("$FUNCNAME" _get_only)" >/dev/null
+            case "$("$FUNCNAME" _count)" in
+                0) "$FUNCNAME" _create; ;;
+                1) ;;
+                *) echo -e "\e[1;31mmultiple container running\e[m" 1>&2; return 1 ;;
+            esac
+            podman start "$("$FUNCNAME" _list)" >/dev/null
             podman exec -it \
                 -e "WAYLAND_DISPLAY=$WAYLAND_DISPLAY" \
                 -e "DISPLAY=$DISPLAY" \
                 -e "XAUTHORITY=$XAUTHORITY" \
                 -e "XDG_RUNTIME_DIR=$XDG_RUNTIME_DIR" \
                 -e "PIPEWIRE_SOCKET=$XDG_RUNTIME_DIR/pipewire-0" \
-                "$("$FUNCNAME" _get_only)" bash
+                "$("$FUNCNAME" _list)" bash
             ;;
-        stop)  
-            "$FUNCNAME" _assert_not_multiple
-            for container in $("$FUNCNAME" _list); do podman stop "$container"; done >/dev/null
-            ;;
+        stop) for container in $("$FUNCNAME" _list); do podman stop "$container"; done >/dev/null ;;
         *) echo -e "\e[1;31minvalid args\e[m" 1>&2; return 1 ;;
         esac
     }
