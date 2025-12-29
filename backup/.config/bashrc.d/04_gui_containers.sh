@@ -70,4 +70,4 @@ function box() {
     esac
 }
 
-complete -W "ls rm run stop" box
+complete -W "ls rm root run stop" box
