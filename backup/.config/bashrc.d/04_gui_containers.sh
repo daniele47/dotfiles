@@ -22,6 +22,7 @@ function box() {
                 sleep infinity
             ;;
         _list) podman ps -aq --filter "label=$label" ;;
+        _list_fmt) podman ps -a --filter "label=$label" ;;
         _count) "$FUNCNAME" _list | wc -l ;;
         _assert_not_multiple) [[ "$("$FUNCNAME" _count)" -gt 1 ]] && echo -e "\e[1;31mmultiple container running\e[m" 1>&2; return 1 ;;
         _get_only) 
@@ -32,6 +33,7 @@ function box() {
             "$FUNCNAME" _assert_not_multiple
             if [[ "$("$FUNCNAME" _count)" == 0 ]]; then "$FUNCNAME" _create; fi
             ;;
+        ls) "$FUNCNAME" _list_fmt ;;
         rm) 
             if [[ "$("$FUNCNAME" _count)" -gt 0 ]]; then
                 read -rp "Are you sure you want to delete the container? [Y/n] " answer
@@ -59,4 +61,4 @@ function box() {
         esac
     }
 
-complete -W "rm run stop" box
+complete -W "ls rm run stop" box
