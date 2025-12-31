@@ -40,3 +40,4 @@
 .config/powerdevilrc
 .config/systemsettingsrc
 .config/Trolltech.conf
+.config/PlasmaDiscoverUpdates
