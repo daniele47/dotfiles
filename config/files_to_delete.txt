@@ -1,6 +1,7 @@
 // vim:commentstring=//\ %s
 
 .mozilla
+.var
 .bash_logout
 .bash_history
 .gtkrc-2.0
