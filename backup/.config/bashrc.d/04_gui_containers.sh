@@ -14,7 +14,6 @@ function box() {
                 -v "/tmp/.X11-unix:/tmp/.X11-unix:rw" \
                 --security-opt "label=type:container_runtime_t" \
                 --name "gui-box-$(date +%Y-%m-%d-%H-%M-%S)" \
-                --device /dev/dri \
                 --userns=keep-id \
                 --label "$label" \
                 --init \
