@@ -18,7 +18,7 @@ export CARGO_HOME="${XDG_DATA_HOME:-$HOME/.local/share}/cargo"
 alias la='ls -A'
 alias ll='ls -l'
 alias lla='ls -lA'
-alias ls='ls -h --color=always --group-directories-first --sort=extension'
+alias ls='ls -h --color=always --group-directories-first'
 alias tree='tree -C --dirsfirst'
 
 command -v bat &>/dev/null && alias cat='bat'
