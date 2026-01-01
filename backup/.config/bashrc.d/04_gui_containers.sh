@@ -17,7 +17,8 @@ function box() {
                 --userns=keep-id \
                 --label "$label" \
                 --init \
-                fedora \
+                --shm-size=512m \
+                registry.fedoraproject.org/fedora \
                 sleep infinity)"
             podman exec -u 0 -it "$CONTAINER" sh -c "cp -r /etc/skel/ /home/$(whoami) ; chown -R $(id -u):$(id -g) /home/$(whoami); chmod 700 /home/$(whoami)"
             ;;
