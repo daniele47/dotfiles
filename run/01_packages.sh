@@ -11,7 +11,7 @@ sudo dnf --assumeyes remove kolourpaint im-chooser kamoso kcharselect firewall-c
 sudo dnf --assumeyes remove setroubleshoot* hplip* toolbox flatpak libreoffice* ksshaskpass
 
 # install needed programs
-sudo dnf --assumeyes install haruna neovim htop podman git zoxide bat lsd
+sudo dnf --assumeyes install haruna neovim htop podman git zoxide bat lsd trash-cli distrobox
 
 # enable rpm-fusion and install multimedia codecs
 sudo dnf --assumeyes install "https://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm"
