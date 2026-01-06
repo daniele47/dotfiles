@@ -3,8 +3,7 @@
 set -euo pipefail
 
 # enable automatic rpm-ostree updates
-echo '
-[Daemon]
+echo -n '[Daemon]
 AutomaticUpdatePolicy=stage
 ' | sudo tee /etc/rpm-ostreed.conf
 
