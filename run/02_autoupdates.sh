@@ -2,12 +2,10 @@
 
 set -euo pipefail
 
-# enable automatic rpm-ostree updates
+echo "*** ENABLE AUTOMATIC RPM-OSTREE UPDATES ***"
 echo -n '[Daemon]
 AutomaticUpdatePolicy=stage
-' | sudo tee /etc/rpm-ostreed.conf
-
-# enable rpm-ostree timer
+' | sudo tee /etc/rpm-ostreed.conf >/dev/null
 sudo systemctl restart rpm-ostreed
 sudo systemctl enable --now rpm-ostreed-automatic.timer
 

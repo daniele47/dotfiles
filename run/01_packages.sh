@@ -2,39 +2,30 @@
 
 set -euo pipefail
 
-# add rpm-fusion repos and set the noversioned repo package
-sudo rpm-ostree install "https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm" \
-                        "https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm"
+echo "*** ADD RPM-FUSION PACKAGES ***"
+sudo rpm-ostree install \
+    "https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm" \
+    "https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm"
+
+echo "*** APPLY LIVE RPM-FUSION ***"
 sudo rpm-ostree apply-live --allow-replacement || true
-sudo rpm-ostree update --uninstall rpmfusion-free-release --uninstall rpmfusion-nonfree-release --install rpmfusion-free-release --install rpmfusion-nonfree-release
 
-# install ffmpeg for full multimedia codecs support
+echo "*** UPDATE AND UNVERSION RPM-FUSION ***"
+sudo rpm-ostree update \
+    --uninstall rpmfusion-free-release --uninstall rpmfusion-nonfree-release \
+    --install rpmfusion-free-release --install rpmfusion-nonfree-release
+
+echo "*** FIX CODECS AND HARDWARE ACCELERATION ***"
 sudo rpm-ostree override remove \
-             fdk-aac-free \
-             libavcodec-free \
-             libavdevice-free \
-             libavfilter-free \
-             libavformat-free \
-             libavutil-free \
-             libpostproc-free \
-             libswresample-free \
-             libswscale-free \
-             ffmpeg-free \
-        --install ffmpeg
+    fdk-aac-free libavcodec-free libavdevice-free libavfilter-free libavformat-free \
+    libavutil-free libpostproc-free libswresample-free libswscale-free ffmpeg-free mesa-va-drivers \
+    --install ffmpeg --install mesa-va-drivers-freeworld --install intel-media-driver \
+    --install mesa-vdpau-drivers-freeworld --install libva-nvidia-driver
 
-# install hardware codecs for all platforms
-sudo rpm-ostree override remove mesa-va-drivers --install mesa-va-drivers-freeworld
-sudo rpm-ostree install intel-media-driver mesa-vdpau-drivers-freeworld libva-nvidia-driver
-
-# remove bloat
-sudo rpm-ostree override remove kde-connect-libs kde-connect kdeconnectd \
-                                kdebugsettings kjournald firewall-config plasma-drkonqi khelpcenter \
-                                plasma-welcome plasma-welcome-fedora krfb krdp krfb-libs kcharselect toolbox \
-                                plasma-discover plasma-discover-rpm-ostree plasma-discover-notifier plasma-discover-kns plasma-discover-flatpak \
-                                plasma-browser-integration fedora-chromium-config-kde flatpak fedora-flathub-remote
-
-# install system tools
-sudo rpm-ostree install neovim bat okular gwenview trash-cli distrobox haruna -y
-
-# upgrade
-sudo rpm-ostree upgrade
+echo "*** REMOVE BLOAT AND ADD USEFUL COMMANDS ***"
+sudo rpm-ostree override remove \
+    kde-connect-libs kde-connect kdeconnectd kdebugsettings kjournald firewall-config plasma-drkonqi \
+    khelpcenter plasma-welcome plasma-welcome-fedora krfb krdp krfb-libs kcharselect toolbox \
+    plasma-discover plasma-discover-rpm-ostree plasma-discover-notifier plasma-discover-kns plasma-discover-flatpak \
+    plasma-browser-integration fedora-chromium-config-kde flatpak fedora-flathub-remote \
+    --install neovim --install bat --install distrobox --install okular --install gwenview --install haruna
