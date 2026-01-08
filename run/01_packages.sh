@@ -28,4 +28,4 @@ sudo rpm-ostree override remove \
     khelpcenter plasma-welcome plasma-welcome-fedora krfb krdp krfb-libs kcharselect toolbox \
     plasma-discover plasma-discover-rpm-ostree plasma-discover-notifier plasma-discover-kns plasma-discover-flatpak \
     plasma-browser-integration fedora-chromium-config-kde flatpak fedora-flathub-remote \
-    --install neovim --install bat --install distrobox --install okular --install gwenview --install haruna
+    --install neovim --install bat --install trash-cli --install distrobox --install okular --install gwenview --install haruna
