@@ -8,7 +8,7 @@ sudo rpm-ostree install "https://mirrors.rpmfusion.org/free/fedora/rpmfusion-fre
 sudo rpm-ostree apply-live --allow-replacement || true
 
 # install ffmpeg for full multimedia codecs support
-rpm-ostree override remove \
+sudo rpm-ostree override remove \
              fdk-aac-free \
              libavcodec-free \
              libavdevice-free \
@@ -22,8 +22,8 @@ rpm-ostree override remove \
         --install ffmpeg
 
 # install hardware codecs for all platforms
-rpm-ostree override remove mesa-va-drivers --install mesa-va-drivers-freeworld
-rpm-ostree install intel-media-driver mesa-vdpau-drivers-freeworld libva-nvidia-driver
+sudo rpm-ostree override remove mesa-va-drivers --install mesa-va-drivers-freeworld
+sudo rpm-ostree install intel-media-driver mesa-vdpau-drivers-freeworld libva-nvidia-driver
 
 # remove bloat
 sudo rpm-ostree override remove kde-connect-libs kde-connect kdeconnectd \
