@@ -34,3 +34,6 @@ sudo rpm-ostree override remove kde-connect-libs kde-connect kdeconnectd \
 
 # install system tools
 sudo rpm-ostree install neovim bat okular gwenview trash-cli distrobox haruna -y
+
+# upgrade
+sudo rpm-ostree upgrade
