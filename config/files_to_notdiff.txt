@@ -1,19 +1,19 @@
 // vim:commentstring=//\ %s
 
-// mozilla files
-.mozilla/firefox/profiles.ini
-.mozilla/firefox/installs.ini
-.mozilla/firefox/kvgujw0x.customized/search.json.mozlz4
-.mozilla/firefox/kvgujw0x.customized/prefs.js
-.mozilla/firefox/kvgujw0x.customized/places.sqlite
-.mozilla/firefox/kvgujw0x.customized/extension-settings.json
+// flatpak files
+.var/app/org.mozilla.firefox/.mozilla/firefox/profiles.ini
+.var/app/org.mozilla.firefox/.mozilla/firefox/installs.ini
+.var/app/org.mozilla.firefox/.mozilla/firefox/kvgujw0x.customized/search.json.mozlz4
+.var/app/org.mozilla.firefox/.mozilla/firefox/kvgujw0x.customized/prefs.js
+.var/app/org.mozilla.firefox/.mozilla/firefox/kvgujw0x.customized/places.sqlite
+.var/app/org.mozilla.firefox/.mozilla/firefox/kvgujw0x.customized/extension-settings.json
+.var/app/org.kde.haruna/config/haruna
+.var/app/org.kde.okular/config/okularpartrc
 
 // apps config files
 .config/dolphinrc
-.config/haruna
 .config/konsolerc
 .config/krunnerrc
-.config/okularpartrc
 .local/share/konsole/NerdProfile.profile
 .local/share/kxmlgui5/konsole
 .local/state/konsolestaterc
