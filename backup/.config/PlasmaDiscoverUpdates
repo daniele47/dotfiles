@@ -1,2 +1,3 @@
 [Global]
+RequiredNotificationInterval=86400
 UseUnattendedUpdates=true
