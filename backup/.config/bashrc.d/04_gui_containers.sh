@@ -17,10 +17,9 @@ function box() {
                 --userns=keep-id \
                 --label "$label" \
                 --init \
-                --shm-size=512m \
                 registry.fedoraproject.org/fedora \
                 sleep infinity)"
-            podman exec -u 0 -it "$CONTAINER" sh -c "cp -r /etc/skel/ /home/$(whoami) ; chown -R $(id -u):$(id -g) /home/$(whoami); chmod 700 /home/$(whoami)"
+            podman exec -u 0 -it "$CONTAINER" sh -c "cp -r /etc/skel/ /home/$(whoami) ; chown -R $(id -u):$(id -g) /home/$(whoami); chmod 700 /home/$(whoami); echo '$(whoami) ALL=(ALL:ALL) NOPASSWD: ALL' > /etc/sudoers.d/$(whoami); chmod 0440 /etc/sudoers.d/$(whoami); sudo sed -i '$ s|:/:|:/home/$(whoami):|' /etc/passwd"
             ;;
         _list) podman ps -aq --filter "label=$label" ;;
         _list_fmt) podman ps -a --filter "label=$label" ;;
@@ -38,27 +37,22 @@ function box() {
                 for container in $("$FUNCNAME" _list); do podman rm -f "$container"; done >/dev/null
             fi
             ;;
-        ""|run|root) 
+        ""|run) 
             case "$("$FUNCNAME" _count)" in
                 0) "$FUNCNAME" _create; ;;
                 1) ;;
                 *) echo -e "\e[1;31mmultiple container running\e[m" 1>&2; return 1 ;;
             esac
             podman start "$("$FUNCNAME" _list)" >/dev/null
-            case "$1" in
-                ""|run)
-                    podman exec -it \
-                        -e "WAYLAND_DISPLAY=$WAYLAND_DISPLAY" \
-                        -e "DISPLAY=$DISPLAY" \
-                        -e "XAUTHORITY=$XAUTHORITY" \
-                        -e "XDG_RUNTIME_DIR=$XDG_RUNTIME_DIR" \
-                        -e "PIPEWIRE_SOCKET=$XDG_RUNTIME_DIR/pipewire-0" \
-                        -e "HOME=/home/$(whoami)" \
-                        -w "/home/$(whoami)" \
-                        "$("$FUNCNAME" _list)" bash
-                    ;;
-                root) podman exec -u 0 -it -w /root "$("$FUNCNAME" _list)" bash ;;
-            esac
+            podman exec -it \
+                -e "WAYLAND_DISPLAY=$WAYLAND_DISPLAY" \
+                -e "DISPLAY=$DISPLAY" \
+                -e "XAUTHORITY=$XAUTHORITY" \
+                -e "XDG_RUNTIME_DIR=$XDG_RUNTIME_DIR" \
+                -e "PIPEWIRE_SOCKET=$XDG_RUNTIME_DIR/pipewire-0" \
+                -e "HOME=/home/$(whoami)" \
+                -w "/home/$(whoami)" \
+                "$("$FUNCNAME" _list)" bash
             ;;
         stop) 
             if [[ "$("$FUNCNAME" _count)" -gt 0 ]]; then
@@ -67,17 +61,15 @@ function box() {
             fi
             ;;
         help)
-            echo 'Command to have a simple custom podman container to run gui apps
-
-    * help : show this help message
-    * ls   : list box container
-    * run  : launch box container as current user
-    * root : launch box container as container root
-    * stop : stop box container
-    * rm   : remove box container'
+            echo -e "Command to have a simple custom podman container to run gui apps\n"
+            echo "    * help    : show this help message"
+            echo "    * ls      : list box container"
+            echo "    * [run]   : launch box container as current user"
+            echo "    * stop    : stop box container"
+            echo "    * rm [-f] : remove box container (-f flag to skip confermation)"
             ;;
         *) echo -e "\e[1;31minvalid args\e[m" 1>&2; return 1 ;;
     esac
 }
 
-complete -W "help ls rm root run stop" box
+complete -W "help ls rm run stop" box
