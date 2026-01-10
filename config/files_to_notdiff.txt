@@ -9,6 +9,7 @@
 .var/app/org.mozilla.firefox/.mozilla/firefox/kvgujw0x.customized/extension-settings.json
 .var/app/org.kde.haruna/config/haruna
 .var/app/org.kde.okular/config/okularpartrc
+.local/share/flatpak/overrides/org.kde.haruna
 
 // apps config files
 .config/dolphinrc
