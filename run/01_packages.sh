@@ -10,4 +10,4 @@ sudo rpm-ostree override remove \
     kde-connect-libs kde-connect kdeconnectd kdebugsettings kjournald firewall-config plasma-drkonqi \
     khelpcenter plasma-welcome plasma-welcome-fedora krfb krdp krfb-libs kcharselect toolbox \
     firefox firefox-langpacks plasma-browser-integration fedora-chromium-config-kde \
-    flatpak fedora-flathub-remote --install neovim --install bat --install trash-cli
+    --install neovim --install bat --install trash-cli

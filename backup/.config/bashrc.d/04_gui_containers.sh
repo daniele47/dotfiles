@@ -64,7 +64,7 @@ function box() {
             echo -e "Command to have a simple custom podman container to run gui apps\n"
             echo "    * help    : show this help message"
             echo "    * ls      : list box container"
-            echo "    * run     : launch box container as current user"
+            echo "    * [run]   : launch box container as current user"
             echo "    * stop    : stop box container"
             echo "    * rm [-f] : remove box container (-f flag to skip confermation)"
             ;;
