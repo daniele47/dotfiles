@@ -8,7 +8,7 @@ sudo rpm-ostree install \
     "https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm"
 
 echo "*** (2/5) APPLY LIVE RPM-FUSION ***"
-sudo rpm-ostree apply-live --allow-replacement || true
+sudo rpm-ostree apply-live
 
 echo "*** (3/5) UPDATE AND UNVERSION RPM-FUSION ***"
 sudo rpm-ostree update \
