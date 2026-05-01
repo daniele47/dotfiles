@@ -1,0 +1,5 @@
+[KDE]
+LookAndFeelPackage=org.kde.breezedark.desktop
+
+[Sounds]
+Enable=false

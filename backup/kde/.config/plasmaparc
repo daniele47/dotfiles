@@ -1,0 +1,4 @@
+[General]
+AudioFeedback=false
+GlobalMuteSinks=true
+GlobalMuteSources=true
