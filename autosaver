@@ -3,10 +3,12 @@
 set -e
 
 ### CUSTOMIZABLE ###
+export AUTOSAVER_HOME="" # set the home directory for the autosaver binary
 export AUTOSAVER_ROOT="" # set the root directory for the autosaver binary
 
 ### DO NOT EDIT ###
 # setup defaults for all environment variables
+[[ -z "$AUTOSAVER_HOME" ]] && AUTOSAVER_HOME="$HOME"                                        # use the user home directory
 [[ -z "$AUTOSAVER_ROOT" ]] && AUTOSAVER_ROOT="$(dirname "$(realpath "${BASH_SOURCE[0]}")")" # use this script directory as the autosaver root directory
 
 # other useful variables
@@ -41,7 +43,7 @@ if [[ ! -f "$BIN_PATH" ]]; then
     echo -n "Binary file is missing. Do you want to try and download from github? [y/n] "
     read -r answer
     if [[ "$answer" != "y" ]]; then echo "Exiting..." && exit 1; fi
-    
+
     # download binary
     echo "Downloading binary..."
     mkdir -p "$CACHE_DIR"
@@ -55,9 +57,9 @@ if [[ ! -f "$BIN_PATH" ]]; then
 
     # decompressing binary
     echo "Binary successfully downloaded! Proceeding to decompress the binary..."
-    case "$PLATFORM" in 
-        Linux) tar xzf "$BIN_PATH_ARCHIVE" -C "$CACHE_DIR" ;;
-        *) echo "$PLATFORM is not supported" && exit 1 ;;
+    case "$PLATFORM" in
+    Linux) tar xzf "$BIN_PATH_ARCHIVE" -C "$CACHE_DIR" ;;
+    *) echo "$PLATFORM is not supported" && exit 1 ;;
     esac
 
     # deleting temporary files
