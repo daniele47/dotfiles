@@ -1,15 +1,16 @@
 #!/bin/bash
 
+### WRAPPER BASH SCRIPT TO DOWNLOAD AND RUN RUST BINARY ###
+#
+# This script should NOT BE EDITED! It can be customized by changing the values of the following variables:
+# AUTOSAVER_HOME: specify which directory to consider the home directory
+# AUTOSAVER_ROOT: specify which directory the script will consider the root directory
+
 set -e
 
-### CUSTOMIZABLE ###
-export AUTOSAVER_HOME="" # set the home directory for the autosaver binary
-export AUTOSAVER_ROOT="" # set the root directory for the autosaver binary
-
-### DO NOT EDIT ###
 # setup defaults for all environment variables
-[[ -z "$AUTOSAVER_HOME" ]] && AUTOSAVER_HOME="$HOME"                                        # use the user home directory
-[[ -z "$AUTOSAVER_ROOT" ]] && AUTOSAVER_ROOT="$(dirname "$(realpath "${BASH_SOURCE[0]}")")" # use this script directory as the autosaver root directory
+export AUTOSAVER_HOME="${AUTOSAVER_HOME:-$HOME}"
+export AUTOSAVER_ROOT="${AUTOSAVER_ROOT:-$(dirname "$(realpath "${BASH_SOURCE[0]}")")}"
 
 # other useful variables
 GITHUB_REPO="daniele47/autosaver"
@@ -47,28 +48,28 @@ if [[ ! -f "$BIN_PATH" ]]; then
     # download binary
     mkdir -p "$CACHE_DIR"
     if command -v curl &>/dev/null; then
-        echo "Downloading binary using curl..."
+        echo "(1/4) Downloading binary using curl..."
         curl -L --fail --show-error --progress-bar -o "$BIN_PATH_ARCHIVE" "$BIN_DOWNLOAD_URL"
     elif command -v wget &>/dev/null; then
-        echo "Downloading binary using wget..."
+        echo "(1/4) Downloading binary using wget..."
         wget --quiet --show-progress --output-document="$BIN_PATH_ARCHIVE" "$BIN_DOWNLOAD_URL"
     else
         echo "Could not download the binary. Exiting..." && exit 1
     fi
 
     # decompressing binary
-    echo "Binary successfully downloaded! Proceeding to decompress the binary..."
+    echo "(2/4) Binary successfully downloaded! Proceeding to decompress the binary..."
     case "$PLATFORM" in
     Linux) tar xzf "$BIN_PATH_ARCHIVE" -C "$CACHE_DIR" ;;
     *) echo "$PLATFORM is not supported" && exit 1 ;;
     esac
 
     # deleting temporary files
-    echo "Binary successfully decompressed! Proceeding to cleanup archive..."
+    echo "(3/4) Binary successfully decompressed! Proceeding to cleanup archive..."
     rm "$BIN_PATH_ARCHIVE"
 
     # show downloaded binary version
-    echo -n "Binary download finished! The downloaded version was: "
+    echo -n "(4/4) Binary download finished! The downloaded version was: "
     "$BIN_PATH" "--version"
 
     # separator to distinguish download output from actual command output
