@@ -56,7 +56,7 @@ if [[ ! -f "$LOCAL_BIN_PATH" && ! -v UNINSTALL || -v INSTALL ]]; then
     download_url "$REMOTE_RELEASE_URL_BIN" "$LOCAL_BIN_PATH_DIR/archive.tar.gz"
 
     echo "(2/3) Decompossing downloaded archive..."
-    tar -xzf "$LOCAL_BIN_PATH_DIR/archive.tar.gz" -C "$LOCAL_BIN_PATH"
+    tar -xzf "$LOCAL_BIN_PATH_DIR/archive.tar.gz" -C "$LOCAL_BIN_PATH_DIR"
 
     echo "(3/3) Cleanup temporary files..."
     rm "$LOCAL_BIN_PATH_DIR/archive.tar.gz"
