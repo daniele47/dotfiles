@@ -5,6 +5,7 @@
 # This script should NOT BE EDITED! It can be customized by changing the values of the following variables:
 # AUTOSAVER_HOME: specify which directory to consider the home directory
 # AUTOSAVER_ROOT: specify which directory the script will consider the root directory
+# AUTOSAVER_PROFILE: specify the profile to use if none are specified from cmdline
 
 set -e
 
