@@ -1,11 +1,6 @@
 #!/bin/bash
 
 ### WRAPPER BASH SCRIPT TO DOWNLOAD AND RUN RUST BINARY ###
-#
-# This script should NOT BE EDITED! It can be customized by changing the values of the following variables:
-# AUTOSAVER_HOME: specify which directory to consider the home directory
-# AUTOSAVER_ROOT: specify which directory the script will consider the root directory
-# AUTOSAVER_PROFILE: specify the profile to use if none are specified from cmdline
 
 set -e
 
@@ -13,67 +8,39 @@ set -e
 export AUTOSAVER_HOME="${AUTOSAVER_HOME:-$HOME}"
 export AUTOSAVER_ROOT="${AUTOSAVER_ROOT:-$(dirname "$(realpath "${BASH_SOURCE[0]}")")}"
 
-# other useful variables
-GITHUB_REPO="daniele47/autosaver"
-CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/autosaver"
-PLATFORM="$(uname -s)"
-ARCHITECTURE="$(uname -m)"
-BINARY_NAME=""
-BIN_EXTENSION=""
-BIN_DOWNLOAD_URL=""
-BIN_PATH=""
+# variables
+BIN_PATH_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/autosaver"
+BIN_PATH="$BIN_PATH_DIR/autosaver"
+SCRIPTS_URL="https://raw.githubusercontent.com/daniele47/autosaver/refs/heads/main/scripts"
 
-# get platform / os dependent variables populated
-case "$PLATFORM" in
-Linux)
-    BIN_EXTENSION="tar.gz"
-    case "$ARCHITECTURE" in
-    armv7l) BINARY_NAME="autosaver-armv7-unknown-linux-musleabihf" ;;
-    aarch64) BINARY_NAME="autosaver-aarch64-unknown-linux-musl" ;;
-    x86_64) BINARY_NAME="autosaver-x86_64-unknown-linux-musl" ;;
-    *) echo "$PLATFORM with $ARCHITECTURE is not supported" && exit 1 ;;
-    esac
-    ;;
-*) echo "$PLATFORM is not supported" && exit 1 ;;
-esac
-BIN_PATH="$CACHE_DIR/autosaver"
-BIN_PATH_ARCHIVE="$BIN_PATH.$BIN_EXTENSION"
-BIN_DOWNLOAD_URL="https://github.com/$GITHUB_REPO/releases/latest/download/$BINARY_NAME.$BIN_EXTENSION"
-
-# try to download binary if missing
-if [[ ! -f "$BIN_PATH" ]]; then
-    echo -n "Binary file is missing. Do you want to try and download from github? [y/n] "
-    read -r answer
-    if [[ "$answer" != "y" ]]; then echo "Exiting..." && exit 1; fi
-
-    # download binary
-    mkdir -p "$CACHE_DIR"
+function download_url() {
+    local url="$1"
+    local output="$2"
     if command -v curl &>/dev/null; then
-        echo "(1/4) Downloading binary using curl..."
-        curl -L --fail --show-error --progress-bar -o "$BIN_PATH_ARCHIVE" "$BIN_DOWNLOAD_URL"
+        curl -L --fail --show-error --progress-bar --output "$output" "$url"
     elif command -v wget &>/dev/null; then
-        echo "(1/4) Downloading binary using wget..."
-        wget --quiet --show-progress --output-document="$BIN_PATH_ARCHIVE" "$BIN_DOWNLOAD_URL"
+        wget --no-verbose --show-progress --output-document="$output" "$url"
     else
-        echo "Could not download the binary. Exiting..." && exit 1
+        echo "ERROR: Neither curl nor wget found. Please install one." >&2
+        return 1
     fi
+}
 
-    # decompressing binary
-    echo "(2/4) Binary successfully downloaded! Proceeding to decompress the binary..."
-    case "$PLATFORM" in
-    Linux) tar xzf "$BIN_PATH_ARCHIVE" -C "$CACHE_DIR" ;;
-    *) echo "$PLATFORM is not supported" && exit 1 ;;
-    esac
-
-    # deleting temporary files
-    echo "(3/4) Binary successfully decompressed! Proceeding to cleanup archive..."
-    rm "$BIN_PATH_ARCHIVE"
-
-    # show downloaded binary version
-    echo -n "(4/4) Binary download finished! The downloaded version was: "
-    "$BIN_PATH" "--version"
-
-    # separator to distinguish download output from actual command output
+# update/uninstall
+if [[ -v UNINSTALL ]]; then
+    echo "Downloading and running uninstall script..."
+    TMP_FILE="$(mktemp)"
+    download_url "$SCRIPTS_URL/uninstall.sh" "$TMP_FILE"
+    bash "$TMP_FILE"
+    rm "$TMP_FILE"
+    echo -e "--------------------------------------------------------------------------------\n"
+fi
+if [[ ! -f "$BIN_PATH" && ! -v UNINSTALL || -v INSTALL ]]; then
+    echo "Downloading and running install script..."
+    TMP_FILE="$(mktemp)"
+    download_url "$SCRIPTS_URL/install.sh" "$TMP_FILE"
+    bash "$TMP_FILE"
+    rm "$TMP_FILE"
     echo -e "--------------------------------------------------------------------------------\n"
 fi
 
