@@ -8,10 +8,17 @@ set -e
 export AUTOSAVER_HOME="${AUTOSAVER_HOME:-$HOME}"
 export AUTOSAVER_ROOT="${AUTOSAVER_ROOT:-$(dirname "$(realpath "${BASH_SOURCE[0]}")")}"
 
-# variables
-BIN_PATH_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/autosaver"
-BIN_PATH="$BIN_PATH_DIR/autosaver"
-SCRIPTS_URL="https://raw.githubusercontent.com/daniele47/autosaver/refs/heads/main/scripts"
+# local paths
+LOCAL_BIN_PATH_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/autosaver"
+LOCAL_BIN_PATH="$LOCAL_BIN_PATH_DIR/autosaver"
+LOCAL_TMP_DIR="$(mktemp -d)"
+# remote url
+REMOTE_RELEASE_URL="https://github.com/daniele47/autosaver/releases/latest/download"
+REMOTE_BIN_NAME=""
+REMOTE_RELEASE_URL_BIN=""
+# platform
+PLATFORM="$(uname -s)"
+ARCHITECTURE="$(uname -m)"
 
 function download_url() {
     local url="$1"
@@ -27,23 +34,55 @@ function download_url() {
 }
 
 # update/uninstall
-if [[ ! -f "$BIN_PATH" && ! -v UNINSTALL || -v INSTALL ]]; then
-    echo "Downloading and running install script..."
-    TMP_FILE="$(mktemp)"
-    download_url "$SCRIPTS_URL/install.sh" "$TMP_FILE"
-    bash "$TMP_FILE"
-    rm "$TMP_FILE"
+if [[ ! -f "$LOCAL_BIN_PATH" && ! -v UNINSTALL || -v INSTALL ]]; then
+    # get platform / os dependent variables populated
+    case "$PLATFORM" in
+    Linux)
+        case "$ARCHITECTURE" in
+        armv7l) REMOTE_BIN_NAME="autosaver-armv7-unknown-linux-musleabihf.tar.gz" ;;
+        aarch64) REMOTE_BIN_NAME="autosaver-aarch64-unknown-linux-musl.tar.gz" ;;
+        x86_64) REMOTE_BIN_NAME="autosaver-x86_64-unknown-linux-musl.tar.gz" ;;
+        *) echo "$PLATFORM with $ARCHITECTURE is not supported" && exit 1 ;;
+        esac
+        ;;
+    *) echo "$PLATFORM is not supported" && exit 1 ;;
+    esac
+
+    # delete whatever was already in the cache directory
+    rm -rf "$LOCAL_BIN_PATH_DIR"
+    mkdir -p "$LOCAL_BIN_PATH_DIR"
+
+    echo "(1/$TASKS) Downloading latest archive release..."
+    REMOTE_RELEASE_URL_BIN="$REMOTE_RELEASE_URL/$REMOTE_BIN_NAME"
+    download_url "$REMOTE_RELEASE_URL_BIN" "$LOCAL_TMP_DIR/archive.tar.gz"
+
+    echo "(2/$TASKS) Decompossing downloaded archive..."
+    mkdir -p "$LOCAL_TMP_DIR/tmp"
+    tar -xzf "$LOCAL_TMP_DIR/archive.tar.gz" -C "$LOCAL_TMP_DIR/tmp"
+    mv "$LOCAL_TMP_DIR/tmp/autosaver/"* "$LOCAL_BIN_PATH_DIR"
+
+    echo "(3/$TASKS) Cleaning up temporary files..."
+    rm -rf "$LOCAL_TMP_DIR"
+
+    echo -n "Autosaver installed/updated: "
+    "$LOCAL_BIN_PATH" --version
+
+    echo "To add completions, just add the following to shell init files:"
+    echo 'Bash: source "${XDG_CACHE_HOME:-$HOME/.cache}/autosaver/completions/autosaver.bash"'
+    echo 'Zsh : source "${XDG_CACHE_HOME:-$HOME/.cache}/autosaver/completions/_autosaver"'
+    echo 'Fish: source "${XDG_CACHE_HOME:-$HOME/.cache}/autosaver/completions/autosaver.fish"'
+
     echo -e "--------------------------------------------------------------------------------\n"
 elif [[ -v UNINSTALL ]]; then
-    if [[ ! -d "$BIN_PATH_DIR" ]]; then
+    if [[ ! -d "$LOCAL_BIN_PATH_DIR" ]]; then
         echo "Autosaver was already uninstalled!"
     else
         echo "(1/1) Uninstalling autosaver by deleting the cache directory..."
-        rm -rf "$BIN_PATH_DIR"
+        rm -rf "$LOCAL_BIN_PATH_DIR"
         echo "Autosaver was succesffully uninstalled!"
     fi
     exit 0
 fi
 
 # run binary
-"$BIN_PATH" "$@"
+"$LOCAL_BIN_PATH" "$@"
