@@ -1,0 +1,14 @@
+[user]
+    useConfigOnly = true
+    name = Private
+    email = private@invalid.local
+[init]
+    defaultBranch = main
+[pager]
+    diff = false
+[alias]
+    lo = !git --no-pager log --oneline --graph -20
+    st = status -s
+    nuke = "!git reset --hard -q && git clean -fdq"
+[credential]
+	helper = store
