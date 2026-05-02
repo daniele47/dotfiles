@@ -27,14 +27,6 @@ function download_url() {
 }
 
 # update/uninstall
-if [[ -v UNINSTALL ]]; then
-    echo "Downloading and running uninstall script..."
-    TMP_FILE="$(mktemp)"
-    download_url "$SCRIPTS_URL/uninstall.sh" "$TMP_FILE"
-    bash "$TMP_FILE"
-    rm "$TMP_FILE"
-    echo -e "--------------------------------------------------------------------------------\n"
-fi
 if [[ ! -f "$BIN_PATH" && ! -v UNINSTALL || -v INSTALL ]]; then
     echo "Downloading and running install script..."
     TMP_FILE="$(mktemp)"
@@ -42,6 +34,15 @@ if [[ ! -f "$BIN_PATH" && ! -v UNINSTALL || -v INSTALL ]]; then
     bash "$TMP_FILE"
     rm "$TMP_FILE"
     echo -e "--------------------------------------------------------------------------------\n"
+elif [[ -v UNINSTALL ]]; then
+    if [[ ! -d "$BIN_PATH_DIR" ]]; then
+        echo "Autosaver was already uninstalled!"
+    else
+        echo "(1/1) Uninstalling autosaver by deleting the cache directory..."
+        rm -rf "$BIN_PATH_DIR"
+        echo "Autosaver was succesffully uninstalled!"
+    fi
+    exit 0
 fi
 
 # run binary
