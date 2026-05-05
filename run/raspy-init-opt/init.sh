@@ -14,6 +14,6 @@ sudo mkdir -p /autorun /autorun-logs
 sudo chown -R "$USER:$USER" /autorun /autorun-logs
 
 # install deps required in previous scripts
-sudo apt install ffmpeg python3-pip -y
+sudo apt-get install ffmpeg python3-pip -y
 sudo pip install -U yt-dlp --break-system-packages
 curl -sSf https://rclone.org/install.sh | sudo bash || true

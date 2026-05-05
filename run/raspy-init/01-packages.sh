@@ -3,10 +3,10 @@
 set -e
 
 # necessary refresh
-sudo apt update -y
-sudo apt upgrade -y
+sudo apt-get update -y
+sudo apt-get upgrade -y
 
 # various utils
-sudo apt install -y htop lm-sensors neovim tree git tmux
-sudo apt install -y bat zoxide
+sudo apt-get install -y htop lm-sensors neovim tree git tmux
+sudo apt-get install -y bat zoxide
 
