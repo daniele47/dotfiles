@@ -12,12 +12,17 @@ export AUTOSAVER_ROOT="${AUTOSAVER_ROOT:-$(dirname "$(realpath "${BASH_SOURCE[0]
 LOCAL_BIN_PATH_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/autosaver"
 LOCAL_BIN_PATH="$LOCAL_BIN_PATH_DIR/autosaver"
 # remote url
-REMOTE_RELEASE_URL="https://github.com/daniele47/autosaver/releases/latest/download"
+REMOTE_RELEASE_URL_LATEST="https://github.com/daniele47/autosaver/releases/latest/download"
+REMOTE_RELEASE_URL_VERSION="https://github.com/daniele47/autosaver/releases/download"
+REMOTE_RELEASE_URL=""
 REMOTE_BIN_NAME=""
-REMOTE_RELEASE_URL_BIN=""
 
 # update/uninstall
 if [[ ! -f "$LOCAL_BIN_PATH" && ! -v UNINSTALL || -v INSTALL ]]; then
+    # previous binary version
+    OLD_VERSION="$($LOCAL_BIN_PATH --version 2>/dev/null | tr -d '\n ')"
+    [[ -z "$OLD_VERSION" ]] && OLD_VERSION="\e[1;31mmissing\e[m"
+
     # get platform / os dependent variables populated
     PLATFORM="$(uname -s)"
     ARCHITECTURE="$(uname -m)"
@@ -37,10 +42,14 @@ if [[ ! -f "$LOCAL_BIN_PATH" && ! -v UNINSTALL || -v INSTALL ]]; then
     rm -rf "$LOCAL_BIN_PATH_DIR"
     mkdir -p "$LOCAL_BIN_PATH_DIR"
 
-    # download and install operations
-    echo "(1/3) Downloading latest archive release..."
-    REMOTE_RELEASE_URL_BIN="$REMOTE_RELEASE_URL/$REMOTE_BIN_NAME"
-    url="$REMOTE_RELEASE_URL_BIN"
+    # download operations
+    if [[ -n "$INSTALL" ]]; then # use tagged version
+        REMOTE_RELEASE_URL="$REMOTE_RELEASE_URL_VERSION/$INSTALL/$REMOTE_BIN_NAME"
+    else # use latest version
+        REMOTE_RELEASE_URL="$REMOTE_RELEASE_URL_LATEST/$REMOTE_BIN_NAME"
+    fi
+    echo "(1/3) Downloading latest archive release from '$REMOTE_RELEASE_URL' ..."
+    url="$REMOTE_RELEASE_URL"
     output=$LOCAL_BIN_PATH_DIR/archive.tar.gz""
     if command -v curl &>/dev/null; then
         curl -L --fail --show-error --progress-bar --output "$output" "$url"
@@ -51,17 +60,20 @@ if [[ ! -f "$LOCAL_BIN_PATH" && ! -v UNINSTALL || -v INSTALL ]]; then
         return 1
     fi
 
+    # decompression operations
     echo "(2/3) Decompossing downloaded archive..."
     tar -xzf "$output" -C "$LOCAL_BIN_PATH_DIR"
 
+    # cleanup operations
     echo "(3/3) Cleanup temporary files..."
     rm "$output"
 
     echo -n "Autosaver installed/updated: "
-    "$LOCAL_BIN_PATH" --version
+    echo -en "$OLD_VERSION ---> " && "$LOCAL_BIN_PATH" --version
 
     echo -e "--------------------------------------------------------------------------------\n"
 elif [[ -v UNINSTALL ]]; then
+    # uninstall operations
     if [[ ! -d "$LOCAL_BIN_PATH_DIR" ]]; then
         echo "Autosaver was already uninstalled!"
     else
