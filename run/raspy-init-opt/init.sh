@@ -17,3 +17,5 @@ sudo chown -R "$USER:$USER" /autorun /autorun-logs
 sudo apt install ffmpeg python3-pip -y
 sudo pip install -U yt-dlp --break-system-packages
 curl https://rclone.org/install.sh | sudo bash
+
+exit 0
