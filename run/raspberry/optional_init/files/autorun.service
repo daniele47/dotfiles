@@ -1,0 +1,22 @@
+# systemd service that allows to easily autorun bash scripts on boot
+# place this file in /etc/systemd/system
+# enable with: systemctl enable --now autorun.service
+# all scripts in /autorun/ will now be automatically run
+# journalctl -t autorun-<script_name> to get the logs from each script
+
+[Unit]
+Description=Run all autorun scripts
+ConditionPathExists=/autorun
+ConditionPathExists=/autorun-logs
+After=network.target
+
+[Service]
+User=root
+Group=root
+CPUQuota=50%
+MemoryMax=50%
+ExecStart=/bin/bash -c 'for s in /autorun/*; do echo "running script: $s" && bash "$s" 2>&1 | while read -r line; do echo "[$(date "+%%a %%Y/%%m/%%d %%H:%%M:%%S")]: $line" >> "/autorun-logs/$(basename "$s").log"; done & done; wait'
+KillMode=mixed
+
+[Install]
+WantedBy=multi-user.target
