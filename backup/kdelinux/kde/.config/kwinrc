@@ -2,6 +2,10 @@
 Number=4
 Rows=1
 
+[Effect-hidecursor]
+HideOnTyping=false
+InactivityDuration=5
+
 [Effect-overview]
 BorderActivate=9
 
@@ -9,6 +13,7 @@ BorderActivate=9
 Active=true
 
 [Plugins]
+hidecursorEnabled=true
 shakecursorEnabled=false
 
 [TabBox]
