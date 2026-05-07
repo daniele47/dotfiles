@@ -39,7 +39,6 @@ if [[ ! -f "$LOCAL_BIN_PATH" && ! -v UNINSTALL || -v INSTALL ]]; then
     esac
 
     # delete whatever was already in the cache directory
-    rm -rf "$LOCAL_BIN_PATH_DIR"
     mkdir -p "$LOCAL_BIN_PATH_DIR"
 
     # download operations
