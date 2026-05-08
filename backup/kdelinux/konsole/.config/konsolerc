@@ -1,0 +1,11 @@
+[Desktop Entry]
+DefaultProfile=Custom.profile
+
+[General]
+ConfigVersion=1
+
+[TabBar]
+ExpandTabWidth=true
+
+[UiSettings]
+ColorScheme=
