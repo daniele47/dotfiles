@@ -1,5 +1,7 @@
 [ActionPlugins][0]
-MiddleButton;NoModifier=org.kde.paste
+RightButton;NoModifier=org.kde.contextmenu
+
+[ActionPlugins][1]
 RightButton;NoModifier=org.kde.contextmenu
 
 [Containments][2]
@@ -36,7 +38,7 @@ immutability=1
 plugin=org.kde.plasma.icontasks
 
 [Containments][2][Applets][5][Configuration][General]
-launchers=applications:org.kde.konsole.desktop,preferred://browser,preferred://filemanager
+launchers=applications:org.kde.konsole.desktop,preferred://browser,applications:org.kde.okular.desktop,preferred://filemanager
 minimizeActiveTaskOnClick=false
 
 [Containments][2][Applets][7]
@@ -49,6 +51,11 @@ plugin=org.kde.plasma.keyboardindicator
 
 [Containments][2][Applets][7][Applets][35][Configuration][General]
 key=Num Lock
+
+[Containments][2][Applets][7][General]
+extraItems=org.kde.kdeconnect,org.kde.kupapplet,org.kde.plasma.vault,org.kde.kscreen,org.kde.plasma.battery,org.kde.plasma.bluetooth,org.kde.plasma.brightness,org.kde.plasma.cameraindicator,org.kde.plasma.devicenotifier,org.kde.plasma.keyboardindicator,org.kde.plasma.keyboardlayout,org.kde.plasma.manage-inputmethod,org.kde.plasma.mediacontroller,org.kde.plasma.networkmanagement,org.kde.plasma.printmanager,org.kde.plasma.volume,org.kde.plasma.weather,org.kde.plasma.clipboard,org.kde.plasma.notifications
+hiddenItems=org.kde.plasma.clipboard,org.kde.plasma.notifications
+knownItems=org.kde.kdeconnect,org.kde.kupapplet,org.kde.plasma.vault,org.kde.kscreen,org.kde.plasma.battery,org.kde.plasma.bluetooth,org.kde.plasma.brightness,org.kde.plasma.cameraindicator,org.kde.plasma.clipboard,org.kde.plasma.devicenotifier,org.kde.plasma.keyboardindicator,org.kde.plasma.keyboardlayout,org.kde.plasma.manage-inputmethod,org.kde.plasma.mediacontroller,org.kde.plasma.networkmanagement,org.kde.plasma.notifications,org.kde.plasma.printmanager,org.kde.plasma.volume,org.kde.plasma.weather
 
 [Containments][2][General]
 AppletOrder=3;5;28;4;27;7;22
