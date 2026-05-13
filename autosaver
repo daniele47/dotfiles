@@ -12,6 +12,9 @@ export AUTOSAVER_ROOT="${AUTOSAVER_ROOT:-$(dirname "$(realpath "${BASH_SOURCE[0]
 LOCAL_BIN_PATH_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/autosaver"
 LOCAL_BIN_PATH="$LOCAL_BIN_PATH_DIR/autosaver"
 # remote url
+REMOTE_API_URL_LATEST="https://api.github.com/repos/daniele47/autosaver/releases/latest"
+REMOTE_API_URL_VERSION="https://api.github.com/repos/daniele47/autosaver/releases/tags"
+REMOTE_API_URL=""
 REMOTE_RELEASE_URL_LATEST="https://github.com/daniele47/autosaver/releases/latest/download"
 REMOTE_RELEASE_URL_VERSION="https://github.com/daniele47/autosaver/releases/download"
 REMOTE_RELEASE_URL=""
@@ -43,11 +46,13 @@ if [[ ! -f "$LOCAL_BIN_PATH" && ! -v UNINSTALL || -v INSTALL ]]; then
 
     # download operations
     if [[ -n "$INSTALL" ]]; then # use tagged version
+        REMOTE_API_URL="$REMOTE_API_URL_VERSION/$INSTALL"
         REMOTE_RELEASE_URL="$REMOTE_RELEASE_URL_VERSION/$INSTALL/$REMOTE_BIN_NAME"
     else # use latest version
+        REMOTE_API_URL="$REMOTE_API_URL_LATEST"
         REMOTE_RELEASE_URL="$REMOTE_RELEASE_URL_LATEST/$REMOTE_BIN_NAME"
     fi
-    echo "(1/3) Downloading latest archive release from '$REMOTE_RELEASE_URL' ..."
+    echo "(1/4) Downloading latest archive release from '$REMOTE_RELEASE_URL' ..."
     url="$REMOTE_RELEASE_URL"
     output=$LOCAL_BIN_PATH_DIR/archive.tar.gz""
     if command -v curl &>/dev/null; then
@@ -59,12 +64,27 @@ if [[ ! -f "$LOCAL_BIN_PATH" && ! -v UNINSTALL || -v INSTALL ]]; then
         return 1
     fi
 
+    # checking checksum if jq is installed
+    if command -v jq &>/dev/null && command -v sha256sum &>/dev/null; then
+        echo "(2/4) Checking checksum of downloaded binary from '$REMOTE_API_URL'..."
+        digest="$(curl -L --fail --show-error --silent "$REMOTE_API_URL" | jq '.assets[] | select(.name == "'"$REMOTE_BIN_NAME"'") | .digest' -r)"
+        tar_digest="$(sha256sum "$output")"
+        digest_clean="${digest#sha256:}"
+        tar_digest_clean="${tar_digest%% *}"
+        if [[ "$digest_clean" != "$tar_digest_clean" ]]; then
+            echo "ERROR: checksum of downloaded binary does not match the expected one." >&2
+            return 1
+        fi
+    else
+        echo "(2/4) Skipping checksum check as either jq or sha256sum is not available..."
+    fi
+
     # decompression operations
-    echo "(2/3) Decompossing downloaded archive..."
+    echo "(3/4) Decompossing downloaded archive..."
     tar -xzf "$output" -C "$LOCAL_BIN_PATH_DIR"
 
     # cleanup operations
-    echo "(3/3) Cleanup temporary files..."
+    echo "(4/4) Cleanup temporary files..."
     rm "$output"
 
     echo -n "Autosaver installed/updated: "
