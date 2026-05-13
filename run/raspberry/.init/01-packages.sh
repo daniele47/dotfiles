@@ -8,5 +8,5 @@ sudo apt-get upgrade -y
 
 # various utils
 sudo apt-get install -y htop lm-sensors neovim tree git tmux
-sudo apt-get install -y bat zoxide
+sudo apt-get install -y bat zoxide jq
 
