@@ -73,7 +73,7 @@ elif [[ -v BUILD ]]; then
 
     # nice update/install msg
     echo -n "Autosaver compiled: "
-    echo -en "$OLD_VERSION ---> " && "$LOCAL_BIN_PATH" --version
+    "$LOCAL_BIN_PATH" --version
     echo -e "--------------------------------------------------------------------------------\n"
 elif [[ ! -f "$LOCAL_BIN_PATH" || -v INSTALL ]]; then
     # previous binary version
