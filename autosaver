@@ -12,16 +12,70 @@ export AUTOSAVER_ROOT="${AUTOSAVER_ROOT:-$(dirname "$(realpath "${BASH_SOURCE[0]
 LOCAL_BIN_PATH_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/autosaver"
 LOCAL_BIN_PATH="$LOCAL_BIN_PATH_DIR/autosaver"
 # remote url
+REMOTE_GIT_REPO="https://github.com/daniele47/autosaver"
 REMOTE_API_URL_LATEST="https://api.github.com/repos/daniele47/autosaver/releases/latest"
 REMOTE_API_URL_VERSION="https://api.github.com/repos/daniele47/autosaver/releases/tags"
 REMOTE_API_URL=""
-REMOTE_RELEASE_URL_LATEST="https://github.com/daniele47/autosaver/releases/latest/download"
-REMOTE_RELEASE_URL_VERSION="https://github.com/daniele47/autosaver/releases/download"
+REMOTE_RELEASE_URL_LATEST="$REMOTE_GIT_REPO/releases/latest/download"
+REMOTE_RELEASE_URL_VERSION="$REMOTE_GIT_REPO/releases/download"
 REMOTE_RELEASE_URL=""
 REMOTE_BIN_NAME=""
 
 # update/uninstall
-if [[ ! -f "$LOCAL_BIN_PATH" && ! -v UNINSTALL || -v INSTALL ]]; then
+if [[ -v UNINSTALL ]]; then
+    # uninstall operations
+    if [[ ! -d "$LOCAL_BIN_PATH_DIR" ]]; then
+        echo "Autosaver was already uninstalled!"
+    else
+        echo "(1/1) Uninstalling autosaver by deleting the cache directory..."
+        rm -rf "$LOCAL_BIN_PATH_DIR"
+        echo "Autosaver was succesffully uninstalled!"
+    fi
+    exit 0
+elif [[ -v BUILD ]]; then
+    if ! command -v cargo &>/dev/null; then
+        echo "ERROR: cargo is required to compile locally." >&2
+        exit 1
+    elif ! command -v git &>/dev/null; then
+        echo "ERROR: git is required to download the autosaver repository." >&2
+        exit 1
+    fi
+
+    # download git repo
+    tmpdir="$(mktemp -d)"
+    echo "(1/5) Downloading repository from '$REMOTE_GIT_REPO'..."
+    git clone "$REMOTE_GIT_REPO" "$tmpdir"
+
+    # change branch if specified
+    echo
+    if [[ -n "$BUILD" ]]; then
+        echo "(2/5) Running git checkout '$BUILD'..."
+        git -C "$tmpdir" checkout "$BUILD"
+    else
+        echo "(2/5) Keeping latest git commit..."
+    fi
+
+    # compile rust binary
+    echo
+    echo "(3/5) Compiling rust project..."
+    cd "$tmpdir" || exit 1
+    cargo build --release
+
+    # moving binary into correct place
+    echo
+    echo "(4/5) Installing binary into '$LOCAL_BIN_PATH'..."
+    cp "$tmpdir/.target/release/autosaver" "$LOCAL_BIN_PATH"
+
+    # cleanup opeartions
+    echo
+    echo "(5/5) Cleanup temporary files..."
+    rm -rf "$tmpdir"
+
+    # nice update/install msg
+    echo -n "Autosaver compiled: "
+    echo -en "$OLD_VERSION ---> " && "$LOCAL_BIN_PATH" --version
+    echo -e "--------------------------------------------------------------------------------\n"
+elif [[ ! -f "$LOCAL_BIN_PATH" || -v INSTALL ]]; then
     # previous binary version
     OLD_VERSION="$($LOCAL_BIN_PATH --version 2>/dev/null | tr -d '\n ')"
     [[ -z "$OLD_VERSION" ]] && OLD_VERSION="\e[1;31mmissing\e[m"
@@ -52,6 +106,8 @@ if [[ ! -f "$LOCAL_BIN_PATH" && ! -v UNINSTALL || -v INSTALL ]]; then
         REMOTE_API_URL="$REMOTE_API_URL_LATEST"
         REMOTE_RELEASE_URL="$REMOTE_RELEASE_URL_LATEST/$REMOTE_BIN_NAME"
     fi
+
+    # download archived binary
     echo "(1/4) Downloading latest archive release from '$REMOTE_RELEASE_URL' ..."
     url="$REMOTE_RELEASE_URL"
     output=$LOCAL_BIN_PATH_DIR/archive.tar.gz""
@@ -65,6 +121,7 @@ if [[ ! -f "$LOCAL_BIN_PATH" && ! -v UNINSTALL || -v INSTALL ]]; then
     fi
 
     # checking checksum if jq is installed
+    echo
     if command -v jq &>/dev/null && command -v sha256sum &>/dev/null; then
         echo "(2/4) Checking checksum of downloaded binary from '$REMOTE_API_URL'..."
         digest="$(curl -L --fail --show-error --progress-bar "$REMOTE_API_URL" | jq '.assets[] | select(.name == "'"$REMOTE_BIN_NAME"'") | .digest' -r)"
@@ -80,27 +137,19 @@ if [[ ! -f "$LOCAL_BIN_PATH" && ! -v UNINSTALL || -v INSTALL ]]; then
     fi
 
     # decompression operations
+    echo
     echo "(3/4) Decompossing downloaded archive..."
     tar -xzf "$output" -C "$LOCAL_BIN_PATH_DIR"
 
     # cleanup operations
+    echo
     echo "(4/4) Cleanup temporary files..."
     rm "$output"
 
+    # nice update/install msg
     echo -n "Autosaver installed/updated: "
     echo -en "$OLD_VERSION ---> " && "$LOCAL_BIN_PATH" --version
-
     echo -e "--------------------------------------------------------------------------------\n"
-elif [[ -v UNINSTALL ]]; then
-    # uninstall operations
-    if [[ ! -d "$LOCAL_BIN_PATH_DIR" ]]; then
-        echo "Autosaver was already uninstalled!"
-    else
-        echo "(1/1) Uninstalling autosaver by deleting the cache directory..."
-        rm -rf "$LOCAL_BIN_PATH_DIR"
-        echo "Autosaver was succesffully uninstalled!"
-    fi
-    exit 0
 fi
 
 # run binary
