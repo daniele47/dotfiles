@@ -4,6 +4,11 @@ DefaultProfile=Custom.profile
 [General]
 ConfigVersion=1
 
+[LightDarkTheme]
+DarkThemeProfile=Custom
+LightThemeProfile=Light
+SyncProfileWithSystemTheme=true
+
 [TabBar]
 ExpandTabWidth=true
 
