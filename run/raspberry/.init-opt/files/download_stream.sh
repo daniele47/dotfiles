@@ -30,7 +30,7 @@ cleanup() {
     else
         echo "Video downloaded and uploaded successfully!"
         rm -rf "$LOCAL_UPLOAD_DIR"
-        rmdir "$BASE_UPLOAD_DIR" &>/dev/null
+        rmdir "$BASE_UPLOAD_DIR" &>/dev/null || true
         exit 0
     fi
 }
