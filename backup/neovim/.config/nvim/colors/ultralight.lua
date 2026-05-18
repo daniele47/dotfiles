@@ -4,29 +4,29 @@ if vim.fn.exists('syntax_on') then
     vim.cmd('syntax reset')
 end
 
--- color palette
+-- color palette (light theme)
 local col = {
     fg = {
-        white = { gui = "#dadada", tui = 253 },
-        red = { gui = "#d75f5f", tui = 167 },
-        gold = { gui = "#d7af5f", tui = 179 },
-        green = { gui = "#87d75f", tui = 113 },
-        lblue = { gui = "#5fd7d7", tui = 80 },
-        blue = { gui = "#5f87d7", tui = 68 },
-        pink = { gui = "#d75fd7", tui = 170 },
-        grey = { gui = "#5f5f87", tui = 60 },
-        black = { gui = "#1c1c1c", tui = 234 },
+        white = { gui = "#2d2d2d", tui = 236 },  -- dark text for light bg
+        red = { gui = "#af0000", tui = 124 },
+        gold = { gui = "#af5f00", tui = 130 },
+        green = { gui = "#008700", tui = 28 },
+        lblue = { gui = "#0087af", tui = 31 },
+        blue = { gui = "#005faf", tui = 25 },
+        pink = { gui = "#af0087", tui = 126 },
+        grey = { gui = "#8a8a8a", tui = 245 },
+        black = { gui = "#e8e8e8", tui = 254 },  -- light bg color
     },
     bg = {
-        white = { gui = "#dadada", tui = 253 },
-        yellow = { gui = "#d7af5f", tui = 179 },
-        pink = { gui = "#ff87ff", tui = 213 },
-        red = { gui = "#ff5f5f", tui = 203 },
-        green = { gui = "#00af5f", tui = 35 },
-        lblue = { gui = "#87afff", tui = 111 },
-        diff_grey = { gui = "#4c4f69", tui = 239 },
-        diff_lblue = { gui = "#252842", tui = 235 },
-        diff_blue = { gui = "#161821", tui = 233 },
+        white = { gui = "#e8e8e8", tui = 254 },
+        yellow = { gui = "#ffdfaf", tui = 223 },
+        pink = { gui = "#ffafdf", tui = 218 },
+        red = { gui = "#ffafaf", tui = 217 },
+        green = { gui = "#afdfaf", tui = 151 },
+        lblue = { gui = "#afdfff", tui = 153 },
+        diff_grey = { gui = "#e0e0e0", tui = 254 },
+        diff_lblue = { gui = "#d0e8f0", tui = 189 },
+        diff_blue = { gui = "#f5f5f5", tui = 255 },
     },
 }
 
@@ -104,7 +104,7 @@ hi("DiffText", col.fg.black, col.bg.pink)
 hi("DiffTextAdd", "DiffText")
 hi("EndOfBuffer", "Conceal")
 hi("TermCursor", "Cursor")
-hi("OkMsg", col.fg.lgreen)
+hi("OkMsg", col.fg.green)
 hi("WarningMsg", col.fg.gold)
 hi("ErrorMsg", "Error")
 hi("StderrMsg", "Error")
@@ -148,7 +148,7 @@ hi("PmenuMatchSel", col.fg.white, nil, { bold = true })
 hi("PmenuBorder", "PmenuSel")
 hi("PmenuShadow", "PmenuSel")
 hi("PmenuShadowThrough", "Pmenu")
-hi("ComplMatchIns")
+hi("ComplMatchIns", nil)
 hi("PreInsert", "Added")
 hi("ComplHint", "Conceal")
 hi("ComplHintMore", "Normal")
@@ -191,74 +191,74 @@ hi("DiagnosticUnderlineOk", nil, nil, { sp = col.fg.green.gui, undercurl = true,
 hi("DiagnosticDeprecated", nil, nil, { strikethrough = true })
 hi("DiagnosticUnnecessary", "Conceal")
 
--- blink
+-- blink (light theme adjustments)
 vim.cmd([[
-    hi BlinkCmpKindSnippet guifg=#e55561
-    hi BlinkCmpDetail guifg=#7a818e
-    hi BlinkCmpLabelMatch guifg=#48b0bd
-    hi BlinkCmpLabelDeprecated gui=strikethrough guifg=#7a818e
-    hi BlinkCmpKindInterface guifg=#8ebd6b
-    hi BlinkCmpLabe guifg=#a0a8b7
-    hi BlinkCmpKindFolder guifg=#cc9057
-    hi BlinkCmpKindTypeParameter guifg=#e55561
-    hi BlinkCmpKindText guifg=#7a818e
-    hi BlinkCmpKindValue guifg=#cc9057
-    hi BlinkCmpKind guifg=#bf68d9
-    hi BlinkCmpKindStruct guifg=#bf68d9
-    hi BlinkCmpKindEvent guifg=#e2b86b
-    hi BlinkCmpKindProperty guifg=#48b0bd
-    hi BlinkCmpKindPackage guifg=#e2b86b
-    hi BlinkCmpKindVariable guifg=#bf68d9
-    hi BlinkCmpKindObject guifg=#e55561
-    hi BlinkCmpKindNumber guifg=#cc9057
-    hi BlinkCmpKindNull guifg=#535965
-    hi BlinkCmpKindField guifg=#bf68d9
-    hi BlinkCmpKindColor guifg=#8ebd6b
-    hi BlinkCmpKindOperator guifg=#e55561
-    hi BlinkCmpKindConstructor guifg=#4fa6ed
-    hi BlinkCmpKindConstant guifg=#cc9057
-    hi BlinkCmpKindKey guifg=#48b0bd
-    hi BlinkCmpKindFunction guifg=#4fa6ed
-    hi BlinkCmpKindFile guifg=#4fa6ed
-    hi BlinkCmpKindModule guifg=#cc9057
-    hi BlinkCmpKindMethod guifg=#4fa6ed
-    hi BlinkCmpKindKeyword guifg=#48b0bd
-    hi BlinkCmpKindDefault guifg=#bf68d9
-    hi BlinkCmpKindArray guifg=#e2b86b
-    hi BlinkCmpKindUnit guifg=#8ebd6b
-    hi BlinkCmpKindEnumMember guifg=#e2b86b
-    hi BlinkCmpKindString guifg=#8ebd6b
-    hi BlinkCmpKindNamespace guifg=#e55561
-    hi BlinkCmpKindEnum guifg=#bf68d9
-    hi BlinkCmpKindClass guifg=#e2b86b
-    hi BlinkCmpKindReference guifg=#cc9057
-    hi BlinkCmpKindBoolean guifg=#cc9057
+    hi BlinkCmpKindSnippet guifg=#d1454f
+    hi BlinkCmpDetail guifg=#6a6f78
+    hi BlinkCmpLabelMatch guifg=#3a8b97
+    hi BlinkCmpLabelDeprecated gui=strikethrough guifg=#6a6f78
+    hi BlinkCmpKindInterface guifg=#6f9b4d
+    hi BlinkCmpLabel guifg=#8a909d
+    hi BlinkCmpKindFolder guifg=#b5783f
+    hi BlinkCmpKindTypeParameter guifg=#d1454f
+    hi BlinkCmpKindText guifg=#6a6f78
+    hi BlinkCmpKindValue guifg=#b5783f
+    hi BlinkCmpKind guifg=#9f5ab8
+    hi BlinkCmpKindStruct guifg=#9f5ab8
+    hi BlinkCmpKindEvent guifg=#c9a34d
+    hi BlinkCmpKindProperty guifg=#3a8b97
+    hi BlinkCmpKindPackage guifg=#c9a34d
+    hi BlinkCmpKindVariable guifg=#9f5ab8
+    hi BlinkCmpKindObject guifg=#d1454f
+    hi BlinkCmpKindNumber guifg=#b5783f
+    hi BlinkCmpKindNull guifg=#6a6f78
+    hi BlinkCmpKindField guifg=#9f5ab8
+    hi BlinkCmpKindColor guifg=#6f9b4d
+    hi BlinkCmpKindOperator guifg=#d1454f
+    hi BlinkCmpKindConstructor guifg=#3a87c4
+    hi BlinkCmpKindConstant guifg=#b5783f
+    hi BlinkCmpKindKey guifg=#3a8b97
+    hi BlinkCmpKindFunction guifg=#3a87c4
+    hi BlinkCmpKindFile guifg=#3a87c4
+    hi BlinkCmpKindModule guifg=#b5783f
+    hi BlinkCmpKindMethod guifg=#3a87c4
+    hi BlinkCmpKindKeyword guifg=#3a8b97
+    hi BlinkCmpKindDefault guifg=#9f5ab8
+    hi BlinkCmpKindArray guifg=#c9a34d
+    hi BlinkCmpKindUnit guifg=#6f9b4d
+    hi BlinkCmpKindEnumMember guifg=#c9a34d
+    hi BlinkCmpKindString guifg=#6f9b4d
+    hi BlinkCmpKindNamespace guifg=#d1454f
+    hi BlinkCmpKindEnum guifg=#9f5ab8
+    hi BlinkCmpKindClass guifg=#c9a34d
+    hi BlinkCmpKindReference guifg=#b5783f
+    hi BlinkCmpKindBoolean guifg=#b5783f
 ]])
 
--- markup
+-- markup (light theme)
 vim.cmd([[
-    hi @markup.raw guifg=#8ebd6b
-    hi @markup.raw.block guifg=#8ebd6b
-    hi @markup.quote gui=italic guifg=#535965
-    hi @markup.math guifg=#a0a8b7
-    hi @markup.list guifg=#e55561
-    hi @markup.list.unchecked gui=italic guifg=#e55561
-    hi @markup.list.checked gui=italic guifg=#8ebd6b
-    hi @markup.link.url gui=underline guifg=#48b0bd
-    hi @markup.link.label guifg=#48b0bd
-    hi @markup.heading.6 gui=bold guifg=#cc9057
-    hi @markup.heading.5 gui=bold guifg=#bf68d9
-    hi @markup.heading.4 gui=bold guifg=#e55561
-    hi @markup.heading.3 gui=bold guifg=#cc9057
-    hi @markup.heading.1 gui=bold guifg=#e55561
+    hi @markup.raw guifg=#6f9b4d
+    hi @markup.raw.block guifg=#6f9b4d
+    hi @markup.quote gui=italic guifg=#a0a0a0
+    hi @markup.math guifg=#8a909d
+    hi @markup.list guifg=#d1454f
+    hi @markup.list.unchecked gui=italic guifg=#d1454f
+    hi @markup.list.checked gui=italic guifg=#6f9b4d
+    hi @markup.link.url gui=underline guifg=#3a8b97
+    hi @markup.link.label guifg=#3a8b97
+    hi @markup.heading.6 gui=bold guifg=#b5783f
+    hi @markup.heading.5 gui=bold guifg=#9f5ab8
+    hi @markup.heading.4 gui=bold guifg=#d1454f
+    hi @markup.heading.3 gui=bold guifg=#b5783f
+    hi @markup.heading.1 gui=bold guifg=#d1454f
     hi @markup.heading.1.delimiter.vimdoc cterm=underdouble,nocombine gui=underdouble,nocombine guifg=bg guibg=bg guisp=fg
-    hi @markup.heading.2 gui=bold guifg=#bf68d9
+    hi @markup.heading.2 gui=bold guifg=#9f5ab8
     hi @markup.heading.2.delimiter.vimdoc cterm=underline,nocombine gui=underline,nocombine guifg=bg guibg=bg guisp=fg
     hi link @markup Special
-    hi @markup.strong cterm=bold gui=bold guifg=#a0a8b7
-    hi @markup.italic cterm=italic gui=italic guifg=#a0a8b7
-    hi @markup.strikethrough cterm=strikethrough gui=strikethrough guifg=#a0a8b7
-    hi @markup.underline cterm=underline gui=underline guifg=#a0a8b7
-    hi @markup.heading gui=bold guifg=#cc9057
-    hi @markup.link guifg=#4fa6ed
+    hi @markup.strong cterm=bold gui=bold guifg=#8a909d
+    hi @markup.italic cterm=italic gui=italic guifg=#8a909d
+    hi @markup.strikethrough cterm=strikethrough gui=strikethrough guifg=#8a909d
+    hi @markup.underline cterm=underline gui=underline guifg=#8a909d
+    hi @markup.heading gui=bold guifg=#b5783f
+    hi @markup.link guifg=#3a87c4
 ]])
