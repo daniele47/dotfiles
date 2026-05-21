@@ -10,6 +10,7 @@ echo -n "What profile do you wish to install? "
 read -r AUTOSAVER_PROFILE
 export AUTOSAVER_PROFILE
 export AUTOSAVER_ROOT="$(mktemp -d)"
+export AUTOSAVER_HOME="$HOME"
 
 # install autosaver binary
 export BIN_PATH=""
