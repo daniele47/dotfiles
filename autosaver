@@ -8,6 +8,12 @@ set -e
 export AUTOSAVER_HOME="${AUTOSAVER_HOME:-$HOME}"
 export AUTOSAVER_ROOT="${AUTOSAVER_ROOT:-$(dirname "$(realpath "${BASH_SOURCE[0]}")")}"
 
+# source `.env` file if found
+ENV_FILE="$AUTOSAVER_ROOT/.env"
+if [[ -f "$ENV_FILE" ]]; then
+    source "$ENV_FILE"
+fi
+
 # local paths
 LOCAL_BIN_PATH_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/autosaver"
 LOCAL_BIN_PATH="$LOCAL_BIN_PATH_DIR/autosaver"
@@ -41,35 +47,42 @@ elif [[ -v BUILD ]]; then
         exit 1
     fi
 
-    # download git repo
-    tmpdir="$(mktemp -d)"
-    echo "(1/5) Downloading repository from '$REMOTE_GIT_REPO'..."
-    git clone "$REMOTE_GIT_REPO" "$tmpdir"
-
-    # change branch if specified
-    echo
     if [[ -n "$BUILD" ]]; then
+        # download git repo
+        tmpdir="$(mktemp -d)"
+        echo "(1/5) Downloading repository from '$REMOTE_GIT_REPO'..."
+        git clone "$REMOTE_GIT_REPO" "$tmpdir"
+
+        # change branch if specified
         echo "(2/5) Running git checkout '$BUILD'..."
         git -C "$tmpdir" checkout "$BUILD"
+
+        # compile rust binary
+        echo
+        echo "(3/5) Compiling rust project..."
+        cd "$tmpdir" || exit 1
+        cargo build --release
+
+        # moving binary into correct place
+        echo
+        echo "(4/5) Installing binary into '$LOCAL_BIN_PATH'..."
+        cp "$tmpdir/.target/release/autosaver" "$LOCAL_BIN_PATH"
+
+        # cleanup opeartions
+        echo
+        echo "(5/5) Cleanup temporary files..."
+        rm -rf "$tmpdir"
     else
-        echo "(2/5) Keeping latest git commit..."
+        # compile rust binary
+        echo "(1/2) Compiling rust project..."
+        cd "$(dirname "$(realpath "${BASH_SOURCE[0]}")")" || exit 1
+        cargo build --release
+
+        # copying binary into correct place
+        echo
+        echo "(2/2) Installing binary into '$LOCAL_BIN_PATH'..."
+        cp ".target/release/autosaver" "$LOCAL_BIN_PATH"
     fi
-
-    # compile rust binary
-    echo
-    echo "(3/5) Compiling rust project..."
-    cd "$tmpdir" || exit 1
-    cargo build --release
-
-    # moving binary into correct place
-    echo
-    echo "(4/5) Installing binary into '$LOCAL_BIN_PATH'..."
-    cp "$tmpdir/.target/release/autosaver" "$LOCAL_BIN_PATH"
-
-    # cleanup opeartions
-    echo
-    echo "(5/5) Cleanup temporary files..."
-    rm -rf "$tmpdir"
 
     # nice update/install msg
     echo -n "Autosaver compiled: "
