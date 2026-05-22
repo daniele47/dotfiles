@@ -2,6 +2,7 @@ return {
 	"saghen/blink.cmp",
 	event = "InsertEnter",
 	dependencies = {
+		"saghen/blink.lib",
 		{
 			"L3MON4D3/LuaSnip",
 			build = (function()
