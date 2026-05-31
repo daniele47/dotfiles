@@ -117,4 +117,4 @@ elif command -v vim &>/dev/null; then
     export EDITOR=vim
 fi
 
-PATH="$HOME/.local/bin:$PATH"
+export PATH="$HOME/.local/bin:$PATH"
