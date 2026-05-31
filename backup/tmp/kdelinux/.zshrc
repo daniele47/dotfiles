@@ -105,6 +105,8 @@ export SYSTEMD_LESS=FRXMK
 if command -v lsd &>/dev/null; then
     alias ls='lsd --icon=never --group-directories-first'
     alias tree='lsd --icon=never --group-directories-first --tree'
+elif command -v tree &>/dev/null; then
+    alias tree='tree -C'
 fi
 if command -v bat &>/dev/null; then
     alias cat='bat'
