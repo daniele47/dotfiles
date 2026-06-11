@@ -10,6 +10,7 @@ local col = {
         white = { gui = "#dadada", tui = 253 },
         red = { gui = "#d75f5f", tui = 167 },
         gold = { gui = "#d7af5f", tui = 179 },
+        yellow = { gui = "#ffcc00", tui = 220 },
         green = { gui = "#87d75f", tui = 113 },
         lblue = { gui = "#5fd7d7", tui = 80 },
         blue = { gui = "#5f87d7", tui = 68 },
@@ -69,18 +70,18 @@ hi("Include", "PreProc")
 hi("Define", "PreProc")
 hi("Macro", "PreProc")
 hi("PreCondit", "PreProc")
-hi("Type", "Normal")
+hi("Type", col.fg.white)
 hi("StorageClass", "Type")
 hi("Structure", "Type")
 hi("Typedef", "Type")
-hi("Special", "Normal")
+hi("Special", col.fg.white)
 hi("SpecialChar", "Special")
 hi("Tag", "Special")
 hi("Delimiter", "Special")
 hi("SpecialComment", "Special")
 hi("Debug", "Special")
 hi("Underlined", nil, nil, { underline = true })
-hi("Ignore", "Normal")
+hi("Ignore", col.fg.grey)
 hi("Error", col.fg.red, nil, { bold = true })
 hi("Todo", col.bg.lblue, nil, { bold = true })
 hi("Added", col.fg.green)
@@ -179,86 +180,86 @@ hi("WinBarNC", "Statusline")
 
 -- :h diagnostic-highlights
 hi("DiagnosticError", col.fg.red)
-hi("DiagnosticWarn", col.fg.gold)
+hi("DiagnosticWarn", col.fg.yellow)
 hi("DiagnosticInfo", col.fg.blue)
 hi("DiagnosticHint", col.fg.lblue)
 hi("DiagnosticOk", col.fg.green)
 hi("DiagnosticUnderlineError", nil, nil, { sp = col.fg.red.gui, undercurl = true, cterm = { underline = true } })
-hi("DiagnosticUnderlineWarn", nil, nil, { sp = col.fg.gold.gui, undercurl = true, cterm = { underline = true } })
+hi("DiagnosticUnderlineWarn", nil, nil, { sp = col.fg.yellow.gui, undercurl = true, cterm = { underline = true } })
 hi("DiagnosticUnderlineInfo", nil, nil, { sp = col.fg.blue.gui, undercurl = true, cterm = { underline = true } })
 hi("DiagnosticUnderlineHint", nil, nil, { sp = col.fg.lblue.gui, undercurl = true, cterm = { underline = true } })
 hi("DiagnosticUnderlineOk", nil, nil, { sp = col.fg.green.gui, undercurl = true, cterm = { underline = true } })
 hi("DiagnosticDeprecated", nil, nil, { strikethrough = true })
 hi("DiagnosticUnnecessary", "Conceal")
 
--- blink
-vim.cmd([[
-    hi BlinkCmpKindSnippet guifg=#e55561
-    hi BlinkCmpDetail guifg=#7a818e
-    hi BlinkCmpLabelMatch guifg=#48b0bd
-    hi BlinkCmpLabelDeprecated gui=strikethrough guifg=#7a818e
-    hi BlinkCmpKindInterface guifg=#8ebd6b
-    hi BlinkCmpLabe guifg=#a0a8b7
-    hi BlinkCmpKindFolder guifg=#cc9057
-    hi BlinkCmpKindTypeParameter guifg=#e55561
-    hi BlinkCmpKindText guifg=#7a818e
-    hi BlinkCmpKindValue guifg=#cc9057
-    hi BlinkCmpKind guifg=#bf68d9
-    hi BlinkCmpKindStruct guifg=#bf68d9
-    hi BlinkCmpKindEvent guifg=#e2b86b
-    hi BlinkCmpKindProperty guifg=#48b0bd
-    hi BlinkCmpKindPackage guifg=#e2b86b
-    hi BlinkCmpKindVariable guifg=#bf68d9
-    hi BlinkCmpKindObject guifg=#e55561
-    hi BlinkCmpKindNumber guifg=#cc9057
-    hi BlinkCmpKindNull guifg=#535965
-    hi BlinkCmpKindField guifg=#bf68d9
-    hi BlinkCmpKindColor guifg=#8ebd6b
-    hi BlinkCmpKindOperator guifg=#e55561
-    hi BlinkCmpKindConstructor guifg=#4fa6ed
-    hi BlinkCmpKindConstant guifg=#cc9057
-    hi BlinkCmpKindKey guifg=#48b0bd
-    hi BlinkCmpKindFunction guifg=#4fa6ed
-    hi BlinkCmpKindFile guifg=#4fa6ed
-    hi BlinkCmpKindModule guifg=#cc9057
-    hi BlinkCmpKindMethod guifg=#4fa6ed
-    hi BlinkCmpKindKeyword guifg=#48b0bd
-    hi BlinkCmpKindDefault guifg=#bf68d9
-    hi BlinkCmpKindArray guifg=#e2b86b
-    hi BlinkCmpKindUnit guifg=#8ebd6b
-    hi BlinkCmpKindEnumMember guifg=#e2b86b
-    hi BlinkCmpKindString guifg=#8ebd6b
-    hi BlinkCmpKindNamespace guifg=#e55561
-    hi BlinkCmpKindEnum guifg=#bf68d9
-    hi BlinkCmpKindClass guifg=#e2b86b
-    hi BlinkCmpKindReference guifg=#cc9057
-    hi BlinkCmpKindBoolean guifg=#cc9057
-]])
-
--- markup
-vim.cmd([[
-    hi @markup.raw guifg=#8ebd6b
-    hi @markup.raw.block guifg=#8ebd6b
-    hi @markup.quote gui=italic guifg=#535965
-    hi @markup.math guifg=#a0a8b7
-    hi @markup.list guifg=#e55561
-    hi @markup.list.unchecked gui=italic guifg=#e55561
-    hi @markup.list.checked gui=italic guifg=#8ebd6b
-    hi @markup.link.url gui=underline guifg=#48b0bd
-    hi @markup.link.label guifg=#48b0bd
-    hi @markup.heading.6 gui=bold guifg=#cc9057
-    hi @markup.heading.5 gui=bold guifg=#bf68d9
-    hi @markup.heading.4 gui=bold guifg=#e55561
-    hi @markup.heading.3 gui=bold guifg=#cc9057
-    hi @markup.heading.1 gui=bold guifg=#e55561
-    hi @markup.heading.1.delimiter.vimdoc cterm=underdouble,nocombine gui=underdouble,nocombine guifg=bg guibg=bg guisp=fg
-    hi @markup.heading.2 gui=bold guifg=#bf68d9
-    hi @markup.heading.2.delimiter.vimdoc cterm=underline,nocombine gui=underline,nocombine guifg=bg guibg=bg guisp=fg
-    hi link @markup Special
-    hi @markup.strong cterm=bold gui=bold guifg=#a0a8b7
-    hi @markup.italic cterm=italic gui=italic guifg=#a0a8b7
-    hi @markup.strikethrough cterm=strikethrough gui=strikethrough guifg=#a0a8b7
-    hi @markup.underline cterm=underline gui=underline guifg=#a0a8b7
-    hi @markup.heading gui=bold guifg=#cc9057
-    hi @markup.link guifg=#4fa6ed
-]])
+-- -- blink
+-- vim.cmd([[
+--     hi BlinkCmpKindSnippet guifg=#e55561
+--     hi BlinkCmpDetail guifg=#7a818e
+--     hi BlinkCmpLabelMatch guifg=#48b0bd
+--     hi BlinkCmpLabelDeprecated gui=strikethrough guifg=#7a818e
+--     hi BlinkCmpKindInterface guifg=#8ebd6b
+--     hi BlinkCmpLabe guifg=#a0a8b7
+--     hi BlinkCmpKindFolder guifg=#cc9057
+--     hi BlinkCmpKindTypeParameter guifg=#e55561
+--     hi BlinkCmpKindText guifg=#7a818e
+--     hi BlinkCmpKindValue guifg=#cc9057
+--     hi BlinkCmpKind guifg=#bf68d9
+--     hi BlinkCmpKindStruct guifg=#bf68d9
+--     hi BlinkCmpKindEvent guifg=#e2b86b
+--     hi BlinkCmpKindProperty guifg=#48b0bd
+--     hi BlinkCmpKindPackage guifg=#e2b86b
+--     hi BlinkCmpKindVariable guifg=#bf68d9
+--     hi BlinkCmpKindObject guifg=#e55561
+--     hi BlinkCmpKindNumber guifg=#cc9057
+--     hi BlinkCmpKindNull guifg=#535965
+--     hi BlinkCmpKindField guifg=#bf68d9
+--     hi BlinkCmpKindColor guifg=#8ebd6b
+--     hi BlinkCmpKindOperator guifg=#e55561
+--     hi BlinkCmpKindConstructor guifg=#4fa6ed
+--     hi BlinkCmpKindConstant guifg=#cc9057
+--     hi BlinkCmpKindKey guifg=#48b0bd
+--     hi BlinkCmpKindFunction guifg=#4fa6ed
+--     hi BlinkCmpKindFile guifg=#4fa6ed
+--     hi BlinkCmpKindModule guifg=#cc9057
+--     hi BlinkCmpKindMethod guifg=#4fa6ed
+--     hi BlinkCmpKindKeyword guifg=#48b0bd
+--     hi BlinkCmpKindDefault guifg=#bf68d9
+--     hi BlinkCmpKindArray guifg=#e2b86b
+--     hi BlinkCmpKindUnit guifg=#8ebd6b
+--     hi BlinkCmpKindEnumMember guifg=#e2b86b
+--     hi BlinkCmpKindString guifg=#8ebd6b
+--     hi BlinkCmpKindNamespace guifg=#e55561
+--     hi BlinkCmpKindEnum guifg=#bf68d9
+--     hi BlinkCmpKindClass guifg=#e2b86b
+--     hi BlinkCmpKindReference guifg=#cc9057
+--     hi BlinkCmpKindBoolean guifg=#cc9057
+-- ]])
+--
+-- -- markup
+-- vim.cmd([[
+--     hi @markup.raw guifg=#8ebd6b
+--     hi @markup.raw.block guifg=#8ebd6b
+--     hi @markup.quote gui=italic guifg=#535965
+--     hi @markup.math guifg=#a0a8b7
+--     hi @markup.list guifg=#e55561
+--     hi @markup.list.unchecked gui=italic guifg=#e55561
+--     hi @markup.list.checked gui=italic guifg=#8ebd6b
+--     hi @markup.link.url gui=underline guifg=#48b0bd
+--     hi @markup.link.label guifg=#48b0bd
+--     hi @markup.heading.6 gui=bold guifg=#cc9057
+--     hi @markup.heading.5 gui=bold guifg=#bf68d9
+--     hi @markup.heading.4 gui=bold guifg=#e55561
+--     hi @markup.heading.3 gui=bold guifg=#cc9057
+--     hi @markup.heading.1 gui=bold guifg=#e55561
+--     hi @markup.heading.1.delimiter.vimdoc cterm=underdouble,nocombine gui=underdouble,nocombine guifg=bg guibg=bg guisp=fg
+--     hi @markup.heading.2 gui=bold guifg=#bf68d9
+--     hi @markup.heading.2.delimiter.vimdoc cterm=underline,nocombine gui=underline,nocombine guifg=bg guibg=bg guisp=fg
+--     hi link @markup Special
+--     hi @markup.strong cterm=bold gui=bold guifg=#a0a8b7
+--     hi @markup.italic cterm=italic gui=italic guifg=#a0a8b7
+--     hi @markup.strikethrough cterm=strikethrough gui=strikethrough guifg=#a0a8b7
+--     hi @markup.underline cterm=underline gui=underline guifg=#a0a8b7
+--     hi @markup.heading gui=bold guifg=#cc9057
+--     hi @markup.link guifg=#4fa6ed
+-- ]])
