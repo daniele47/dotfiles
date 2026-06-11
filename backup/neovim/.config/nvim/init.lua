@@ -21,6 +21,7 @@ vim.opt.swapfile = false      -- no swap files
 vim.opt.scrolloff = 5         -- some scrolloff lines
 vim.opt.showmode = false      -- not show modes in cmdline
 vim.opt.hlsearch = false      -- no highlight searches
+vim.opt.ignorecase = true     -- case insensitive searches
 vim.opt.pumheight = 15        -- max height of popups
 vim.opt.signcolumn = "yes"    -- always have signcolumn
 

@@ -1,51 +1,53 @@
 -- clear highlighting
 vim.cmd("highlight clear")
-if vim.fn.exists('syntax_on') then
-    vim.cmd('syntax reset')
+if vim.fn.exists("syntax_on") then
+	vim.cmd("syntax reset")
 end
 
 -- color palette
 local col = {
-    fg = {
-        white = { gui = "#dadada", tui = 253 },
-        red = { gui = "#d75f5f", tui = 167 },
-        gold = { gui = "#d7af5f", tui = 179 },
-        yellow = { gui = "#ffcc00", tui = 220 },
-        green = { gui = "#87d75f", tui = 113 },
-        lblue = { gui = "#5fd7d7", tui = 80 },
-        blue = { gui = "#5f87d7", tui = 68 },
-        pink = { gui = "#d75fd7", tui = 170 },
-        grey = { gui = "#5f5f87", tui = 60 },
-        black = { gui = "#1c1c1c", tui = 234 },
-    },
-    bg = {
-        white = { gui = "#dadada", tui = 253 },
-        yellow = { gui = "#d7af5f", tui = 179 },
-        pink = { gui = "#ff87ff", tui = 213 },
-        red = { gui = "#ff5f5f", tui = 203 },
-        green = { gui = "#00af5f", tui = 35 },
-        lblue = { gui = "#87afff", tui = 111 },
-        diff_grey = { gui = "#4c4f69", tui = 239 },
-        diff_lblue = { gui = "#252842", tui = 235 },
-        diff_blue = { gui = "#161821", tui = 233 },
-    },
+	fg = {
+		white = { gui = "#dadada", tui = 253 },
+		red = { gui = "#d75f5f", tui = 167 },
+		gold = { gui = "#d7af5f", tui = 179 },
+		green = { gui = "#87d75f", tui = 113 },
+		lblue = { gui = "#5fd7d7", tui = 80 },
+		blue = { gui = "#5f87d7", tui = 68 },
+		pink = { gui = "#d75fd7", tui = 170 },
+		lgrey = { gui = "#a0a0a0", tui = 247 },
+		grey = { gui = "#5f5f87", tui = 60 },
+		black = { gui = "#1c1c1c", tui = 234 },
+		error = { gui = "#ff3333", tui = 196 },
+		warning = { gui = "#ffcc00", tui = 220 },
+	},
+	bg = {
+		white = { gui = "#dadada", tui = 253 },
+		yellow = { gui = "#d7af5f", tui = 179 },
+		pink = { gui = "#ff87ff", tui = 213 },
+		red = { gui = "#ff5f5f", tui = 203 },
+		green = { gui = "#00af5f", tui = 35 },
+		lblue = { gui = "#87afff", tui = 111 },
+		diff_grey = { gui = "#4c4f69", tui = 239 },
+		diff_lblue = { gui = "#252842", tui = 235 },
+		diff_blue = { gui = "#161821", tui = 233 },
+	},
 }
 
 -- util function to assign colors
 local function hi(hl, fg, bg, other)
-    local values = other or {}
-    if fg ~= nil then
-        values.fg = fg.gui
-        values.ctermfg = fg.tui
-    end
-    if bg ~= nil then
-        values.bg = bg.gui
-        values.ctermbg = bg.tui
-    end
-    if type(fg) == "string" then
-        values.link = fg
-    end
-    vim.api.nvim_set_hl(0, hl, values)
+	local values = other or {}
+	if fg ~= nil then
+		values.fg = fg.gui
+		values.ctermfg = fg.tui
+	end
+	if bg ~= nil then
+		values.bg = bg.gui
+		values.ctermbg = bg.tui
+	end
+	if type(fg) == "string" then
+		values.link = fg
+	end
+	vim.api.nvim_set_hl(0, hl, values)
 end
 
 -- :h group-name
@@ -70,11 +72,11 @@ hi("Include", "PreProc")
 hi("Define", "PreProc")
 hi("Macro", "PreProc")
 hi("PreCondit", "PreProc")
-hi("Type", col.fg.white)
+hi("Type")
 hi("StorageClass", "Type")
 hi("Structure", "Type")
 hi("Typedef", "Type")
-hi("Special", col.fg.white)
+hi("Special")
 hi("SpecialChar", "Special")
 hi("Tag", "Special")
 hi("Delimiter", "Special")
@@ -87,6 +89,20 @@ hi("Todo", col.bg.lblue, nil, { bold = true })
 hi("Added", col.fg.green)
 hi("Changed", col.fg.blue)
 hi("Removed", col.fg.red)
+
+-- :h diagnostic-highlights
+hi("DiagnosticError", col.fg.error)
+hi("DiagnosticWarn", col.fg.warning)
+hi("DiagnosticInfo", col.fg.blue)
+hi("DiagnosticHint", col.fg.lblue)
+hi("DiagnosticOk", col.fg.green)
+hi("DiagnosticUnderlineError", nil, nil, { sp = col.fg.error.gui, undercurl = true, cterm = { underline = true } })
+hi("DiagnosticUnderlineWarn", nil, nil, { sp = col.fg.warning.gui, undercurl = true, cterm = { underline = true } })
+hi("DiagnosticUnderlineInfo", nil, nil, { sp = col.fg.blue.gui, undercurl = true, cterm = { underline = true } })
+hi("DiagnosticUnderlineHint", nil, nil, { sp = col.fg.lblue.gui, undercurl = true, cterm = { underline = true } })
+hi("DiagnosticUnderlineOk", nil, nil, { sp = col.fg.green.gui, undercurl = true, cterm = { underline = true } })
+hi("DiagnosticDeprecated", nil, nil, { strikethrough = true })
+hi("DiagnosticUnnecessary", "Conceal")
 
 -- :h highlight-groups
 hi("ColorColumn", "Visual")
@@ -106,10 +122,10 @@ hi("DiffTextAdd", "DiffText")
 hi("EndOfBuffer", "Conceal")
 hi("TermCursor", "Cursor")
 hi("OkMsg", col.fg.lgreen)
-hi("WarningMsg", col.fg.gold)
+hi("WarningMsg", col.fg.warning)
 hi("ErrorMsg", "Error")
 hi("StderrMsg", "Error")
-hi("StdoutMsg", "Normal")
+hi("StdoutMsg", col.fg.white)
 hi("WinSeparator", "Conceal")
 hi("Folded", "Conceal")
 hi("FoldColumn", "Conceal")
@@ -123,19 +139,19 @@ hi("CursorLineNr", "Conceal")
 hi("CursorLineFold", "Conceal")
 hi("CursorLineSign", "Conceal")
 hi("MatchParen", col.fg.pink, nil, { bold = true })
-hi("ModeMsg", "Normal")
-hi("MsgArea", "Normal")
+hi("ModeMsg")
+hi("MsgArea")
 hi("MsgSeparator", "Statusline")
-hi("MoreMsg", "Normal")
+hi("MoreMsg")
 hi("NonText", "Conceal")
 hi("Normal", col.fg.white, col.bg.diff_blue)
 hi("NormalFloat", "Statusline")
 hi("FloatBorder", "Statusline")
 hi("FloatShadow", "FloatBorder")
-hi("FloatShadowThrough", "Normal")
-hi("FloatTitle", "Normal")
-hi("FloatFooter", "Normal")
-hi("NormalNC", "Normal")
+hi("FloatShadowThrough")
+hi("FloatTitle")
+hi("FloatFooter")
+hi("NormalNC")
 hi("Pmenu", "Statusline")
 hi("PmenuSel", "Visual")
 hi("PmenuKind", "Pmenu")
@@ -152,8 +168,8 @@ hi("PmenuShadowThrough", "Pmenu")
 hi("ComplMatchIns")
 hi("PreInsert", "Added")
 hi("ComplHint", "Conceal")
-hi("ComplHintMore", "Normal")
-hi("Question", "Normal")
+hi("ComplHintMore")
+hi("Question")
 hi("QuickFixLine", col.fg.black, col.bg.lblue)
 hi("Search", col.fg.black, col.bg.yellow)
 hi("SnippetTabstop", "Visual")
@@ -169,8 +185,8 @@ hi("StatusLineTerm", "Statusline")
 hi("StatusLineTermNC", "Statusline")
 hi("TabLine", "Statusline")
 hi("TabLineFill", "Statusline")
-hi("TabLineSel", "Normal")
-hi("Title", "Normal")
+hi("TabLineSel")
+hi("Title")
 hi("Visual", nil, col.bg.diff_grey)
 hi("VisualNOS", "Visual")
 hi("Whitespace", "Conceal")
@@ -178,64 +194,63 @@ hi("WildMenu", "PmenuSel")
 hi("WinBar", "Statusline")
 hi("WinBarNC", "Statusline")
 
--- :h diagnostic-highlights
-hi("DiagnosticError", col.fg.red)
-hi("DiagnosticWarn", col.fg.yellow)
-hi("DiagnosticInfo", col.fg.blue)
-hi("DiagnosticHint", col.fg.lblue)
-hi("DiagnosticOk", col.fg.green)
-hi("DiagnosticUnderlineError", nil, nil, { sp = col.fg.red.gui, undercurl = true, cterm = { underline = true } })
-hi("DiagnosticUnderlineWarn", nil, nil, { sp = col.fg.yellow.gui, undercurl = true, cterm = { underline = true } })
-hi("DiagnosticUnderlineInfo", nil, nil, { sp = col.fg.blue.gui, undercurl = true, cterm = { underline = true } })
-hi("DiagnosticUnderlineHint", nil, nil, { sp = col.fg.lblue.gui, undercurl = true, cterm = { underline = true } })
-hi("DiagnosticUnderlineOk", nil, nil, { sp = col.fg.green.gui, undercurl = true, cterm = { underline = true } })
-hi("DiagnosticDeprecated", nil, nil, { strikethrough = true })
-hi("DiagnosticUnnecessary", "Conceal")
+-- blink: https://main.cmp.saghen.dev/configuration/appearance.html
+hi("BlinkCmpMenu")
+hi("BlinkCmpMenuBorder")
+hi("BlinkCmpMenuSelection")
+hi("BlinkCmpScrollBarThumb")
+hi("BlinkCmpScrollBarGutter")
+hi("BlinkCmpLabel", col.fg.white)
+hi("BlinkCmpLabelDeprecated", col.fg.lgrey, nil, { strikethrough = true })
+hi("BlinkCmpLabelMatch", col.fg.lblue)
+hi("BlinkCmpLabelDetail")
+hi("BlinkCmpLabelDescription")
+hi("BlinkCmpKind", col.fg.pink)
+hi("BlinkCmpKindArray", col.fg.gold)
+hi("BlinkCmpKindBoolean", col.fg.gold)
+hi("BlinkCmpKindClass", col.fg.gold)
+hi("BlinkCmpKindColor", col.fg.green)
+hi("BlinkCmpKindConstant", col.fg.gold)
+hi("BlinkCmpKindConstructor", col.fg.blue)
+hi("BlinkCmpKindDefault", col.fg.pink)
+hi("BlinkCmpKindEnum", col.fg.pink)
+hi("BlinkCmpKindEnumMember", col.fg.gold)
+hi("BlinkCmpKindEvent", col.fg.gold)
+hi("BlinkCmpKindField", col.fg.pink)
+hi("BlinkCmpKindFile", col.fg.blue)
+hi("BlinkCmpKindFolder", col.fg.gold)
+hi("BlinkCmpKindFunction", col.fg.blue)
+hi("BlinkCmpKindInterface", col.fg.green)
+hi("BlinkCmpKindKey", col.fg.lblue)
+hi("BlinkCmpKindKeyword", col.fg.lblue)
+hi("BlinkCmpKindMethod", col.fg.blue)
+hi("BlinkCmpKindModule", col.fg.gold)
+hi("BlinkCmpKindNamespace", col.fg.red)
+hi("BlinkCmpKindNull", col.fg.lgrey)
+hi("BlinkCmpKindNumber", col.fg.gold)
+hi("BlinkCmpKindObject", col.fg.red)
+hi("BlinkCmpKindOperator", col.fg.red)
+hi("BlinkCmpKindPackage", col.fg.gold)
+hi("BlinkCmpKindProperty", col.fg.lblue)
+hi("BlinkCmpKindReference", col.fg.gold)
+hi("BlinkCmpKindSnippet", col.fg.red)
+hi("BlinkCmpKindString", col.fg.green)
+hi("BlinkCmpKindStruct", col.fg.pink)
+hi("BlinkCmpKindText", col.fg.white)
+hi("BlinkCmpKindTypeParameter", col.fg.red)
+hi("BlinkCmpKindUnit", col.fg.green)
+hi("BlinkCmpKindValue", col.fg.gold)
+hi("BlinkCmpKindVariable", col.fg.pink)
+hi("BlinkCmpSource")
+hi("BlinkCmpGhostText")
+hi("BlinkCmpDoc")
+hi("BlinkCmpDocBorder")
+hi("BlinkCmpDocSeparator")
+hi("BlinkCmpDocCursorLine")
+hi("BlinkCmpSignatureHelp")
+hi("BlinkCmpSignatureHelpBorder")
+hi("BlinkCmpSignatureHelpActiveParameter")
 
--- -- blink
--- vim.cmd([[
---     hi BlinkCmpKindSnippet guifg=#e55561
---     hi BlinkCmpDetail guifg=#7a818e
---     hi BlinkCmpLabelMatch guifg=#48b0bd
---     hi BlinkCmpLabelDeprecated gui=strikethrough guifg=#7a818e
---     hi BlinkCmpKindInterface guifg=#8ebd6b
---     hi BlinkCmpLabe guifg=#a0a8b7
---     hi BlinkCmpKindFolder guifg=#cc9057
---     hi BlinkCmpKindTypeParameter guifg=#e55561
---     hi BlinkCmpKindText guifg=#7a818e
---     hi BlinkCmpKindValue guifg=#cc9057
---     hi BlinkCmpKind guifg=#bf68d9
---     hi BlinkCmpKindStruct guifg=#bf68d9
---     hi BlinkCmpKindEvent guifg=#e2b86b
---     hi BlinkCmpKindProperty guifg=#48b0bd
---     hi BlinkCmpKindPackage guifg=#e2b86b
---     hi BlinkCmpKindVariable guifg=#bf68d9
---     hi BlinkCmpKindObject guifg=#e55561
---     hi BlinkCmpKindNumber guifg=#cc9057
---     hi BlinkCmpKindNull guifg=#535965
---     hi BlinkCmpKindField guifg=#bf68d9
---     hi BlinkCmpKindColor guifg=#8ebd6b
---     hi BlinkCmpKindOperator guifg=#e55561
---     hi BlinkCmpKindConstructor guifg=#4fa6ed
---     hi BlinkCmpKindConstant guifg=#cc9057
---     hi BlinkCmpKindKey guifg=#48b0bd
---     hi BlinkCmpKindFunction guifg=#4fa6ed
---     hi BlinkCmpKindFile guifg=#4fa6ed
---     hi BlinkCmpKindModule guifg=#cc9057
---     hi BlinkCmpKindMethod guifg=#4fa6ed
---     hi BlinkCmpKindKeyword guifg=#48b0bd
---     hi BlinkCmpKindDefault guifg=#bf68d9
---     hi BlinkCmpKindArray guifg=#e2b86b
---     hi BlinkCmpKindUnit guifg=#8ebd6b
---     hi BlinkCmpKindEnumMember guifg=#e2b86b
---     hi BlinkCmpKindString guifg=#8ebd6b
---     hi BlinkCmpKindNamespace guifg=#e55561
---     hi BlinkCmpKindEnum guifg=#bf68d9
---     hi BlinkCmpKindClass guifg=#e2b86b
---     hi BlinkCmpKindReference guifg=#cc9057
---     hi BlinkCmpKindBoolean guifg=#cc9057
--- ]])
---
 -- -- markup
 -- vim.cmd([[
 --     hi @markup.raw guifg=#8ebd6b
