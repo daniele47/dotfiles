@@ -27,12 +27,3 @@ git clone https://github.com/daniele47/dotfiles "$AUTOSAVER_ROOT" --depth=1
 "$BIN_PATH" run "$AUTOSAVER_PROFILE" -y
 "$BIN_PATH" restore "$AUTOSAVER_PROFILE" -ay
 ```
-
-## TODO
-
-- neovim updates:
-    - improve statusline:
-        - [ ] add `mode` to the statusline
-        - [ ] it might not have enough `contrast` with everything else? maybe i need single statusline x thingy?
-    - fix colorscheme
-        - [ ] broken colorscheme on diagnostic floating windows
