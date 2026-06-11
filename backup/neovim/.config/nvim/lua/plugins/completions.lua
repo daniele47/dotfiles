@@ -1,24 +1,23 @@
-return {
-	"saghen/blink.cmp",
-	event = "InsertEnter",
-	dependencies = {
-		"saghen/blink.lib",
-		{
-			"L3MON4D3/LuaSnip",
-			build = (function()
-				if vim.fn.has("win32") == 0 and vim.fn.executable("make") == 1 then
-					return "make install_jsregexp"
-				end
-			end)(),
-			dependencies = {
-				"rafamadriz/friendly-snippets",
-				config = function()
-					require("luasnip.loaders.from_vscode").lazy_load()
-				end,
-			},
-		},
-	},
-	opts = {
+vim.pack({
+	"https://github.com/saghen/blink.cmp",
+	"https://github.com/saghen/blink.lib",
+	"https://github.com/L3MON4D3/LuaSnip",
+	"https://github.com/rafamadriz/friendly-snippets",
+})
+
+-- setup function
+local plugin_loaded = false
+local function plugin_setup()
+	-- skip if already loaded
+	if plugin_loaded then
+		return
+	else
+		plugin_loaded = true
+	end
+
+	-- load and setup plugin once
+	require("luasnip.loaders.from_vscode").lazy_load()
+	require("blink").setup({
 		snippets = { preset = "luasnip" },
 		keymap = {
 			preset = "none",
@@ -101,6 +100,8 @@ return {
 		},
 		cmdline = { enabled = false },
 		signature = { enabled = false, window = { border = "single" } },
-	},
-	opts_extend = { "sources.default" },
-}
+	})
+end
+
+-- load on VimInsert event
+plugin_setup()
