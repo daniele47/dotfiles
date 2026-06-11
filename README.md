@@ -2,7 +2,13 @@
 
 Personal dotfiles using my autosaver cli
 
-## init script
+## install autosaver cli
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/daniele47/autosaver/refs/heads/main/install.sh | bash -s
+```
+
+## install autosaver cli, run init scripts and restore dotfiles
 
 ```bash
 # prompt for the profile to use
@@ -11,10 +17,9 @@ read -r AUTOSAVER_PROFILE
 export AUTOSAVER_PROFILE
 export AUTOSAVER_ROOT="$(mktemp -d)"
 export AUTOSAVER_HOME="$HOME"
+export BIN_PATH="${XDG_BIN_HOME:-$HOME/.local/bin}/autosaver"
 
 # install autosaver binary
-export BIN_PATH=""
-BIN_PATH="${XDG_BIN_HOME:-$HOME/.local/bin}/autosaver"
 curl -fsSL https://raw.githubusercontent.com/daniele47/autosaver/refs/heads/main/install.sh | bash -s
 
 # download git repo, and run
