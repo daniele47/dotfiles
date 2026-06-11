@@ -1,4 +1,4 @@
-vim.pack({
+vim.pack.add({
 	"https://github.com/saghen/blink.cmp",
 	"https://github.com/saghen/blink.lib",
 	"https://github.com/L3MON4D3/LuaSnip",
@@ -17,7 +17,7 @@ local function plugin_setup()
 
 	-- load and setup plugin once
 	require("luasnip.loaders.from_vscode").lazy_load()
-	require("blink").setup({
+	require("blink.cmp").setup({
 		snippets = { preset = "luasnip" },
 		keymap = {
 			preset = "none",
@@ -103,5 +103,10 @@ local function plugin_setup()
 	})
 end
 
--- load on VimInsert event
-plugin_setup()
+-- load on InsertEnter event
+vim.api.nvim_create_autocmd("InsertEnter", {
+	once = true,
+	callback = function()
+		plugin_setup()
+	end,
+})
