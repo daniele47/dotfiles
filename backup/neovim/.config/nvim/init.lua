@@ -13,6 +13,7 @@ vim.opt.splitbelow = true
 
 -- statusline
 vim.opt.laststatus = 3
+vim.g.qf_disable_statusline = 1
 vim.opt.statusline = "%<%f %m%r%y %= %{&ff} %l:%v %P"
 
 -- various
@@ -24,6 +25,8 @@ vim.opt.hlsearch = false      -- no highlight searches
 vim.opt.ignorecase = true     -- case insensitive searches
 vim.opt.pumheight = 15        -- max height of popups
 vim.opt.signcolumn = "yes"    -- always have signcolumn
+vim.g.loaded_netrw = 1        -- do not load netwr
+vim.g.loaded_netrwPlugin = 1
 
 -- set colorscheme
 vim.cmd.colorscheme("ultimate")
