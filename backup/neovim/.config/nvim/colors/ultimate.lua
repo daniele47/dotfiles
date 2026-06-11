@@ -121,11 +121,11 @@ hi("DiffText", col.fg.black, col.bg.pink)
 hi("DiffTextAdd", "DiffText")
 hi("EndOfBuffer", "Conceal")
 hi("TermCursor", "Cursor")
-hi("OkMsg", col.fg.lgreen)
+hi("OkMsg", col.fg.green)
 hi("WarningMsg", col.fg.warning)
 hi("ErrorMsg", "Error")
 hi("StderrMsg", "Error")
-hi("StdoutMsg", col.fg.white)
+hi("StdoutMsg")
 hi("WinSeparator", "Conceal")
 hi("Folded", "Conceal")
 hi("FoldColumn", "Conceal")
@@ -160,8 +160,8 @@ hi("PmenuExtra", "Pmenu")
 hi("PmenuExtraSel", "PmenuSel")
 hi("PmenuSbar", "Pmenu")
 hi("PmenuThumb", "PmenuSel")
-hi("PmenuMatch", col.fg.white, nil, { bold = true })
-hi("PmenuMatchSel", col.fg.white, nil, { bold = true })
+hi("PmenuMatch", nil, nil, { bold = true })
+hi("PmenuMatchSel", nil, nil, { bold = true })
 hi("PmenuBorder", "PmenuSel")
 hi("PmenuShadow", "PmenuSel")
 hi("PmenuShadowThrough", "Pmenu")
@@ -194,17 +194,28 @@ hi("WildMenu", "PmenuSel")
 hi("WinBar", "Statusline")
 hi("WinBarNC", "Statusline")
 
+-- :h treesitter-highlight-groups
+hi("@markup.heading", col.fg.gold, nil, { bold = true })
+hi("@markup.heading.1", col.fg.pink, nil, { bold = true })
+hi("@markup.heading.2", col.fg.lblue, nil, { bold = true })
+hi("@markup.heading.3", col.fg.green, nil, { bold = true })
+hi("@markup.heading.4", col.fg.pink, nil, { bold = true })
+hi("@markup.heading.5", col.fg.lblue, nil, { bold = true })
+hi("@markup.heading.6", col.fg.green, nil, { bold = true })
+hi("@markup.quote", col.fg.lgrey, nil, { italic = true })
+hi("@markup.math", col.fg.lgrey)
+hi("@markup.link", col.fg.blue)
+hi("@markup.link.label", col.fg.lblue)
+hi("@markup.link.url", col.fg.lblue)
+hi("@markup.raw", col.fg.green)
+hi("@markup.raw.block", col.fg.green)
+hi("@markup.list", col.fg.red)
+hi("@markup.list.checked", col.fg.green)
+hi("@markup.list.unchecked", col.fg.red, nil, { italic = true })
+
 -- blink: https://main.cmp.saghen.dev/configuration/appearance.html
-hi("BlinkCmpMenu")
-hi("BlinkCmpMenuBorder")
-hi("BlinkCmpMenuSelection")
-hi("BlinkCmpScrollBarThumb")
-hi("BlinkCmpScrollBarGutter")
-hi("BlinkCmpLabel", col.fg.white)
 hi("BlinkCmpLabelDeprecated", col.fg.lgrey, nil, { strikethrough = true })
 hi("BlinkCmpLabelMatch", col.fg.lblue)
-hi("BlinkCmpLabelDetail")
-hi("BlinkCmpLabelDescription")
 hi("BlinkCmpKind", col.fg.pink)
 hi("BlinkCmpKindArray", col.fg.gold)
 hi("BlinkCmpKindBoolean", col.fg.gold)
@@ -236,45 +247,7 @@ hi("BlinkCmpKindReference", col.fg.gold)
 hi("BlinkCmpKindSnippet", col.fg.red)
 hi("BlinkCmpKindString", col.fg.green)
 hi("BlinkCmpKindStruct", col.fg.pink)
-hi("BlinkCmpKindText", col.fg.white)
 hi("BlinkCmpKindTypeParameter", col.fg.red)
 hi("BlinkCmpKindUnit", col.fg.green)
 hi("BlinkCmpKindValue", col.fg.gold)
 hi("BlinkCmpKindVariable", col.fg.pink)
-hi("BlinkCmpSource")
-hi("BlinkCmpGhostText")
-hi("BlinkCmpDoc")
-hi("BlinkCmpDocBorder")
-hi("BlinkCmpDocSeparator")
-hi("BlinkCmpDocCursorLine")
-hi("BlinkCmpSignatureHelp")
-hi("BlinkCmpSignatureHelpBorder")
-hi("BlinkCmpSignatureHelpActiveParameter")
-
--- -- markup
--- vim.cmd([[
---     hi @markup.raw guifg=#8ebd6b
---     hi @markup.raw.block guifg=#8ebd6b
---     hi @markup.quote gui=italic guifg=#535965
---     hi @markup.math guifg=#a0a8b7
---     hi @markup.list guifg=#e55561
---     hi @markup.list.unchecked gui=italic guifg=#e55561
---     hi @markup.list.checked gui=italic guifg=#8ebd6b
---     hi @markup.link.url gui=underline guifg=#48b0bd
---     hi @markup.link.label guifg=#48b0bd
---     hi @markup.heading.6 gui=bold guifg=#cc9057
---     hi @markup.heading.5 gui=bold guifg=#bf68d9
---     hi @markup.heading.4 gui=bold guifg=#e55561
---     hi @markup.heading.3 gui=bold guifg=#cc9057
---     hi @markup.heading.1 gui=bold guifg=#e55561
---     hi @markup.heading.1.delimiter.vimdoc cterm=underdouble,nocombine gui=underdouble,nocombine guifg=bg guibg=bg guisp=fg
---     hi @markup.heading.2 gui=bold guifg=#bf68d9
---     hi @markup.heading.2.delimiter.vimdoc cterm=underline,nocombine gui=underline,nocombine guifg=bg guibg=bg guisp=fg
---     hi link @markup Special
---     hi @markup.strong cterm=bold gui=bold guifg=#a0a8b7
---     hi @markup.italic cterm=italic gui=italic guifg=#a0a8b7
---     hi @markup.strikethrough cterm=strikethrough gui=strikethrough guifg=#a0a8b7
---     hi @markup.underline cterm=underline gui=underline guifg=#a0a8b7
---     hi @markup.heading gui=bold guifg=#cc9057
---     hi @markup.link guifg=#4fa6ed
--- ]])
