@@ -1,53 +1,34 @@
-require("configs.options")
-require("configs.statusline")
-require("configs.lspconfigs")
+-- line numbers
+vim.opt.number = true
+vim.opt.relativenumber = true
 
-if vim.o.background == "light" then
-	vim.cmd.colorscheme("ultralight")
-else
-	vim.cmd.colorscheme("ultimate")
-end
+-- tab vs space
+vim.opt.tabstop = 4
+vim.opt.shiftwidth = 4
+vim.opt.expandtab = true
 
--- install lazy plugin manager
-local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
-if not vim.uv.fs_stat(lazypath) then
-	local lazyrepo = "https://github.com/folke/lazy.nvim.git"
-	local out = vim.fn.system({ "git", "clone", "--filter=blob:none", "--branch=stable", lazyrepo, lazypath })
-	if vim.v.shell_error ~= 0 then
-		vim.api.nvim_echo({
-			{ "Failed to clone lazy.nvim:\n", "ErrorMsg" },
-			{ out, "WarningMsg" },
-			{ "\nPress any key to exit..." },
-		}, true, {})
-		vim.fn.getchar()
-		os.exit(1)
-	end
-end
-vim.opt.rtp:prepend(lazypath)
+-- default split direction
+vim.opt.splitright = true
+vim.opt.splitbelow = true
 
--- install plugins using lazy
-require("lazy").setup({
-	{ import = "plugins" },
-}, {
-	change_detection = {
-		enabled = false,
-		notify = false,
-	},
-	ui = {
-		icons = {
-			cmd = "⌘",
-			config = "🛠",
-			event = "📅",
-			ft = "📂",
-			init = "⚙",
-			keys = "🗝",
-			plugin = "🔌",
-			runtime = "💻",
-			require = "🌙",
-			source = "📄",
-			start = "🚀",
-			task = "📌",
-			lazy = "💤 ",
-		},
-	},
-})
+-- statusline
+vim.opt.laststatus = 3
+vim.opt.statusline = "%<%f %m%r%y %= %{&ff} %l:%v %P"
+
+-- various
+vim.opt.mousemodel = "extend" -- mouse only selects
+vim.opt.swapfile = false      -- no swap files
+vim.opt.scrolloff = 5         -- some scrolloff lines
+vim.opt.showmode = false      -- not show modes in cmdline
+vim.opt.hlsearch = false      -- no highlight searches
+vim.opt.pumheight = 15        -- max height of popups
+vim.opt.signcolumn = "yes"    -- always have signcolumn
+
+-- set colorscheme
+vim.cmd.colorscheme("ultimate")
+
+-- plugins
+require("plugins.oil")
+require("plugins.telescope")
+require("plugins.lsp")
+require("plugins.gitsigns")
