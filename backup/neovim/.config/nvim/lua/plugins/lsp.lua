@@ -17,6 +17,9 @@ vim.api.nvim_create_autocmd("UIEnter", {
 	end,
 })
 
+-- keymap to format current file
+vim.keymap.set({ "n", "i" }, "<A-t>", vim.lsp.buf.format)
+
 -- additional keymaps for buffers with lsp attached
 vim.api.nvim_create_autocmd("LspAttach", {
 	desc = "Create keymaps for buffers with lsp attached",
