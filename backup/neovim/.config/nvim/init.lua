@@ -32,8 +32,8 @@ vim.g.loaded_netrwPlugin = 1
 vim.cmd.colorscheme("ultimate")
 
 -- plugins
+require("plugins.completions")
+require("plugins.gitsigns")
+require("plugins.lsp")
 require("plugins.oil")
 require("plugins.telescope")
-require("plugins.lsp")
-require("plugins.gitsigns")
-require("plugins.completions")
