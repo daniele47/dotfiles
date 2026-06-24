@@ -56,13 +56,13 @@ vim.keymap.set({ 'n', 'i' }, '<A-s-f>', function()
 end)
 vim.keymap.set({ 'n', 'i' }, '<A-b>', function()
     plugin_setup()
-    require("telescope.builtin").buffers({
-        only_cwd = true,
-    })
+    require("telescope.builtin").buffers()
 end)
 vim.keymap.set({ 'n', 'i' }, '<A-s-b>', function()
     plugin_setup()
-    require("telescope.builtin").buffers()
+    require("telescope.builtin").buffers({
+        only_cwd = true,
+    })
 end)
 vim.keymap.set({ 'n', 'i' }, '<A-s-g>', function()
     plugin_setup()
