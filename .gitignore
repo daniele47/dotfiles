@@ -1,1 +1,2 @@
-/.autosaver/
+/.autosaver/*
+!/.autosaver/.track_directory
