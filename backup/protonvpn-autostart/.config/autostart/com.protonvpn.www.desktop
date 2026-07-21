@@ -1,0 +1,4 @@
+[Desktop Entry]
+Type=Application
+Name=Proton VPN
+Exec=/usr/bin/flatpak run com.protonvpn.www --start-minimized
