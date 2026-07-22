@@ -2,11 +2,7 @@ require("configs.options")
 require("configs.statusline")
 require("configs.lspconfigs")
 
-if vim.o.background == "light" then
-	vim.cmd.colorscheme("ultralight")
-else
-	vim.cmd.colorscheme("ultimate")
-end
+vim.cmd.colorscheme("ultimate")
 
 -- install lazy plugin manager
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
