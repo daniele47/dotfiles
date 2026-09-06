@@ -7,7 +7,7 @@ BASE_PKGS=(base base-devel glibc glibc-locales)
 CLI_TOOLS=(
     zsh bash-completion lsd bat trash-cli git
     tmux neovim tree man tldr wl-clipboard jq
-    wget zip unzip podman htop openssh entr
+    wget zip unzip podman htop openssh entr direnv
 )
 GUI_TOOLS=(plasma-integration ksshaskpass)
 PROG_LANG=(python rustup go nodejs npm)

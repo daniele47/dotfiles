@@ -111,6 +111,9 @@ fi
 if command -v bat &>/dev/null; then
     alias cat='bat'
 fi
+if command -v direnv &>/dev/null; then
+    eval "$(direnv hook zsh)"
+fi
 
 # init editor
 if command -v nvim &>/dev/null; then
