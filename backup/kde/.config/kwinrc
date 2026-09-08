@@ -11,6 +11,7 @@ BorderActivate=9
 
 [NightColor]
 Active=true
+Mode=Constant
 
 [Plugins]
 hidecursorEnabled=true
