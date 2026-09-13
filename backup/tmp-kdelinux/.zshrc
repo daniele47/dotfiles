@@ -112,6 +112,7 @@ if command -v bat &>/dev/null; then
     alias cat='bat'
 fi
 if command -v direnv &>/dev/null; then
+    direnv prune &>/dev/null
     eval "$(direnv hook zsh)"
 fi
 
