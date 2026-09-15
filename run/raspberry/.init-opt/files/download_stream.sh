@@ -1,7 +1,6 @@
 #!/bin/bash
 
 # script needs the following parameters:
-# - a simple name for the file (no extension. only the name)
 # - the url of the video to download
 # - the name of the rclone remote (only the name)
 # - timeout in seconds before stopping the recording
@@ -13,10 +12,9 @@ set -e
 DATE_STRING="$(date +"%Y%m%d_%H%M%S")"
 BASE_UPLOAD_DIR="$HOME/.automatic_uploads"
 LOCAL_UPLOAD_DIR="$BASE_UPLOAD_DIR/$DATE_STRING"
-FILENAME="$1"
-URL="$2"
-REMOTE="$3:/automatic_uploads"
-TIMEOUT="$4"
+URL="$1"
+REMOTE="$2:/automatic_uploads"
+TIMEOUT="$3"
 
 # no matter what run the cleanup function!
 cleanup() {
@@ -40,8 +38,8 @@ trap 'cleanup TERM' TERM
 trap 'cleanup HUP' HUP
 
 # input checks
-echo "[ARGS]: filename: '$1', url: '$2', remote: '$3', timeout: '$4'"
-if [[ "$#" -ne 4 ]]; then
+echo "[ARGS]: url: '$1', remote: '$2', timeout: '$3'"
+if [[ "$#" -ne 3 ]]; then
     echo 'invalid amount of args'
     exit 1
 elif ! [[ "$TIMEOUT" -gt 0 ]]; then
@@ -55,9 +53,9 @@ mkdir -p "$LOCAL_UPLOAD_DIR"
 
 # downlaod video
 echo "Downloading video..."
-yt-dlp --download-sections "*0-$TIMEOUT" --live-from-start -q "$URL"
+cd "$LOCAL_UPLOAD_DIR"
+yt-dlp --download-sections "*0-$TIMEOUT" -q "$URL"
 
 # publish it on rclone remote
 echo "Uploading video..."
 rclone copy "$LOCAL_UPLOAD_DIR"/* "$REMOTE"
-
