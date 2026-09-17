@@ -38,6 +38,12 @@ local function plugin_setup()
 	})
 end
 
+-- load plugin if any arg is a directory
+if vim.fn.isdirectory(vim.fn.argv()[1]) == 1 then
+    plugin_setup()
+end
+
+
 -- lazy keymaps
 vim.keymap.set("n", "-", function()
 	plugin_setup()
