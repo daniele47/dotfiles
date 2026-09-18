@@ -124,3 +124,6 @@ elif command -v vim &>/dev/null; then
 fi
 
 export PATH="$HOME/.local/bin:$PATH"
+
+# env options
+export PYTHONPYCACHEPREFIX=/tmp/pycache-QwkkUVj3ROhgnrG1
