@@ -1,0 +1,86 @@
+#!/bin/bash
+
+# Script to use protondrive as a pseudo git remote
+#
+# How to use:
+# - place this script into any directory in PATH
+# - indicate the remote as `protondrive::<REPO_NAME>`
+# - now proton drive is kinda like a git server!
+#
+# Note: git pull/push download/upload ENTIRE repo!
+
+set -euo pipefail
+
+log() {
+    echo "$(date): $*" >&2
+}
+
+CACHEDIR="$HOME/.cache/git-remote-proton"
+REPO_NAME="${2:-$1}"
+REPO="$CACHEDIR/$REPO_NAME.git"
+ARCHIVE_NAME="$REPO_NAME.tar.zst"
+REMOTE_TOPDIR="/my-files"
+REMOTE_DIRNAME="git_repos"
+REMOTE_DIR="$REMOTE_TOPDIR/$REMOTE_DIRNAME"
+REMOTE_ARCHIVE="$REMOTE_DIR/$ARCHIVE_NAME"
+
+upload_repo() {
+    log "Uploading '$REPO' into '$REMOTE_TOPDIR/$ARCHIVE_NAME'..."
+
+    {
+        local -r tmp_dir="$(mktemp -d)"
+        tar -cf - -C "$(dirname "$REPO")" "$(basename "$REPO")" | zstd >"$tmp_dir/$ARCHIVE_NAME"
+        proton-drive fs create-folder "$REMOTE_TOPDIR" "$REMOTE_DIRNAME" &>/dev/null || true
+        proton-drive fs upload "$tmp_dir/$ARCHIVE_NAME" "$REMOTE_DIR" -f replace
+        rm -rf "$tmp_dir"
+    } >&2
+}
+
+download_repo() {
+    log "Downloading '$REPO' from '$REMOTE_TOPDIR/$ARCHIVE_NAME'..."
+
+    {
+        local -r tmp_dir="$(mktemp -d)"
+        proton-drive fs download "$REMOTE_ARCHIVE" "$tmp_dir" -f remove
+        rm -rf "$REPO"
+        tar --zstd -xf "$tmp_dir/$ARCHIVE_NAME" -C "$CACHEDIR"
+        rm -rf "$tmp_dir"
+    } >&2
+}
+
+init_repo() {
+    if [ ! -d "$REPO" ]; then git init --bare "$REPO" >/dev/null; fi >&2
+}
+
+log "ARGS: [$*]"
+mkdir -p "$CACHEDIR"
+
+while IFS= read -r line; do
+    log "STDIN: [$line]"
+
+    case "$line" in
+    capabilities)
+        echo -e "connect\n"
+        ;;
+
+    "connect git-receive-pack"*)
+        echo
+        init_repo
+        git-receive-pack "$REPO"
+        upload_repo
+        exit 0
+        ;;
+
+    "connect git-upload-pack"*)
+        echo
+        download_repo
+        git-upload-pack "$REPO"
+        exit 0
+        ;;
+
+    *)
+        log "Unknown message: [$line]"
+        exit 1
+        ;;
+    esac
+done
