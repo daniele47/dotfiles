@@ -2,7 +2,7 @@
 
 set -euo pipefail
 
-sudo bash -c '{
+function root_init() {
     # remove everything from flatpak and replace fedora flatpak with flathub
     if flatpak remotes | grep -q fedora; then
         flatpak uninstall --all --delete-data -y
@@ -12,8 +12,8 @@ sudo bash -c '{
     fi
 
     # rpm-fusion and codecs
-    dnf -y install https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm 
-    dnf -y install https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
+    dnf -y install "https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm"
+    dnf -y install "https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm"
     dnf config-manager setopt fedora-cisco-openh264.enabled=1
     dnf -y install rpmfusion-\*-appstream-data
     dnf -y swap ffmpeg-free ffmpeg --allowerasing
@@ -29,7 +29,6 @@ sudo bash -c '{
     dnf -y remove kmines skanpage kpat kcharselect plasma-drkonqi
     dnf -y remove im-chooser kjournald kmouth kolourpaint setroubleshoot
     dnf -y remove gnome-abrt firewall-config toolbox
-
     dnf -y autoremove
 
     # cli utilities
@@ -37,10 +36,13 @@ sudo bash -c '{
 
     # programming languages
     dnf -y install rust cargo rust-src rustfmt
-    
+
     # gui apps
     dnf -y install haruna gpxsee
 
     # update
     dnf -y update
-}'
+
+}
+
+sudo bash -c "$(declare -f root_init); root_init"
