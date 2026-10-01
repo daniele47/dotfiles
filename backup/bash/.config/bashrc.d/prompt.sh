@@ -40,7 +40,8 @@ function __cleanup_prompt__() {
     local -r workdir="${green}\w "
     ###############################################
     local container_name="$(sed -n 's/^name="\(.*\)"/\1/p' /run/.containerenv 2>/dev/null)"
-    container_name="${red}[${container_name:-$container}]$wipe "
+    container_name="${container_name:-$container}"
+    if [[ -n "$container_name" ]]; then container_name="${red}[$container_name]$wipe "; fi
     ###############################################
     local branch=""
     local GITDIR="$PWD"
