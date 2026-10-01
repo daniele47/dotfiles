@@ -26,12 +26,15 @@ sudo bash -c '{
     dnf -y remove kde-connect kmail korganizer elisa-player akonadi*
     dnf -y remove neochat krfb mediawriter krdc kleopatra
     dnf -y remove kamoso plasma-welcome kdebugsettings kfind kmahjongg
-    dnf -y remove kmines skanpage kpat
+    dnf -y remove kmines skanpage kpat kcharselect plasma-drkonqi
+    dnf -y remove im-chooser kjournald kmouth kolourpaint setroubleshoot
+    dnf -y remove gnome-abrt firewall-config
+
     dnf -y autoremove
 
     # cli utilities
     dnf -y install git bat neovim lsd
     
     # gui apps
-    dnf -y install haruna
+    dnf -y install haruna gpxsee
 }'
