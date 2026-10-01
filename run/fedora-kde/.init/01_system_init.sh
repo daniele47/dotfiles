@@ -35,7 +35,7 @@ function root_init() {
     dnf -y install git bat neovim lsd distrobox htop trash-cli uv
 
     # programming languages
-    dnf -y install rust cargo rust-src rustfmt
+    dnf -y install rust rust-src rustfmt cargo cargo-clippy
 
     # gui apps
     dnf -y install haruna gpxsee
