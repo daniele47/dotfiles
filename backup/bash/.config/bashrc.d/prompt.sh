@@ -39,6 +39,9 @@ function __cleanup_prompt__() {
     ###############################################
     local -r workdir="${green}\w "
     ###############################################
+    local container_name="$(sed -n 's/^name="\(.*\)"/\1/p' /run/.containerenv 2>/dev/null)"
+    container_name="${red}[${container_name:-$container}]$wipe "
+    ###############################################
     local branch=""
     local GITDIR="$PWD"
     until [[ -z "$GITDIR" || -d "$GITDIR/.git" ]]; do GITDIR="${GITDIR%/*}"; done
@@ -123,7 +126,7 @@ function __cleanup_prompt__() {
     *) symbol="${red}❯ " ;;
     esac
     ###############################################
-    PS1="${wipe}${workdir}${gitbranch}${gitstate}${gitstatus}${symbol}${wipe}"
+    PS1="${wipe}${container_name}${workdir}${gitbranch}${gitstate}${gitstatus}${symbol}${wipe}"
 
     # exit with correct status code
     return "${retval}"
