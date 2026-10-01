@@ -36,7 +36,7 @@ sudo bash -c '{
     dnf -y install git bat neovim lsd distrobox htop trash-cli uv
 
     # programming languages
-    dnf -y install rust cargo rust-src
+    dnf -y install rust cargo rust-src rustfmt
     
     # gui apps
     dnf -y install haruna gpxsee
