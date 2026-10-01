@@ -1,0 +1,129 @@
+#!/bin/bash
+
+function __fast_cd_utils__() {
+    local -r DB_DIR="${XDG_DATA_HOME:-$HOME/.local/share}/fast_cd"
+    local -r DB_PATH="$DB_DIR/dirs.db"
+    local -r mode="$1"
+    local -r args=("${@:2}")
+
+    # create database file
+    if [[ ! -e "$DB_PATH" ]]; then
+        mkdir -p "$DB_DIR"
+        touch "$DB_PATH"
+    fi
+
+    # all actions
+    case "$mode" in
+    get)
+        cd "${args[@]}" &>/dev/null && return 0
+        local line=""
+        local bname=""
+        while IFS= read -r line; do
+            if [[ "$line" == /* && -d "$line" ]]; then
+                bname="${line%%+(/)}"
+                bname="${bname##*/}"
+                [[ "$line" == / ]] && bname="/"
+                if [[ "$bname" == *"${args[*]}"* ]]; then
+                    cd "$line"
+                    return 0
+                fi
+            fi
+        done <"$DB_PATH"
+        return 1
+        ;;
+    add)
+        for path in "${args[@]}"; do
+            if [[ -d "$path" ]]; then
+                local abs_path="$PWD/$path"
+                [[ "$path" == /* ]] && abs_path="$path"
+                local resolved_path="$(realpath -s -m "$abs_path")"
+                local exists=false
+                while IFS= read -r line; do
+                    local normalized_line="$(realpath -s -m "$line" 2>/dev/null)"
+                    if [[ "$resolved_path" == "$normalized_line" ]]; then
+                        exists=true
+                        break
+                    fi
+                done <"$DB_PATH"
+                if [[ "$exists" == false ]]; then
+                    echo "$resolved_path" >>"$DB_PATH"
+                    echo "added: $resolved_path"
+                else
+                    echo "already exists: $resolved_path"
+                fi
+            else
+                echo "not a directory: $path"
+            fi
+        done
+        ;;
+    tidy)
+        declare -A seen_full seen_basename
+        while IFS= read -r line; do
+            # invalid paths
+            [[ "$line" =~ ^/+$ ]] && continue
+            [[ ! "$line" =~ ^/ ]] && continue
+            [[ ! -d "$line" ]] && continue
+            # get normalized path
+            normalized="$(realpath -s -m "$line" 2>/dev/null)"
+            [[ -z "$normalized" ]] && continue
+            # Full path duplicate check
+            [[ -n "${seen_full[$normalized]}" ]] && continue
+            seen_full[$normalized]=1
+            # Basename duplicate check
+            basename="${normalized##*/}"
+            [[ "$normalized" == "/" ]] && basename="/"
+            [[ -n "${seen_basename[$basename]}" ]] && continue
+            seen_basename[$basename]=1
+            # print normalized path
+            echo "$normalized"
+        done <"$DB_PATH"
+        ;;
+    fix)
+        OUTPUT="$("$FUNCNAME" tidy)"
+        if ! diff -u --color "$DB_PATH" <(echo "$OUTPUT"); then
+            echo -en "\e[1;33mDo you want to apply fixes? [y/n] \e[m"
+            read -r answer
+            [[ "${answer,,}" == "y" ]] && echo "$OUTPUT" >"$DB_PATH"
+        fi
+        ;;
+    edit)
+        "${EDITOR:-nano}" "$DB_PATH"
+        ;;
+    list)
+        local line=""
+        local bname=""
+        while IFS= read -r line; do
+            if [[ "$line" == /* && -d "$line" ]]; then
+                bname="${line%%+(/)}"
+                bname="${bname##*/}"
+                echo -n "$bname "
+            fi
+        done <"$DB_PATH"
+        echo
+        ;;
+    show) cat "$DB_PATH" ;;
+    *) ;;
+    esac
+    return 0
+}
+
+function z() {
+    __fast_cd_utils__ get "$@"
+}
+function za() {
+    __fast_cd_utils__ add "$@"
+    __fast_cd_utils__ fix
+    complete -o plusdirs -W "$(__fast_cd_utils__ list)" z
+}
+function ze() {
+    __fast_cd_utils__ edit
+    __fast_cd_utils__ fix
+    complete -o plusdirs -W "$(__fast_cd_utils__ list)" z
+}
+function zf() {
+    __fast_cd_utils__ fix
+}
+function zs() {
+    __fast_cd_utils__ show
+}
+complete -o plusdirs -W "$(__fast_cd_utils__ list)" z
