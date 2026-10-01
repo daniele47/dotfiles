@@ -28,13 +28,16 @@ sudo bash -c '{
     dnf -y remove kamoso plasma-welcome kdebugsettings kfind kmahjongg
     dnf -y remove kmines skanpage kpat kcharselect plasma-drkonqi
     dnf -y remove im-chooser kjournald kmouth kolourpaint setroubleshoot
-    dnf -y remove gnome-abrt firewall-config
+    dnf -y remove gnome-abrt firewall-config toolbox
 
     dnf -y autoremove
 
     # cli utilities
-    dnf -y install git bat neovim lsd
+    dnf -y install git bat neovim lsd distrobox htop trash-cli
     
     # gui apps
     dnf -y install haruna gpxsee
+
+    # update
+    dnf -y update
 }'
