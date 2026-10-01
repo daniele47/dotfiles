@@ -33,7 +33,7 @@ sudo bash -c '{
     dnf -y autoremove
 
     # cli utilities
-    dnf -y install git bat neovim lsd distrobox htop trash-cli
+    dnf -y install git bat neovim lsd distrobox htop trash-cli uv
     
     # gui apps
     dnf -y install haruna gpxsee
