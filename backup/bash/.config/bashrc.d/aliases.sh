@@ -15,3 +15,7 @@ alias ll="ls -l"
 alias lla="ls -lA"
 
 alias grep="grep --color=auto"
+
+if command -v distrobox &>/dev/null; then
+    alias de='distrobox enter'
+fi
