@@ -12,7 +12,7 @@
 set -euo pipefail
 
 log() {
-    echo "$(date): $*" >&2
+    echo "$*" >&2
 }
 
 CACHEDIR="$HOME/.cache/git-remote-proton"
@@ -25,7 +25,7 @@ REMOTE_DIR="$REMOTE_TOPDIR/$REMOTE_DIRNAME"
 REMOTE_ARCHIVE="$REMOTE_DIR/$ARCHIVE_NAME"
 
 upload_repo() {
-    log "Uploading '$REPO' into '$REMOTE_TOPDIR/$ARCHIVE_NAME'..."
+    log "Uploading '$REPO' into '$REMOTE_ARCHIVE'..."
 
     {
         local -r tmp_dir="$(mktemp -d)"
@@ -37,7 +37,7 @@ upload_repo() {
 }
 
 download_repo() {
-    log "Downloading '$REPO' from '$REMOTE_TOPDIR/$ARCHIVE_NAME'..."
+    log "Downloading '$REPO' from '$REMOTE_ARCHIVE'..."
 
     {
         local -r tmp_dir="$(mktemp -d)"
@@ -52,12 +52,9 @@ init_repo() {
     if [ ! -d "$REPO" ]; then git init --bare "$REPO" >/dev/null; fi >&2
 }
 
-log "ARGS: [$*]"
 mkdir -p "$CACHEDIR"
 
 while IFS= read -r line; do
-    log "STDIN: [$line]"
-
     case "$line" in
     capabilities)
         echo -e "connect\n"
