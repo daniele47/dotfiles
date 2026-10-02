@@ -12,6 +12,10 @@ shopt -s autocd
 # case insensitive completion
 bind 'set completion-ignore-case on'
 
+# keybinds
+bind '"\e[5~": history-search-backward'
+bind '"\e[6~": history-search-forward'
+
 # open command if xdg-open is available
 if command -v xdg-open &>/dev/null; then
     function open() {
