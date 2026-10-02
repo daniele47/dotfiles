@@ -12,69 +12,74 @@
 set -euo pipefail
 
 log() {
-    echo "$*" >&2
+    echo -e "\e[34m$*\e[m" >&2
 }
 
-CACHEDIR="$HOME/.cache/git-remote-proton"
 REPO_NAME="${2:-$1}"
-REPO="$CACHEDIR/$REPO_NAME.git"
-ARCHIVE_NAME="$REPO_NAME.tar.zst"
+ARCHIVE_NAME="$REPO_NAME.bundle"
+CACHE_TOPDIR="$HOME/.cache/git-remote-proton"
+CACHE_DIR="$CACHE_TOPDIR/$REPO_NAME.git"
+CACHE_BUNDLE="$CACHE_TOPDIR/$ARCHIVE_NAME"
 REMOTE_TOPDIR="/my-files"
 REMOTE_DIRNAME="git_repos"
 REMOTE_DIR="$REMOTE_TOPDIR/$REMOTE_DIRNAME"
 REMOTE_ARCHIVE="$REMOTE_DIR/$ARCHIVE_NAME"
 
 upload_repo() {
-    log "Uploading '$REPO' into '$REMOTE_ARCHIVE'..."
-
+    log "- Pushing to local git bare repo at '$CACHE_DIR'..."
+    git-receive-pack "$CACHE_DIR"
     {
-        local -r tmp_dir="$(mktemp -d)"
-        tar -cf - -C "$(dirname "$REPO")" "$(basename "$REPO")" | zstd >"$tmp_dir/$ARCHIVE_NAME"
-        proton-drive fs create-folder "$REMOTE_TOPDIR" "$REMOTE_DIRNAME" &>/dev/null || true
-        proton-drive fs upload "$tmp_dir/$ARCHIVE_NAME" "$REMOTE_DIR" -f replace
-        rm -rf "$tmp_dir"
+        log "- Creating git bundle at '$CACHE_BUNDLE'..."
+        env -u GIT_DIR -u GIT_WORK_TREE git -C "$CACHE_DIR" bundle create "$CACHE_BUNDLE" HEAD --all
+        log "- Verifying git bundle at '$CACHE_BUNDLE'..."
+        git bundle verify "$CACHE_BUNDLE"
+        log "- Creating directory on remote '$REMOTE_DIR'..."
+        proton-drive fs create-folder "$REMOTE_TOPDIR" "$REMOTE_DIRNAME" || true
+        log "- Uploading bundle to remote '$REMOTE_ARCHIVE'..."
+        proton-drive fs upload "$CACHE_BUNDLE" "$REMOTE_DIR" -f replace
     } >&2
 }
 
 download_repo() {
-    log "Downloading '$REPO' from '$REMOTE_ARCHIVE'..."
-
     {
-        local -r tmp_dir="$(mktemp -d)"
-        proton-drive fs download "$REMOTE_ARCHIVE" "$tmp_dir" -f remove
-        rm -rf "$REPO"
-        tar --zstd -xf "$tmp_dir/$ARCHIVE_NAME" -C "$CACHEDIR"
-        rm -rf "$tmp_dir"
+        log "- Downloading git bundle from '$REMOTE_ARCHIVE' into '$CACHE_BUNDLE'..."
+        proton-drive fs download "$REMOTE_ARCHIVE" "$CACHE_TOPDIR" -f remove
+        log "- Verifying git bundle at '$CACHE_BUNDLE'..."
+        git bundle verify "$CACHE_BUNDLE"
+        log "- Cloning bundle into bare repository at '$CACHE_DIR'"
+        rm -rf "$CACHE_DIR"
+        git clone --bare "$CACHE_BUNDLE" "$CACHE_DIR"
+        log "- Pulling from local git bare repo at '$CACHE_DIR'"
     } >&2
+    git-upload-pack "$CACHE_DIR"
 }
 
 init_repo() {
-    if [ ! -d "$REPO" ]; then git init --bare "$REPO" >/dev/null; fi >&2
+    if ! env -u GIT_DIR -u GIT_WORK_TREE  git -C "$CACHE_DIR" rev-parse --git-dir >/dev/null 2>&1; then
+        log "- Initializing new empty git bare repo at '$CACHE_DIR'..."
+        rm -rf "$CACHE_DIR"
+        git init --bare "$CACHE_DIR" >/dev/null
+    fi >&2
 }
 
-mkdir -p "$CACHEDIR"
+mkdir -p "$CACHE_TOPDIR"
 
 while IFS= read -r line; do
     case "$line" in
     capabilities)
         echo -e "connect\n"
         ;;
-
     "connect git-receive-pack"*)
         echo
         init_repo
-        git-receive-pack "$REPO"
         upload_repo
         exit 0
         ;;
-
     "connect git-upload-pack"*)
         echo
         download_repo
-        git-upload-pack "$REPO"
         exit 0
         ;;
-
     *)
         log "Unknown message: [$line]"
         exit 1
