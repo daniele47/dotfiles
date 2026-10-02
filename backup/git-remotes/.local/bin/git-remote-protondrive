@@ -12,7 +12,7 @@
 set -euo pipefail
 
 log() {
-    echo -e "\e[34m$*\e[m" >&2
+    echo -e "\e[1m$*\e[m" >&2
 }
 
 REPO_NAME="${2:-$1}"
@@ -76,8 +76,16 @@ while IFS= read -r line; do
         fi
 
         # push into local git server
+        before="$(env -u GIT_DIR -u GIT_WORK_TREE git -C "$CACHE_DIR" show-ref 2>/dev/null || true)"
         log "- Pushing to local git bare repo at '$CACHE_DIR'..."
         git-receive-pack "$CACHE_DIR"
+        after="$(env -u GIT_DIR -u GIT_WORK_TREE git -C "$CACHE_DIR" show-ref 2>/dev/null || true)"
+
+        # early quit if git-receive-pack didn't update the ref
+        if [ "$before" = "$after" ]; then
+            log "- No refs changed (push rejected or nothing to push), skipping upload."
+            exit 1
+        fi
 
         # upload
         upload_repo
