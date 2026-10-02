@@ -26,8 +26,6 @@ REMOTE_DIR="$REMOTE_TOPDIR/$REMOTE_DIRNAME"
 REMOTE_ARCHIVE="$REMOTE_DIR/$ARCHIVE_NAME"
 
 upload_repo() {
-    log "- Pushing to local git bare repo at '$CACHE_DIR'..."
-    git-receive-pack "$CACHE_DIR"
     {
         log "- Creating git bundle at '$CACHE_BUNDLE'..."
         env -u GIT_DIR -u GIT_WORK_TREE git -C "$CACHE_DIR" bundle create "$CACHE_BUNDLE" HEAD --all
@@ -49,16 +47,14 @@ download_repo() {
         log "- Cloning bundle into bare repository at '$CACHE_DIR'"
         rm -rf "$CACHE_DIR"
         git clone --bare "$CACHE_BUNDLE" "$CACHE_DIR"
-        log "- Pulling from local git bare repo at '$CACHE_DIR'"
     } >&2
-    git-upload-pack "$CACHE_DIR"
 }
 
 init_repo() {
-    if ! env -u GIT_DIR -u GIT_WORK_TREE  git -C "$CACHE_DIR" rev-parse --git-dir >/dev/null 2>&1; then
+    if ! env -u GIT_DIR -u GIT_WORK_TREE git -C "$CACHE_DIR" rev-parse --git-dir >/dev/null 2>&1; then
         log "- Initializing new empty git bare repo at '$CACHE_DIR'..."
         rm -rf "$CACHE_DIR"
-        git init --bare "$CACHE_DIR" >/dev/null
+        git init --bare "$CACHE_DIR"
     fi >&2
 }
 
@@ -71,13 +67,32 @@ while IFS= read -r line; do
         ;;
     "connect git-receive-pack"*)
         echo
-        init_repo
+        # download before upload to avoid force overwrite
+        log "- Checking if repo already present on remote..."
+        if proton-drive fs info "$REMOTE_ARCHIVE" &>/dev/null; then
+            download_repo
+        else
+            init_repo
+        fi
+
+        # push into local git server
+        log "- Pushing to local git bare repo at '$CACHE_DIR'..."
+        git-receive-pack "$CACHE_DIR"
+
+        # upload
         upload_repo
+
         exit 0
         ;;
     "connect git-upload-pack"*)
         echo
+        # download
         download_repo
+
+        # pull from local git server
+        log "- Pulling from local git bare repo at '$CACHE_DIR'"
+        git-upload-pack "$CACHE_DIR"
+
         exit 0
         ;;
     *)
