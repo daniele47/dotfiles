@@ -6,7 +6,7 @@ ConfigVersion=1
 
 [LightDarkTheme]
 DarkThemeProfile=Custom
-LightThemeProfile=Light
+LightThemeProfile=Custom
 SyncProfileWithSystemTheme=true
 
 [TabBar]
