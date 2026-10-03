@@ -17,6 +17,7 @@ if [[ -f ~/.local/bin/autosaver ]]; then
         git clone https://codeberg.org/danix/dotfiles "$TMP_DIR" &&
         echo -n "Write what profile(s) to use: " &&
         read -r AUTOSAVER_PROFILE &&
+        export AUTOSAVER_ROOT="$TMP_DIR" &&
         export AUTOSAVER_PROFILE &&
         ~/.local/bin/autosaver -y preset init
 fi
