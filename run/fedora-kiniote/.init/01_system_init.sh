@@ -16,7 +16,7 @@ function root_init() {
         kde-connect-libs kde-connect kdeconnectd kdebugsettings kjournald firewall-config plasma-drkonqi \
         khelpcenter plasma-welcome plasma-welcome-fedora krfb krdp krfb-libs kcharselect toolbox \
         firefox firefox-langpacks plasma-browser-integration fedora-chromium-config-kde kfind \
-        --install neovim --install bat --install trash-cli --install htop --install lsd --install distrobox --install ksshaskpass
+        --install neovim --install bat --install trash-cli --install htop --install lsd --install distrobox
 }
 
 sudo bash -c "$(declare -f root_init); root_init"
