@@ -22,10 +22,8 @@ function root_init() {
     dnf -y autoremove
 
     # cli utilities
-    dnf -y install git bat neovim lsd distrobox htop trash-cli uv
-
-    # programming languages
-    dnf -y install rust rust-src rustfmt cargo cargo-clippy
+    dnf -y install git bat neovim lsd distrobox htop trash-cli
+    dnf -y install uv rust rust-src rustfmt cargo cargo-clippy
 
     # update
     dnf -y update
