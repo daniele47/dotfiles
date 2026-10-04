@@ -6,6 +6,9 @@ export PROMPT_DIRTRIM=3
 function __cleanup_prompt__() {
     local -r retval="$?"
 
+    # clear prompt line
+    printf "\e[2K\r"
+
     # change PS1
     local -r red="\[\e[1;31m\]"
     local -r lgreen="\[\e[1;32m\]"
@@ -23,7 +26,7 @@ function __cleanup_prompt__() {
     ###############################################
     local branch=""
     local GITDIR="$PWD"
-    until [[ -z "$GITDIR" || -d "$GITDIR/.git" ]]; do GITDIR="${GITDIR%/*}"; done
+    until [[ -z "$GITDIR" || -e "$GITDIR/.git" ]]; do GITDIR="${GITDIR%/*}"; done
     if [[ -d "$GITDIR/.git" ]]; then
         computations="$(
             git rev-list --left-right --count '@{u}...HEAD' 2>/dev/null || echo
