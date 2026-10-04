@@ -13,21 +13,6 @@ function __cleanup_prompt__() {
     cd "$TMPPWD"
     OLDPWD="$TMPOLD"
 
-    # fix path if /var/home/... <---> /home/...
-    if [[ -z "$__is_home_symlinked_to_var__" ]]; then
-        __is_home_symlinked_to_var__="false"
-        [[ "$(realpath "/var/home")" == "$(realpath "/home")" ]] &&
-            __is_home_symlinked_to_var__="true"
-    fi
-    if [[ "$__is_home_symlinked_to_var__" == "true" ]]; then
-        local -r oldpwd="$OLDPWD"
-        case "$HOME" in
-        "/var/home/$USER") [[ "$PWD/" == "/home/"* ]] && cd "/var$PWD" ;;
-        "/home/$USER") [[ "$PWD/" == "/var/home/"* ]] && cd "${PWD:4}" ;;
-        esac
-        OLDPWD="$oldpwd"
-    fi
-
     # change PS1
     local -r red="\[\e[1;31m\]"
     local -r lgreen="\[\e[1;32m\]"
