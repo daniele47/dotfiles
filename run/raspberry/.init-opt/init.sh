@@ -17,3 +17,4 @@ sudo chown -R "$USER:$USER" /autorun /autorun-logs
 sudo apt-get install ffmpeg python3-pip -y
 sudo pip install -U yt-dlp --break-system-packages
 curl -sSf https://rclone.org/install.sh | sudo bash || true
+wget "https://github.com/quickjs-ng/quickjs/releases/latest/download/qjs-linux-armv7" -O /tmp/quickjs && chmod +x /tmp/quickjs && sudo mv /tmp/quickjs /usr/local/bin/quickjs && echo "--js-runtimes quickjs:/path/to/qjs" > $HOME/.config/yt-dlp.conf
