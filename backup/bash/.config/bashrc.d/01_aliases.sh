@@ -18,4 +18,5 @@ alias grep="grep --color=auto"
 
 if command -v distrobox &>/dev/null; then
     alias de='distrobox enter'
+    alias dl='distrobox list'
 fi
