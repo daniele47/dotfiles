@@ -6,13 +6,6 @@ export PROMPT_DIRTRIM=3
 function __cleanup_prompt__() {
     local -r retval="$?"
 
-    # force exit from not existing directories
-    local TMPOLD="$OLDPWD"
-    local TMPPWD="$PWD"
-    until [[ -d "$TMPPWD" ]]; do TMPPWD="$(dirname "$TMPPWD")"; done
-    cd "$TMPPWD"
-    OLDPWD="$TMPOLD"
-
     # change PS1
     local -r red="\[\e[1;31m\]"
     local -r lgreen="\[\e[1;32m\]"
