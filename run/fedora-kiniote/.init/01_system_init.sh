@@ -12,11 +12,7 @@ function root_init() {
     fi
 
     # packages i care about
-    rpm-ostree override remove \
-        kde-connect-libs kde-connect kdeconnectd kdebugsettings kjournald firewall-config plasma-drkonqi \
-        khelpcenter plasma-welcome plasma-welcome-fedora krfb krdp krfb-libs kcharselect toolbox \
-        firefox firefox-langpacks plasma-browser-integration fedora-chromium-config-kde kfind \
-        --install neovim --install bat --install trash-cli --install htop --install lsd --install distrobox
+    rpm-ostree install neovim bat lsd distrobox
 }
 
 sudo bash -c "$(declare -f root_init); root_init"
