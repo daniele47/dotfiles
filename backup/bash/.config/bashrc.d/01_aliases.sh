@@ -16,6 +16,8 @@ alias lla="ls -lA"
 
 alias grep="grep --color=auto"
 
+alias vim='$EDITOR'
+
 if command -v distrobox &>/dev/null; then
     alias de='distrobox enter'
     alias dl='distrobox list'

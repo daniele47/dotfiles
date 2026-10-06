@@ -12,7 +12,7 @@ function root_init() {
     fi
 
     # packages i care about
-    rpm-ostree install neovim bat lsd distrobox
+    rpm-ostree install -y bat lsd distrobox
 }
 
 sudo bash -c "$(declare -f root_init); root_init"
