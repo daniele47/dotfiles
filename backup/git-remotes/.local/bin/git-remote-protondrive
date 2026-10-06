@@ -70,8 +70,10 @@ while IFS= read -r line; do
         # download before upload to avoid force overwrite
         log "- Checking if repo already present on remote..."
         if proton-drive fs info "$REMOTE_ARCHIVE" &>/dev/null; then
+            ALREADY_EXIST=true
             download_repo
         else
+            ALREADY_EXIST=false
             init_repo
         fi
 
@@ -82,7 +84,7 @@ while IFS= read -r line; do
         after="$(env -u GIT_DIR -u GIT_WORK_TREE git -C "$CACHE_DIR" show-ref 2>/dev/null || true)"
 
         # early quit if git-receive-pack didn't update the ref
-        if [ "$before" = "$after" ]; then
+        if "$ALREADY_EXIST" && [[ "$before" = "$after" ]]; then
             log "- No refs changed (push rejected or nothing to push), skipping upload."
             exit 1
         fi
