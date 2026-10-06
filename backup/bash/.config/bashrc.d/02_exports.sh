@@ -27,11 +27,11 @@ export LESSHISTFILE="$XDG_STATE_HOME/less_history"
 export WGETHISTFILE="$XDG_STATE_HOME/wget_history"
 
 # set editor
-if command -v nvim &>/dev/null; then
+if type -P nvim &>/dev/null; then
     export EDITOR=nvim
-elif command -v vim &>/dev/null; then
+elif type -P vim &>/dev/null; then
     export EDITOR=vim
-elif command -v vi &>/dev/null; then
+elif type -P vi &>/dev/null; then
     export EDITOR=vi
 fi
 

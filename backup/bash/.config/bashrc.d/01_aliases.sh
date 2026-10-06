@@ -20,5 +20,7 @@ alias vim='$EDITOR'
 
 if command -v distrobox &>/dev/null; then
     alias de='distrobox enter'
+    alias dr='distrobox enter --'
     alias dl='distrobox list'
+    complete -fd dr
 fi
