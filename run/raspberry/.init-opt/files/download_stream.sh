@@ -55,7 +55,13 @@ mkdir -p "$LOCAL_UPLOAD_DIR"
 
 # downlaod video
 echo "Downloading video..."
-yt-dlp -f "best[height<=480]/best[height<=720]/best[height<=1080]/best" -o "$LOCAL_UPLOAD_DIR/${FILENAME}_${DATE_STRING}.%(ext)s" --download-sections "*0-$TIMEOUT" --no-part -q "$URL"
+timeout "$TIMEOUT" yt-dlp \
+    -f "bv*+ba/b" \
+    -S "+size,+br" \
+    -o "$LOCAL_UPLOAD_DIR/${FILENAME}_${DATE_STRING}.%(ext)s" \
+    -q \
+    --live-from-start \
+    "$URL" || true
 
 # publish it on rclone remote
 echo "Uploading video..."
