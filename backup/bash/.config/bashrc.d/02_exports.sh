@@ -12,7 +12,7 @@ mkdir -p "$XDG_CONFIG_HOME" "$XDG_DATA_HOME" "$XDG_STATE_HOME" "$XDG_CACHE_HOME"
 # cleanup pollutions
 # python
 export PYTHONPYCACHEPREFIX=/tmp/pycache-QwkkUVj3ROhgnrG1
-export PYTHONHISTFILE="${PYTHONHISTFILE:-$XDG_STATE_HOME/python/history}"
+export PYTHON_HISTORY="$XDG_STATE_HOME/python_history"
 # rust
 export CARGO_HOME="$XDG_DATA_HOME/cargo"
 export RUSTUP_HOME="$XDG_DATA_HOME/rustup"
