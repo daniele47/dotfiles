@@ -65,4 +65,5 @@ timeout "$TIMEOUT" yt-dlp \
 
 # publish it on rclone remote
 echo "Uploading video..."
+rm -f "$LOCAL_UPLOAD_DIR"/*.part
 rclone copy "$LOCAL_UPLOAD_DIR"/* "$REMOTE"
