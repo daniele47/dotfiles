@@ -55,13 +55,16 @@ mkdir -p "$LOCAL_UPLOAD_DIR"
 
 # downlaod video
 echo "Downloading video..."
-timeout "$TIMEOUT" yt-dlp \
-    -f "bv*+ba/b" \
-    -S "+size,+br" \
-    -o "$LOCAL_UPLOAD_DIR/${FILENAME}_${DATE_STRING}.%(ext)s" \
-    -q \
-    --live-from-start \
-    "$URL" || true
+dl() {
+    timeout "$TIMEOUT" yt-dlp \
+        -f "bv*+ba/b" -S "+size,+br" -q \
+        -o "$LOCAL_UPLOAD_DIR/${FILENAME}_${DATE_STRING}.%(ext)s" \
+        "$@"
+}
+dl --live-from-start "$URL" && rc=0 || rc=$?
+if [ "$rc" -ne 0 ] && [ "$rc" -ne 124 ]; then
+    dl "$URL" || true
+fi
 
 # publish it on rclone remote
 echo "Uploading video..."
