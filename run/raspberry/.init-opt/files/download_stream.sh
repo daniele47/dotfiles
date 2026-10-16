@@ -56,9 +56,8 @@ mkdir -p "$LOCAL_UPLOAD_DIR"
 # downlaod video
 echo "Downloading video..."
 dl() {
-    timeout "$TIMEOUT" yt-dlp \
-        -f "bv*+ba/b" -S "+size,+br" -q \
-        -o "$LOCAL_UPLOAD_DIR/${FILENAME}_${DATE_STRING}.%(ext)s" \
+    timeout --signal=INT "$TIMEOUT" yt-dlp -q \
+        -o "$LOCAL_UPLOAD_DIR/${FILENAME}_${DATE_STRING}" \
         "$@"
 }
 dl --live-from-start "$URL" && rc=0 || rc=$?
