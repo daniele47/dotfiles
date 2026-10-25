@@ -38,10 +38,39 @@ parse_git_info() {
     echo " (%f%F{blue}${branch}${git_status_indicator}%f)"
   fi
 }
+parse_container_info() {
+    local name=""
+    [[ -r /run/.containerenv ]] && name="$(sed -n 's/^name=//p' /run/.containerenv | tr -d '"')"
+    [[ -z "$name" ]] && name="$container"
+    [[ -n "$name" ]] && echo "%F{magenta}[${name}]%f "
+}
+local container_segment='$(parse_container_info)'
 local path_segment='[%f%F{yellow}%n@%m%f:%F{cyan}%(4~|…/%3~|%~)%f]%f'
 local git_segment='$(parse_git_info)'
 local prompt_symbol='%(?. . %F{red}[%?]%f )%(#.#.$) '
-PROMPT="${path_segment}${git_segment}${prompt_symbol}"
+PROMPT="${container_segment}${path_segment}${git_segment}${prompt_symbol}"
+
+### KEYBINDS ###
+bindkey '\e[1~' beginning-of-line
+bindkey '\e[H'  beginning-of-line
+bindkey '\eOH'  beginning-of-line
+bindkey '\e[4~' end-of-line
+bindkey '\e[F'  end-of-line
+bindkey '\eOF'  end-of-line
+bindkey '\e[3~' delete-char
+bindkey '\e[2~' overwrite-mode
+bindkey "^K" kill-line
+bindkey '^[[1;5D' backward-word     # Ctrl+Left
+bindkey '^[[1;5C' forward-word      # Ctrl+Right
+bindkey '^H' backward-kill-word     # Ctrl+Backspace
+bindkey '^[[3;5~' kill-word         # Ctrl+Delete
+bindkey '^I' complete-word
+autoload -U up-line-or-beginning-search
+autoload -U down-line-or-beginning-search
+zle -N up-line-or-beginning-search
+zle -N down-line-or-beginning-search
+bindkey '\e[5~' up-line-or-beginning-search     # Page up
+bindkey '\e[6~' down-line-or-beginning-search   # Page down
 
 ### ALIASES ###
 if type -p bat &>/dev/null; then
