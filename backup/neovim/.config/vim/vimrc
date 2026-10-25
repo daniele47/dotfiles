@@ -1,0 +1,10 @@
+" indentations = 4 spaces
+set tabstop=4
+set shiftwidth=4
+set expandtab
+
+" enable syntax highlighting
+syntax on
+
+" avoid vim info file
+set viminfo="NONE"
