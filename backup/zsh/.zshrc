@@ -42,7 +42,7 @@ parse_container_info() {
     local name=""
     [[ -r /run/.containerenv ]] && name="$(sed -n 's/^name=//p' /run/.containerenv | tr -d '"')"
     [[ -z "$name" ]] && name="$container"
-    [[ -n "$name" ]] && echo "%F{magenta}[${name}]%f "
+    [[ -n "$name" ]] && echo "[%F{magenta}${name}%f] "
 }
 local container_segment='$(parse_container_info)'
 local path_segment='[%f%F{yellow}%n@%m%f:%F{cyan}%(4~|…/%3~|%~)%f]%f'
