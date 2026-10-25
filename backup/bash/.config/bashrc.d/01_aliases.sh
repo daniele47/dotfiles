@@ -9,6 +9,7 @@ if type -P lsd &>/dev/null; then
     alias tree='lsd --icon=never --group-directories-first --tree'
 else
     alias ls="ls --color=auto"
+    alias tree='tree -C'
 fi
 alias la="ls -A"
 alias ll="ls -l"

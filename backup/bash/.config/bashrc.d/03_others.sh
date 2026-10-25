@@ -1,13 +1,5 @@
 #!/bin/bash
 
-# shut up when i type missing cmd
-unset -f command_not_found_handle
-if type -f distrobox &>/dev/null; then
-    function command_not_found_handle() {
-        distrobox enter -- "$@"
-    }
-fi
-
 # history expand before running
 shopt -s histverify
 
