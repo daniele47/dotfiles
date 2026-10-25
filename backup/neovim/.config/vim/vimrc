@@ -3,16 +3,13 @@ set tabstop=4
 set shiftwidth=4
 set expandtab
 
-" enable syntax highlighting
-syntax on
-
 " line number
 set number
 set relativenumber
 highlight LineNr ctermfg=240 guifg=#585858
 
-" avoid vim info file
+" various
+syntax on
 set viminfo="NONE"
-
-" enable mouse support
 set mouse=a
+set scrolloff=5
