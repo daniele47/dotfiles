@@ -1,7 +1,47 @@
-### KDE LINUX ZSH SCRIPT ###
-if [[ -f '/usr/share/zsh/plugins/kde-linux-default/kde-linux-default-zshrc.zsh' ]]; then
-    source '/usr/share/zsh/plugins/kde-linux-default/kde-linux-default-zshrc.zsh'
-fi
+### DISTRO SPECIFIC CUSTOMIZATIONS ###
+case "$(grep -E '^ID=' /etc/os-release | cut -d= -f2- )" in
+    kde-linux)
+        if [[ -f '/usr/share/zsh/plugins/kde-linux-default/kde-linux-default-zshrc.zsh' ]]; then
+            source '/usr/share/zsh/plugins/kde-linux-default/kde-linux-default-zshrc.zsh'
+        fi
+        ;;
+esac
+
+### ZSH CUSTOMIZATION ###
+setopt HIST_IGNORE_ALL_DUPS
+setopt interactivecomments
+setopt hist_verify
+setopt auto_cd
+HISTFILE=~/.histfile
+HISTSIZE=10000
+SAVEHIST=10000
+WORDCHARS=${WORDCHARS//[\/&.;]}
+ZLE_REMOVE_SUFFIX_CHARS=$' \t\n;&|'
+ZLE_SPACE_SUFFIX_CHARS=$';&|'
+
+# completions
+zstyle ':completion:*' menu no
+zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
+autoload -U compinit
+compinit
+
+# prompt
+autoload -U colors && colors
+setopt PROMPT_SUBST
+parse_git_info() {
+  if git rev-parse --is-inside-work-tree &>/dev/null; then
+    local branch="$(git rev-parse --abbrev-ref HEAD 2>/dev/null)"
+    local git_status_indicator=""
+    if [[ -n "$(git status --porcelain 2>/dev/null)" ]]; then
+      git_status_indicator="%F{red}*%f"
+    fi
+    echo " (%f%F{blue}${branch}${git_status_indicator}%f)"
+  fi
+}
+local path_segment='[%f%F{yellow}%n@%m%f:%F{cyan}%(4~|…/%3~|%~)%f]%f'
+local git_segment='$(parse_git_info)'
+local prompt_symbol='%(?. . %F{red}[%?]%f )%(#.#.$) '
+PROMPT="${path_segment}${git_segment}${prompt_symbol}"
 
 ### ALIASES ###
 if type -p bat &>/dev/null; then
@@ -12,6 +52,7 @@ if type -p lsd &>/dev/null; then
     alias tree='lsd --icon=never --group-directories-first --tree'
 else
     alias ls="ls --color=auto"
+    alias tree='tree -C'
 fi
 alias la="ls -A"
 alias ll="ls -l"
@@ -24,6 +65,9 @@ if type -p distrobox &>/dev/null; then
 fi
 
 ### EXPORTS ###
+export PATH="$HOME/.local/bin:$PATH"
+
+# xdg base specification
 export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
 export XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
 export XDG_STATE_HOME="${XDG_STATE_HOME:-$HOME/.local/state}"
