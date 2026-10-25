@@ -6,5 +6,10 @@ set expandtab
 " enable syntax highlighting
 syntax on
 
+" line number
+set number
+set relativenumber
+highlight LineNr ctermfg=240 guifg=#585858
+
 " avoid vim info file
 set viminfo="NONE"
