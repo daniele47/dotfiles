@@ -13,3 +13,6 @@ highlight LineNr ctermfg=240 guifg=#585858
 
 " avoid vim info file
 set viminfo="NONE"
+
+" enable mouse support
+set mouse=a
