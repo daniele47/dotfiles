@@ -1,12 +1,3 @@
-### DISTRO SPECIFIC CUSTOMIZATIONS ###
-case "$(grep -E '^ID=' /etc/os-release | cut -d= -f2- )" in
-    kde-linux)
-        if [[ -f '/usr/share/zsh/plugins/kde-linux-default/kde-linux-default-zshrc.zsh' ]]; then
-            source '/usr/share/zsh/plugins/kde-linux-default/kde-linux-default-zshrc.zsh'
-        fi
-        ;;
-esac
-
 ### ZSH CUSTOMIZATION ###
 setopt HIST_IGNORE_ALL_DUPS
 setopt interactivecomments
@@ -15,7 +6,7 @@ setopt auto_cd
 HISTFILE=~/.histfile
 HISTSIZE=10000
 SAVEHIST=10000
-WORDCHARS=${WORDCHARS//[\/&.;]}
+WORDCHARS=${WORDCHARS//[\/&.;]/}
 ZLE_REMOVE_SUFFIX_CHARS=$' \t\n;&|'
 ZLE_SPACE_SUFFIX_CHARS=$';&|'
 
@@ -29,14 +20,14 @@ compinit
 autoload -U colors && colors
 setopt PROMPT_SUBST
 parse_git_info() {
-  if git rev-parse --is-inside-work-tree &>/dev/null; then
-    local branch="$(git rev-parse --abbrev-ref HEAD 2>/dev/null)"
-    local git_status_indicator=""
-    if [[ -n "$(git status --porcelain 2>/dev/null)" ]]; then
-      git_status_indicator="%F{red}*%f"
+    if git rev-parse --is-inside-work-tree &>/dev/null; then
+        local branch="$(git rev-parse --abbrev-ref HEAD 2>/dev/null)"
+        local git_status_indicator=""
+        if [[ -n "$(git status --porcelain 2>/dev/null)" ]]; then
+            git_status_indicator="%F{red}*%f"
+        fi
+        echo " (%f%F{blue}${branch}${git_status_indicator}%f)"
     fi
-    echo " (%f%F{blue}${branch}${git_status_indicator}%f)"
-  fi
 }
 parse_container_info() {
     local name=""
@@ -52,25 +43,25 @@ PROMPT="${container_segment}${path_segment}${git_segment}${prompt_symbol}"
 
 ### KEYBINDS ###
 bindkey '\e[1~' beginning-of-line
-bindkey '\e[H'  beginning-of-line
-bindkey '\eOH'  beginning-of-line
+bindkey '\e[H' beginning-of-line
+bindkey '\eOH' beginning-of-line
 bindkey '\e[4~' end-of-line
-bindkey '\e[F'  end-of-line
-bindkey '\eOF'  end-of-line
+bindkey '\e[F' end-of-line
+bindkey '\eOF' end-of-line
 bindkey '\e[3~' delete-char
 bindkey '\e[2~' overwrite-mode
 bindkey "^K" kill-line
-bindkey '^[[1;5D' backward-word     # Ctrl+Left
-bindkey '^[[1;5C' forward-word      # Ctrl+Right
-bindkey '^H' backward-kill-word     # Ctrl+Backspace
-bindkey '^[[3;5~' kill-word         # Ctrl+Delete
+bindkey '^[[1;5D' backward-word # Ctrl+Left
+bindkey '^[[1;5C' forward-word  # Ctrl+Right
+bindkey '^H' backward-kill-word # Ctrl+Backspace
+bindkey '^[[3;5~' kill-word     # Ctrl+Delete
 bindkey '^I' complete-word
 autoload -U up-line-or-beginning-search
 autoload -U down-line-or-beginning-search
 zle -N up-line-or-beginning-search
 zle -N down-line-or-beginning-search
-bindkey '\e[5~' up-line-or-beginning-search     # Page up
-bindkey '\e[6~' down-line-or-beginning-search   # Page down
+bindkey '\e[5~' up-line-or-beginning-search   # Page up
+bindkey '\e[6~' down-line-or-beginning-search # Page down
 
 ### ALIASES ###
 if type -p bat &>/dev/null; then
@@ -124,4 +115,13 @@ elif type -p vim &>/dev/null; then
     export EDITOR=vim
 elif type -p vi &>/dev/null; then
     export EDITOR=vi
+fi
+
+### PLUGINS
+[[ -f /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh ]] && source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
+[[ -f /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]] && source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+if [[ -f /usr/share/zsh/plugins/zsh-history-substring-search/zsh-history-substring-search.zsh ]]; then
+    source /usr/share/zsh/plugins/zsh-history-substring-search/zsh-history-substring-search.zsh
+    bindkey '^[[1;5A' history-substring-search-up   # Ctrl+↑
+    bindkey '^[[1;5B' history-substring-search-down # Ctrl+↓
 fi
