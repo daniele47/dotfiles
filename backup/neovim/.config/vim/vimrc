@@ -8,8 +8,11 @@ set number
 set relativenumber
 highlight LineNr ctermfg=240 guifg=#585858
 
+" state files
+set viminfofile=~/.config/vim/viminfo
+set noswapfile
+
 " various
 syntax on
-set viminfo="NONE"
 set mouse=a
 set scrolloff=5
