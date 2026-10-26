@@ -3,7 +3,7 @@ if type -p bat &>/dev/null; then
     alias cat="bat"
 fi
 if type -p lsd &>/dev/null; then
-    alias ls="lsd --icon=never --group-dirs=last"
+    alias ls="lsd --icon=never  --group-directories-first"
     alias tree='lsd --icon=never --group-directories-first --tree'
 else
     alias ls="ls --color=auto --group-directories-first"
