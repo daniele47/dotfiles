@@ -1,3 +1,6 @@
+[General]
+ShowDesktopPreviewBanner=false
+
 [KDE]
 LookAndFeelPackage=org.kde.breezedark.desktop
 
