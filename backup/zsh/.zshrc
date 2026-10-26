@@ -18,6 +18,13 @@ if type -p distrobox &>/dev/null; then
     alias dr='distrobox enter --'
     alias dl='distrobox list'
 fi
+### FUNCTIONS ###
+# open command if xdg-open is available
+if command -v xdg-open &>/dev/null; then
+    function open() {
+        (for arg in "$@"; do nohup xdg-open "$arg" &>/dev/null & done && :)
+    }   
+fi
 
 ### EXPORTS ###
 export PATH="$HOME/.local/bin:$PATH"
