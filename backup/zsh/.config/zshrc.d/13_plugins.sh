@@ -36,12 +36,6 @@ parse_container_info() {
 local container_segment='$(parse_container_info)'
 local path_segment='[%f%F{yellow}%n@%m%f:%F{cyan}%(4~|…/%3~|%~)%f]%f'
 local git_segment='$(parse_git_info)'
-local prompt_symbol='%(?. . %F{red}[%?]%f )%(#.#.$) '
+local prompt_symbol='%(?. . %F{red}[%?]%f )%(#.#.%%) '
 PROMPT="${container_segment}${path_segment}${git_segment}${prompt_symbol}"
 
-# open command if xdg-open is available
-if command -v xdg-open &>/dev/null; then
-    function open() {
-        (for arg in "$@"; do nohup xdg-open "$arg" &>/dev/null & done && :)
-    }
-fi
