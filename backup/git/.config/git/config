@@ -9,4 +9,4 @@
 [alias]
     lo = !git --no-pager log --oneline --graph -20
     st = status -s
-    nuke = reset --hard -q
+    nuke = !git reset --hard && git clean -fd
