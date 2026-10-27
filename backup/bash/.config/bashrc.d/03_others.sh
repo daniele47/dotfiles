@@ -1,5 +1,3 @@
-#!/bin/bash
-
 # history expand before running
 shopt -s histverify
 

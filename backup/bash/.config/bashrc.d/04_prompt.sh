@@ -1,5 +1,3 @@
-#!/bin/bash
-
 # truncate to last 3 dirs
 export PROMPT_DIRTRIM=3
 
