@@ -38,7 +38,7 @@ upload_repo() {
         log "- Uploading bundle to remote '$REMOTE_ARCHIVE'..."
         proton-drive fs upload "$CACHE_BUNDLE" "$REMOTE_DIR" -f replace
         log "- Deleting old bundle from trash at '$REMOTE_TRASHED_ARCHIVE'..."
-        proton-drive fs delete "$REMOTE_TRASHED_ARCHIVE"
+        proton-drive fs delete "$REMOTE_TRASHED_ARCHIVE" || true
     } >&2
 }
 
