@@ -1,3 +1,6 @@
+[Appearance]
+WordMode=false
+
 [General]
 Name=Custom
 Parent=FALLBACK/
