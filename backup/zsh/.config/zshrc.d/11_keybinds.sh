@@ -1,21 +1,20 @@
-# xdg base specification
-export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
-export XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
-export XDG_STATE_HOME="${XDG_STATE_HOME:-$HOME/.local/state}"
-export XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
-export XDG_BIN_HOME="${XDG_BIN_HOME:-$HOME/.local/bin}"
-mkdir -p "$XDG_CONFIG_HOME" "$XDG_DATA_HOME" "$XDG_STATE_HOME" "$XDG_CACHE_HOME" "$XDG_BIN_HOME"
-
-# fix pollution
-export PYTHONPYCACHEPREFIX=/tmp/pycache-QwkkUVj3ROhgnrG1
-export PYTHON_HISTORY="$XDG_STATE_HOME/python_history"
-export CARGO_HOME="$XDG_DATA_HOME/cargo"
-export RUSTUP_HOME="$XDG_DATA_HOME/rustup"
-export GOPATH="$XDG_DATA_HOME/go"
-export GOCACHE="$XDG_CACHE_HOME/go-build"
-export NODE_REPL_HISTORY="$XDG_STATE_HOME/node_repl_history"
-export SQLITE_HISTORY="$XDG_STATE_HOME/sqlite_history"
-export HISTFILE="$XDG_STATE_HOME/bash_history"
-export LESSHISTFILE="$XDG_STATE_HOME/less_history"
-export WGETHISTFILE="$XDG_STATE_HOME/wget_history"
-export HISTFILE="${XDG_STATE_HOME}/zsh_histfile"
+bindkey '\e[1~' beginning-of-line             # Home
+bindkey '\e[H' beginning-of-line              #
+bindkey '\eOH' beginning-of-line              #
+bindkey '\e[4~' end-of-line                   # End
+bindkey '\e[F' end-of-line                    #
+bindkey '\eOF' end-of-line                    #
+bindkey '\e[3~' delete-char                   # Delete
+bindkey '\e[2~' overwrite-mode                # Insert
+bindkey "^K" kill-line                        # Ctrl+K
+bindkey '^[[1;5D' backward-word               # Ctrl+Left
+bindkey '^[[1;5C' forward-word                # Ctrl+Right
+bindkey '^H' backward-kill-word               # Ctrl+Backspace
+bindkey '^[[3;5~' kill-word                   # Ctrl+Delete
+bindkey '^I' complete-word                    # Tab
+autoload -U up-line-or-beginning-search       #
+autoload -U down-line-or-beginning-search     #
+zle -N up-line-or-beginning-search            #
+zle -N down-line-or-beginning-search          #
+bindkey '\e[5~' up-line-or-beginning-search   # Page up
+bindkey '\e[6~' down-line-or-beginning-search # Page down
