@@ -51,10 +51,12 @@ export HISTFILE="${XDG_STATE_HOME}/zsh_histfile"
 # set editor
 if type -p nvim &>/dev/null; then
     export EDITOR=nvim
+    alias vim='nvim'
 elif type -p vim &>/dev/null; then
     export EDITOR=vim
 elif type -p vi &>/dev/null; then
     export EDITOR=vi
+    alias vim='vi'
 fi
 
 ### PLUGINS

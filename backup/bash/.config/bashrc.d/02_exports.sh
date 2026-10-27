@@ -29,10 +29,12 @@ export WGETHISTFILE="$XDG_STATE_HOME/wget_history"
 # set editor
 if type -P nvim &>/dev/null; then
     export EDITOR=nvim
+    alias vim='nvim'
 elif type -P vim &>/dev/null; then
     export EDITOR=vim
 elif type -P vi &>/dev/null; then
     export EDITOR=vi
+    alias vim='vi'
 fi
 
 # wrap systemctl output
