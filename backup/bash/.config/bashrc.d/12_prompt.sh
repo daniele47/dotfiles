@@ -8,56 +8,35 @@ function __cleanup_prompt__() {
     printf "\e[2K\r"
 
     # change PS1
-    local -r red="\[\e[1;31m\]"
-    local -r lgreen="\[\e[1;32m\]"
-    local -r yellow="\[\e[1;33m\]"
-    local -r purple="\[\e[1;35m\]"
-    local -r green="\[\e[1;36m\]"
+    local -r red="\[\e[31m\]"
+    local -r lgreen="\[\e[32m\]"
+    local -r yellow="\[\e[33m\]"
+    local -r blue="\[\e[34m\]"
+    local -r purple="\[\e[35m\]"
+    local -r green="\[\e[36m\]"
     local -r wipe="\[\e[0m\]"
     ###############################################
-    local -r workdir="${green}\w "
+    local -r path_segment="[${yellow}\u@\h${wipe}:${green}\w${wipe}] "
     ###############################################
-    local container_name=""
-    container_name="$(sed -n 's/^name="\(.*\)"/\1/p' /run/.containerenv 2>/dev/null)"
-    container_name="${container_name:-$container}"
-    if [[ -n "$container_name" ]]; then container_name="${red}[$container_name]$wipe "; fi
+    local container_segment=""
+    container_segment="$(sed -n 's/^name="\(.*\)"/\1/p' /run/.containerenv 2>/dev/null)"
+    container_segment="${container_segment:-$container}"
+    if [[ -n "$container_segment" ]]; then container_segment="${purple}[$container_segment]$wipe "; fi
     ###############################################
-    local branch="" gitbranch_status="" gitstate=""
-    local GITDIR="$PWD"
-    until [[ -z "$GITDIR" || -e "$GITDIR/.git" ]]; do GITDIR="${GITDIR%/*}"; done
-    if [[ -d "$GITDIR/.git" ]]; then
-        read -r file <"$GITDIR/.git/HEAD"
-        case "$file" in
-        ref:*) branch="${file##*/}" ;;
-        *) branch="${file:0:8}" ;;
-        esac
-        local -r gitbranch="${purple}(${branch})"
-        local flags="" gitstatus=""
-        [[ -n "$(git status --porcelain 2>/dev/null)" ]] && flags="*"
-        [[ -n "$flags" ]] && local -r gitstatus="${red}${flags}"
-        gitbranch_status="${gitbranch}${gitstatus} "
-        ###############################################
-        local state=""
-        [[ -f "$GITDIR/.git/MERGE_HEAD" ]] && state="MERGING"
-        [[ -f "$GITDIR/.git/CHERRY_PICK_HEAD" ]] && state="CHERRY-PICKING"
-        [[ -f "$GITDIR/.git/REVERT_HEAD" ]] && state="REVERTING"
-        [[ -f "$GITDIR/.git/BISECT_START" ]] && state="BISECTING"
-        [[ -d "$GITDIR/.git/rebase-merge" ]] && state="REBASING"
-        [[ -d "$GITDIR/.git/rebase-apply" ]] && {
-            [[ -f "$GITDIR/.git/AM_HEAD" ]] && state="AM" || state="AM/REBASE"
-        }
-        [[ -f "$GITDIR/.git/REBASE_HEAD" ]] && state="REBASING"
-        [[ -f "$GITDIR/.git/AM_HEAD" ]] && state="AM"
-        [[ -n "$state" ]] && gitstate="${yellow}($state) "
+    local git_segment=""
+    if git rev-parse --is-inside-work-tree &>/dev/null; then
+        local -r branch="$(git rev-parse --abbrev-ref HEAD 2>/dev/null)"
+        local git_status_indicator=""
+        if [[ -n "$(git status --porcelain 2>/dev/null)" ]]; then
+            git_status_indicator="${red}*${wipe}"
+        fi
+        git_segment="(${blue}${branch}${git_status_indicator}${wipe}) "
     fi
     ###############################################
-    local symbol=""
-    case "$retval" in
-    0) symbol="${lgreen}❯ " ;;
-    *) symbol="${red}❯ " ;;
-    esac
+    local prompt_symbol="$ "
+    if [[ "$retval" != 0 ]]; then prompt_symbol="${red}[$retval]${wipe} "; fi
     ###############################################
-    PS1="${wipe}${container_name}${workdir}${gitbranch_status}${gitstate}${symbol}${wipe}"
+    PS1="${wipe}${container_segment}${path_segment}${git_segment}${prompt_symbol}${wipe}"
 
     # exit with correct status code
     return "${retval}"
@@ -67,3 +46,8 @@ function __cleanup_prompt__() {
 #   this is probably because they get appended once whilst logging into the current user, and once
 #   when starting a bash process
 PROMPT_COMMAND="__cleanup_prompt__;"${PROMPT_COMMAND}
+
+# local path_segment='[%f%F{yellow}%n@%m%f:%F{cyan}%(4~|…/%3~|%~)%f]%f'
+# local git_segment='$(parse_git_info)'
+# local prompt_symbol='%(?. . %F{red}[%?]%f )%(#.#.%%) '
+# PROMPT="${container_segment}${path_segment}${git_segment}${prompt_symbol}"
