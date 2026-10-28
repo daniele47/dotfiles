@@ -17,3 +17,10 @@ syntax on
 colorscheme ultimate
 set mouse=a
 set scrolloff=5
+set ttimeout
+set ttimeoutlen=50 " makes Escape actually function (waits 50 ms instead of 1000ms)
+
+" hack in support for clipboard
+if !has('clipboard')
+  xnoremap <silent> "+y y:call system('wl-copy', @0)<CR>
+endif
