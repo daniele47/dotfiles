@@ -14,5 +14,6 @@ set noswapfile
 
 " various
 syntax on
+colorscheme ultimate
 set mouse=a
 set scrolloff=5
