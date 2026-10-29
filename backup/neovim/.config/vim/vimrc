@@ -12,6 +12,11 @@ highlight LineNr ctermfg=240 guifg=#585858
 set viminfofile=~/.config/vim/viminfo
 set noswapfile
 
+" customize cursor
+let &t_SI = "\<Esc>[6 q"
+let &t_EI = "\<Esc>[2 q"
+let &t_SR = "\<Esc>[4 q"
+
 " various
 syntax on
 colorscheme ultimate
