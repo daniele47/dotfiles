@@ -15,3 +15,10 @@ elif command -v /bin/vi &>/dev/null; then
     export EDITOR=vi
     alias vim='vi'
 fi
+
+# User specific environment
+if ! [[ "$PATH" =~ "$HOME/.local/bin" ]]; then
+    PATH="$HOME/.local/bin:$PATH"
+fi
+export PATH
+
