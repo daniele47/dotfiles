@@ -37,8 +37,6 @@ upload_repo() {
         env -u GIT_DIR -u GIT_WORK_TREE git -C "$CACHE_DIR" bundle create "$CACHE_BUNDLE" HEAD --all
         log "- Verifying git bundle at '$CACHE_BUNDLE'..."
         git bundle verify "$CACHE_BUNDLE"
-        log "- Deleting old bundle..."
-        run_cli deletefile "$REMOTE_URL" || true
         log "- Uploading bundle to remote '$REMOTE_URL'..."
         run_cli copyto "$CACHE_BUNDLE" "$REMOTE_URL"
     } >&2
@@ -48,7 +46,10 @@ download_repo() {
     {
         log "- Downloading git bundle from '$REMOTE_URL' into '$CACHE_BUNDLE'..."
         rm -f "$CACHE_BUNDLE"
-        run_cli copyto "$REMOTE_URL" "$CACHE_BUNDLE"
+        if ! run_cli copyto "$REMOTE_URL" "$CACHE_BUNDLE"; then
+            log "\e[33mWARNING: Remote bundle not found or download failed, starting fresh..."
+            return 0
+        fi
         log "- Verifying git bundle at '$CACHE_BUNDLE'..."
         git bundle verify "$CACHE_BUNDLE"
         log "- Cloning bundle into bare repository at '$CACHE_DIR'"
@@ -59,7 +60,7 @@ download_repo() {
 
 init_repo() {
     if ! env -u GIT_DIR -u GIT_WORK_TREE git -C "$CACHE_DIR" rev-parse --git-dir >/dev/null 2>&1; then
-        log "\e[33mWARNING: Initializing new empty git bare repo at '$CACHE_DIR'..."
+        log "\e[33mInitializing new empty git bare repo at '$CACHE_DIR'..."
         rm -rf "$CACHE_DIR"
         git init --bare "$CACHE_DIR"
     fi >&2
@@ -75,12 +76,8 @@ while IFS= read -r line; do
     "connect git-receive-pack"*)
         echo
         # download before upload to avoid force overwrite
-        log "- Checking if repo already present on remote..."
-        if run_cli lsf "$REMOTE_URL" &>/dev/null; then
-            download_repo
-        else
-            init_repo
-        fi
+        download_repo
+        init_repo
 
         # push into local git server
         log "- Pushing to local git bare repo at '$CACHE_DIR'..."
