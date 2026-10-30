@@ -28,7 +28,16 @@ CACHE_DIR="$CACHE_TOPDIR/$REPO_NAME.git"
 CACHE_BUNDLE="$CACHE_TOPDIR/$REPO_NAME"
 
 run_cli() {
-    rclone --progress "$@" >&2
+    # One-time setup:
+    #   secret-tool store --label='rclone config pass' service rclone key config
+    #   rclone config encryption set
+    # Remove encryption:  rclone config encryption remove
+    # Verify:             rclone config encryption check
+    if [ -n "${STDIN_PASSWORD:-}" ] || ! command -v secret-tool &>/dev/null; then
+        rclone --progress "$@"
+    else
+        rclone --password-command "secret-tool lookup service rclone key config" --progress "$@" || rclone --progress "$@"
+    fi </dev/tty >&2
 }
 
 upload_repo() {
