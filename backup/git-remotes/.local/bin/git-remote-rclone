@@ -1,0 +1,120 @@
+#!/bin/bash
+
+# Script to use protondrive as a pseudo git remote
+#
+# How to use:
+# - place this script into any directory in PATH
+# - indicate the remote as `rclone::<REPO_NAME>`
+# - now rclone is kinda like a git server!
+#
+# Note: git pull/push download/upload ENTIRE repo!
+
+set -euo pipefail
+
+for dep in rclone git; do
+    if ! command -v "$dep" &>/dev/null; then
+        echo "Missing required dependency: '$dep'"
+    fi
+done
+
+log() {
+    echo -e "\e[1m$*\e[m" >&2
+}
+
+REMOTE_URL="${2:-$1}"
+REPO_NAME="$(basename "$REMOTE_URL")"
+CACHE_TOPDIR="$HOME/.cache/git-remote-rclone"
+CACHE_DIR="$CACHE_TOPDIR/$REPO_NAME.git"
+CACHE_BUNDLE="$CACHE_TOPDIR/$REPO_NAME"
+
+run_cli() {
+    rclone --progress "$@" >&2
+}
+
+upload_repo() {
+    {
+        log "- Creating git bundle at '$CACHE_BUNDLE'..."
+        env -u GIT_DIR -u GIT_WORK_TREE git -C "$CACHE_DIR" bundle create "$CACHE_BUNDLE" HEAD --all
+        log "- Verifying git bundle at '$CACHE_BUNDLE'..."
+        git bundle verify "$CACHE_BUNDLE"
+        log "- Deleting old bundle..."
+        run_cli deletefile "$REMOTE_URL" || true
+        log "- Uploading bundle to remote '$REMOTE_URL'..."
+        run_cli copyto "$CACHE_BUNDLE" "$REMOTE_URL"
+    } >&2
+}
+
+download_repo() {
+    {
+        log "- Downloading git bundle from '$REMOTE_URL' into '$CACHE_BUNDLE'..."
+        rm -f "$CACHE_BUNDLE"
+        run_cli copyto "$REMOTE_URL" "$CACHE_BUNDLE"
+        log "- Verifying git bundle at '$CACHE_BUNDLE'..."
+        git bundle verify "$CACHE_BUNDLE"
+        log "- Cloning bundle into bare repository at '$CACHE_DIR'"
+        rm -rf "$CACHE_DIR"
+        git clone --bare "$CACHE_BUNDLE" "$CACHE_DIR"
+    } >&2
+}
+
+init_repo() {
+    if ! env -u GIT_DIR -u GIT_WORK_TREE git -C "$CACHE_DIR" rev-parse --git-dir >/dev/null 2>&1; then
+        log "\e[33mWARNING: Initializing new empty git bare repo at '$CACHE_DIR'..."
+        rm -rf "$CACHE_DIR"
+        git init --bare "$CACHE_DIR"
+    fi >&2
+}
+
+mkdir -p "$CACHE_TOPDIR"
+
+while IFS= read -r line; do
+    case "$line" in
+    capabilities)
+        echo -e "connect\n"
+        ;;
+    "connect git-receive-pack"*)
+        echo
+        # download before upload to avoid force overwrite
+        log "- Checking if repo already present on remote..."
+        if run_cli lsf "$REMOTE_URL" &>/dev/null; then
+            ALREADY_EXIST=true
+            download_repo
+        else
+            ALREADY_EXIST=false
+            init_repo
+        fi
+
+        # push into local git server
+        before="$(env -u GIT_DIR -u GIT_WORK_TREE git -C "$CACHE_DIR" show-ref 2>/dev/null || true)"
+        log "- Pushing to local git bare repo at '$CACHE_DIR'..."
+        git-receive-pack "$CACHE_DIR"
+        after="$(env -u GIT_DIR -u GIT_WORK_TREE git -C "$CACHE_DIR" show-ref 2>/dev/null || true)"
+
+        # early quit if git-receive-pack didn't update the ref
+        if "$ALREADY_EXIST" && [[ "$before" = "$after" ]]; then
+            log "- No refs changed (push rejected or nothing to push), skipping upload."
+            exit 1
+        fi
+
+        # upload
+        upload_repo
+
+        exit 0
+        ;;
+    "connect git-upload-pack"*)
+        echo
+        # download
+        download_repo
+
+        # pull from local git server
+        log "- Pulling from local git bare repo at '$CACHE_DIR'"
+        git-upload-pack "$CACHE_DIR"
+
+        exit 0
+        ;;
+    *)
+        log "Unknown message: [$line]"
+        exit 1
+        ;;
+    esac
+done
