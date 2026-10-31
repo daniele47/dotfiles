@@ -20,9 +20,18 @@ done
 log() {
     echo -e "\e[1m$*\e[m" >&2
 }
+validate_url() {
+    local url="$1"
+    if [[ "$url" =~ [^a-zA-Z0-9:./_-] ]]; then
+        log "\e[31mERROR: URL contains forbidden characters. Allowed: a-z A-Z 0-9 : / - _ .\e[m"
+        exit 1
+    fi
+    echo "${REMOTE_URL//\//%}"
+    return 0
+}
 
 REMOTE_URL="$2"
-REPO_NAME="$(basename "$REMOTE_URL")"
+REPO_NAME="$(validate_url "$REMOTE_URL")"
 CACHE_TOPDIR="${XDG_CACHE_HOME:-HOME/.cache}/git-remote-rclone"
 CACHE_DIR="$CACHE_TOPDIR/$REPO_NAME"
 
