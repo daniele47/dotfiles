@@ -23,7 +23,7 @@ log() {
 validate_url() {
     local url="$1"
     if [[ "$url" =~ [^a-zA-Z0-9:./_-] ]]; then
-        log "\e[31mERROR: URL contains forbidden characters. Allowed: a-z A-Z 0-9 : / - _ .\e[m"
+        log "\e[31mERROR: URL contains forbidden characters. Allowed: a-z A-Z 0-9 : / - _ ."
         exit 1
     fi
     echo "${REMOTE_URL//\//%}"
@@ -39,6 +39,16 @@ run_cli() {
     rclone --progress "$@" >&2
 }
 
+validate_remote() {
+    {
+        log "- Validating remote at url '$REMOTE_URL' is available..."
+        if ! run_cli about "$REMOTE_URL" &>/dev/null; then
+            log "\e[31mERROR: Remote isn't avaiable! Try fixing config file!"
+            exit 1
+        fi
+    } >&2
+}
+
 upload_repo() {
     {
         log "- Uploading git repo to remote '$REMOTE_URL'..."
@@ -50,9 +60,7 @@ download_repo() {
     {
         log "- Checking if remote url is already present..."
         if ! run_cli lsf "$REMOTE_URL" &>/dev/null; then
-            log "\e[33mWARNING: Remote repo not found, initializing new bare repo at '$CACHE_DIR'..."
-            rm -rf "$CACHE_DIR"
-            git init --bare "$CACHE_DIR"
+            log "\e[33mWARNING: Remote repo not found!"
             return 0
         fi
 
@@ -70,6 +78,10 @@ while IFS= read -r line; do
         ;;
     "connect git-receive-pack"*)
         echo
+
+        # validate remote
+        validate_remote
+
         # download before upload to avoid force overwrite
         download_repo
 
@@ -90,6 +102,10 @@ while IFS= read -r line; do
         ;;
     "connect git-upload-pack"*)
         echo
+
+        # validate remote
+        validate_remote
+
         # download
         download_repo
 
