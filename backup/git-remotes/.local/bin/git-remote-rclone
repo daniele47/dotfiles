@@ -27,16 +27,7 @@ CACHE_TOPDIR="${XDG_CACHE_HOME:-HOME/.cache}/git-remote-rclone"
 CACHE_DIR="$CACHE_TOPDIR/$REPO_NAME"
 
 run_cli() {
-    # One-time setup:
-    #   secret-tool store --label='rclone config pass' service rclone key config
-    #   rclone config encryption set
-    # Remove encryption:  rclone config encryption remove
-    # Verify:             rclone config encryption check
-    if [ -n "${STDIN_PASSWORD:-}" ] || ! command -v secret-tool &>/dev/null; then
-        rclone --progress "$@"
-    else
-        rclone --password-command "secret-tool lookup service rclone key config" --progress "$@" || rclone --progress "$@"
-    fi </dev/tty >&2
+    rclone --progress "$@" >&2
 }
 
 upload_repo() {
@@ -48,20 +39,16 @@ upload_repo() {
 
 download_repo() {
     {
-        log "- Downloading git bundle from '$REMOTE_URL' into '$CACHE_DIR'..."
-        if ! run_cli sync "$REMOTE_URL" "$CACHE_DIR"; then
+        log "- Checking if remote url is already present..."
+        if ! run_cli lsf "$REMOTE_URL" &>/dev/null; then
             log "\e[33mWARNING: Remote repo not found, initializing new bare repo at '$CACHE_DIR'..."
             rm -rf "$CACHE_DIR"
             git init --bare "$CACHE_DIR"
             return 0
         fi
 
-        log "- Verifying downloaded repo..."
-        if ! git -C "$CACHE_DIR" fsck --no-dangling --no-progress; then
-            log "\e[31mERROR: Downloaded repo failed fsck. Refusing to serve it.\e[m"
-            rm -rf "$CACHE_DIR"
-            return 1
-        fi
+        log "- Downloading git bundle from '$REMOTE_URL' into '$CACHE_DIR'..."
+        run_cli sync "$REMOTE_URL" "$CACHE_DIR"
     } >&2
 }
 
