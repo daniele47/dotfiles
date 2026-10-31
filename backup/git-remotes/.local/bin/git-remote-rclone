@@ -69,6 +69,13 @@ download_repo() {
     } >&2
 }
 
+init_repo() {
+    if ! env -u GIT_DIR -u GIT_WORK_TREE git -C "$CACHE_DIR" rev-parse --git-dir >/dev/null; then
+        log "- Missing git repository, initializing one at '$CACHE_DIR'..."
+        env -u GIT_DIR -u GIT_WORK_TREE git init --bare "$CACHE_DIR"
+    fi >&2
+}
+
 mkdir -p "$CACHE_TOPDIR"
 
 while IFS= read -r line; do
@@ -84,6 +91,7 @@ while IFS= read -r line; do
 
         # download before upload to avoid force overwrite
         download_repo
+        init_repo
 
         # push into local git server
         REF_BEFORE=$(env -u GIT_DIR -u GIT_WORK_TREE git -C "$CACHE_DIR" rev-parse refs/heads/main 2>/dev/null || echo "")
