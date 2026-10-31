@@ -86,10 +86,10 @@ while IFS= read -r line; do
         download_repo
 
         # push into local git server
-        REF_BEFORE=$(git -C "$CACHE_DIR" rev-parse refs/heads/main 2>/dev/null || echo "")
+        REF_BEFORE=$(env -u GIT_DIR -u GIT_WORK_TREE git -C "$CACHE_DIR" rev-parse refs/heads/main 2>/dev/null || echo "")
         log "- Pushing to local git bare repo at '$CACHE_DIR'..."
         git-receive-pack "$CACHE_DIR"
-        REF_AFTER=$(git -C "$CACHE_DIR" rev-parse refs/heads/main 2>/dev/null || echo "")
+        REF_AFTER=$(env -u GIT_DIR -u GIT_WORK_TREE git -C "$CACHE_DIR" rev-parse refs/heads/main 2>/dev/null || echo "")
         if [ "$REF_BEFORE" = "$REF_AFTER" ]; then
             log "\e[33mWARNING: Ref unchanged, nothing to upload."
             exit 0
