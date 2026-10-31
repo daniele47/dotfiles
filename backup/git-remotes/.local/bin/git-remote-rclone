@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Script to use protondrive as a pseudo git remote
+# Script to use rclone as a pseudo git remote
 #
 # How to use:
 # - place this script into any directory in PATH
@@ -65,8 +65,14 @@ while IFS= read -r line; do
         download_repo
 
         # push into local git server
+        REF_BEFORE=$(git -C "$CACHE_DIR" rev-parse refs/heads/main 2>/dev/null || echo "")
         log "- Pushing to local git bare repo at '$CACHE_DIR'..."
         git-receive-pack "$CACHE_DIR"
+        REF_AFTER=$(git -C "$CACHE_DIR" rev-parse refs/heads/main 2>/dev/null || echo "")
+        if [ "$REF_BEFORE" = "$REF_AFTER" ]; then
+            log "\e[33mWARNING: Ref unchanged, nothing to upload."
+            exit 0
+        fi
 
         # upload
         upload_repo
