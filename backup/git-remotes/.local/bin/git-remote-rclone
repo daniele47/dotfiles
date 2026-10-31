@@ -41,7 +41,7 @@ run_cli() {
 
 upload_repo() {
     {
-        log "- Uploading bundle to remote '$REMOTE_URL'..."
+        log "- Uploading git repo to remote '$REMOTE_URL'..."
         run_cli sync "$CACHE_DIR" "$REMOTE_URL"
     } >&2
 }
@@ -56,7 +56,7 @@ download_repo() {
             return 0
         fi
 
-        log "- Downloading git bundle from '$REMOTE_URL' into '$CACHE_DIR'..."
+        log "- Downloading git repo from '$REMOTE_URL' into '$CACHE_DIR'..."
         run_cli sync "$REMOTE_URL" "$CACHE_DIR"
     } >&2
 }
