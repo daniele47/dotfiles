@@ -21,11 +21,10 @@ log() {
     echo -e "\e[1m$*\e[m" >&2
 }
 
-REMOTE_URL="${2:-$1}"
+REMOTE_URL="$2"
 REPO_NAME="$(basename "$REMOTE_URL")"
 CACHE_TOPDIR="${XDG_CACHE_HOME:-HOME/.cache}/git-remote-rclone"
-CACHE_DIR="$CACHE_TOPDIR/$REPO_NAME.git"
-CACHE_BUNDLE="$CACHE_TOPDIR/$REPO_NAME"
+CACHE_DIR="$CACHE_TOPDIR/$REPO_NAME"
 
 run_cli() {
     # One-time setup:
@@ -42,37 +41,28 @@ run_cli() {
 
 upload_repo() {
     {
-        log "- Creating git bundle at '$CACHE_BUNDLE'..."
-        env -u GIT_DIR -u GIT_WORK_TREE git -C "$CACHE_DIR" bundle create "$CACHE_BUNDLE" HEAD --all
-        log "- Verifying git bundle at '$CACHE_BUNDLE'..."
-        git bundle verify "$CACHE_BUNDLE"
         log "- Uploading bundle to remote '$REMOTE_URL'..."
-        run_cli copyto "$CACHE_BUNDLE" "$REMOTE_URL"
+        run_cli sync "$CACHE_DIR" "$REMOTE_URL"
     } >&2
 }
 
 download_repo() {
     {
-        log "- Downloading git bundle from '$REMOTE_URL' into '$CACHE_BUNDLE'..."
-        rm -f "$CACHE_BUNDLE"
-        if ! run_cli copyto "$REMOTE_URL" "$CACHE_BUNDLE"; then
-            log "\e[33mWARNING: Remote bundle not found or download failed, starting fresh..."
+        log "- Downloading git bundle from '$REMOTE_URL' into '$CACHE_DIR'..."
+        if ! run_cli sync "$REMOTE_URL" "$CACHE_DIR"; then
+            log "\e[33mWARNING: Remote repo not found, initializing new bare repo at '$CACHE_DIR'..."
+            rm -rf "$CACHE_DIR"
+            git init --bare "$CACHE_DIR"
             return 0
         fi
-        log "- Verifying git bundle at '$CACHE_BUNDLE'..."
-        git bundle verify "$CACHE_BUNDLE"
-        log "- Cloning bundle into bare repository at '$CACHE_DIR'"
-        rm -rf "$CACHE_DIR"
-        git clone --bare "$CACHE_BUNDLE" "$CACHE_DIR"
-    } >&2
-}
 
-init_repo() {
-    if ! env -u GIT_DIR -u GIT_WORK_TREE git -C "$CACHE_DIR" rev-parse --git-dir >/dev/null 2>&1; then
-        log "\e[33mInitializing new empty git bare repo at '$CACHE_DIR'..."
-        rm -rf "$CACHE_DIR"
-        git init --bare "$CACHE_DIR"
-    fi >&2
+        log "- Verifying downloaded repo..."
+        if ! git -C "$CACHE_DIR" fsck --no-dangling --no-progress; then
+            log "\e[31mERROR: Downloaded repo failed fsck. Refusing to serve it.\e[m"
+            rm -rf "$CACHE_DIR"
+            return 1
+        fi
+    } >&2
 }
 
 mkdir -p "$CACHE_TOPDIR"
@@ -86,7 +76,6 @@ while IFS= read -r line; do
         echo
         # download before upload to avoid force overwrite
         download_repo
-        init_repo
 
         # push into local git server
         log "- Pushing to local git bare repo at '$CACHE_DIR'..."
