@@ -63,7 +63,7 @@ download_repo() {
         if ! run_cli lsf "$REMOTE_URL" &>/dev/null; then
             log "\e[33mWARNING: Remote repo not found!"
             rm -rf "$CACHE_DIR"
-            return 0
+            return 1
         fi
 
         log "- Downloading git repo from '$REMOTE_URL' into '$CACHE_DIR'..."
@@ -95,8 +95,7 @@ while IFS= read -r line; do
         validate_remote
 
         # download before upload to avoid force overwrite
-        download_repo
-        init_repo
+        download_repo || init_repo
 
         # push into local git server
         REF_BEFORE=$(env -u GIT_DIR -u GIT_WORK_TREE git -C "$CACHE_DIR" rev-parse refs/heads/main 2>/dev/null || echo "")
@@ -120,7 +119,7 @@ while IFS= read -r line; do
         validate_remote
 
         # download
-        download_repo
+        download_repo || exit 1
 
         # pull from local git server
         log "- Pulling from local git bare repo at '$CACHE_DIR'"
