@@ -31,6 +31,7 @@ validate_url() {
 }
 
 REMOTE_URL="$2"
+REMOTE_NAME="${REMOTE_URL%%:*}:"
 REPO_NAME="$(validate_url "$REMOTE_URL")"
 CACHE_TOPDIR="${XDG_CACHE_HOME:-HOME/.cache}/git-remote-rclone"
 CACHE_DIR="$CACHE_TOPDIR/$REPO_NAME"
@@ -41,8 +42,8 @@ run_cli() {
 
 validate_remote() {
     {
-        log "- Validating remote at url '$REMOTE_URL' is available..."
-        if ! run_cli about "$REMOTE_URL" &>/dev/null; then
+        log "- Validating remote '$REMOTE_NAME' is available..."
+        if ! run_cli config redacted "$REMOTE_NAME" &>/dev/null; then
             log "\e[31mERROR: Remote isn't avaiable! Try fixing config file!"
             exit 1
         fi
