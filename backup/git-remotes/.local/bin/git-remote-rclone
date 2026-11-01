@@ -59,15 +59,12 @@ upload_repo() {
 
 download_repo() {
     {
-        log "- Checking if remote url is already present..."
-        if ! run_cli lsf "$REMOTE_URL" &>/dev/null; then
-            log "\e[33mWARNING: Remote repo not found!"
+        log "- Downloading git repo from '$REMOTE_URL' into '$CACHE_DIR'..."
+        if ! run_cli sync "$REMOTE_URL" "$CACHE_DIR"; then
+            log "\e[33mWARNING: Failed to download repo: remote path missing or inaccessible!"
             rm -rf "$CACHE_DIR"
             return 1
         fi
-
-        log "- Downloading git repo from '$REMOTE_URL' into '$CACHE_DIR'..."
-        run_cli sync "$REMOTE_URL" "$CACHE_DIR"
     } >&2
 }
 
