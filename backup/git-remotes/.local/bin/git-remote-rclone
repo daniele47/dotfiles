@@ -48,7 +48,7 @@ run_cli() {
 validate_remote() {
     {
         log "- Validating remote '$REMOTE_NAME' is available..."
-        if ! run_cli config redacted "$REMOTE_NAME" &>/dev/null; then
+        if ! rclone listremotes -q | grep -Fxq "${REMOTE_NAME}" &>/dev/null; then
             error_exit "Remote isn't avaiable! Try fixing config file!"
         fi
     } >&2
