@@ -4,31 +4,36 @@
 #
 # How to use:
 # - place this script into any directory in PATH
-# - indicate the remote as `rclone::<REPO_NAME>`
+# - indicate the remote as `rclone::<REPO_URL>`
 # - now rclone is kinda like a git server!
-#
-# Note: git pull/push download/upload ENTIRE repo!
 
 set -euo pipefail
-
-for dep in rclone git; do
-    if ! command -v "$dep" &>/dev/null; then
-        echo "Missing required dependency: '$dep'"
-    fi
-done
 
 log() {
     echo -e "\e[1m$*\e[m" >&2
 }
+warn() {
+    log "\e[33mWARNING: $1"
+}
+error_exit() {
+    log "\e[31mERROR: $1"
+    exit 1
+}
 validate_url() {
     local url="$1"
     if [[ "$url" =~ [^a-zA-Z0-9:./_-] ]]; then
-        log "\e[31mERROR: URL contains forbidden characters. Allowed: a-z A-Z 0-9 : / - _ ."
-        exit 1
+        error_exit "URL contains forbidden characters. Allowed: a-z A-Z 0-9 : / - _ ."
     fi
     echo "${REMOTE_URL//\//%}"
     return 0
 }
+
+# validate dependencies
+for dep in rclone git; do
+    if ! command -v "$dep" &>/dev/null; then
+        error_exit "Missing required dependency: '$dep'"
+    fi
+done
 
 REMOTE_URL="$2"
 REMOTE_NAME="${REMOTE_URL%%:*}:"
@@ -44,8 +49,7 @@ validate_remote() {
     {
         log "- Validating remote '$REMOTE_NAME' is available..."
         if ! run_cli config redacted "$REMOTE_NAME" &>/dev/null; then
-            log "\e[31mERROR: Remote isn't avaiable! Try fixing config file!"
-            exit 1
+            error_exit "Remote isn't avaiable! Try fixing config file!"
         fi
     } >&2
 }
@@ -61,7 +65,7 @@ download_repo() {
     {
         log "- Downloading git repo from '$REMOTE_URL' into '$CACHE_DIR'..."
         if ! run_cli sync "$REMOTE_URL" "$CACHE_DIR"; then
-            log "\e[33mWARNING: Failed to download repo: remote path missing or inaccessible!"
+            warn "Failed to download repo: remote path missing or inaccessible!"
             rm -rf "$CACHE_DIR"
             return 1
         fi
@@ -100,7 +104,7 @@ while IFS= read -r line; do
         git-receive-pack "$CACHE_DIR"
         REF_AFTER=$(env -u GIT_DIR -u GIT_WORK_TREE git -C "$CACHE_DIR" rev-parse refs/heads/main 2>/dev/null || echo "")
         if [ "$REF_BEFORE" = "$REF_AFTER" ]; then
-            log "\e[33mWARNING: Ref unchanged, nothing to upload."
+            warn "Ref unchanged, nothing to upload."
             exit 0
         fi
 
