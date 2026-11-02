@@ -57,7 +57,7 @@ validate_remote() {
 upload_repo() {
     {
         log "- Uploading git repo to remote '$REMOTE_URL'..."
-        run_cli sync "$CACHE_DIR" "$REMOTE_URL"
+        run_cli sync "$CACHE_DIR" "$REMOTE_URL" --exclude '/hooks/**'
     } >&2
 }
 
