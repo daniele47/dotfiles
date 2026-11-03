@@ -42,13 +42,13 @@ CACHE_TOPDIR="${XDG_CACHE_HOME:-HOME/.cache}/git-remote-rclone"
 CACHE_DIR="$CACHE_TOPDIR/$REPO_NAME"
 
 run_cli() {
-    rclone --progress "$@" >&2
+    rclone --progress "$@" --ask-password=false
 }
 
 validate_remote() {
     {
         log "- Validating remote '$REMOTE_NAME' is available..."
-        if ! rclone listremotes -q | grep -Fxq "${REMOTE_NAME}" &>/dev/null; then
+        if ! run_cli listremotes -q | grep -Fxq "${REMOTE_NAME}" &>/dev/null; then
             error_exit "Remote isn't avaiable! Try fixing config file!"
         fi
     } >&2
@@ -57,14 +57,14 @@ validate_remote() {
 upload_repo() {
     {
         log "- Uploading git repo to remote '$REMOTE_URL'..."
-        run_cli sync "$CACHE_DIR" "$REMOTE_URL" --exclude '/hooks/**'
+        run_cli sync "$CACHE_DIR" "$REMOTE_URL" --exclude '/hooks/**' >&2
     } >&2
 }
 
 download_repo() {
     {
         log "- Downloading git repo from '$REMOTE_URL' into '$CACHE_DIR'..."
-        if ! run_cli sync "$REMOTE_URL" "$CACHE_DIR"; then
+        if ! run_cli sync "$REMOTE_URL" "$CACHE_DIR" >&2; then
             warn "Failed to download repo: remote path missing or inaccessible!"
             rm -rf "$CACHE_DIR"
             return 1
