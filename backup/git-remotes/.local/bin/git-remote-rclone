@@ -41,8 +41,29 @@ REPO_NAME="$(validate_url "$REMOTE_URL")"
 CACHE_TOPDIR="${XDG_CACHE_HOME:-HOME/.cache}/git-remote-rclone"
 CACHE_DIR="$CACHE_TOPDIR/$REPO_NAME"
 
+get_rclone_encryption_password() {
+    # validate deps
+    if ! command -v secret-tool &>/dev/null; then
+        echo "WARNING: secret-tool is required to get rclone password!" >&2
+        return 1
+    fi
+
+    # load or store and load password
+    PW="$(secret-tool lookup service rclone item config-pass 2>/dev/null || true)"
+    if [[ -z "$PW" ]]; then
+        echo -n "rclone config password: " >&2
+        IFS= read -rs PW </dev/tty || true
+        echo >&2
+        echo "$PW" | secret-tool store --label='rclone config password' service rclone item config-pass
+    fi
+
+    # output password
+    echo "$PW"
+}
+export -f get_rclone_encryption_password
+
 run_cli() {
-    rclone --progress "$@" --ask-password=false
+    RCLONE_PASSWORD_COMMAND="bash -c get_rclone_encryption_password" rclone --progress "$@" --ask-password=false
 }
 
 validate_remote() {
