@@ -11,12 +11,6 @@
 # - requires putting the password in the secret store once via:
 #       secret-tool store --label='rclone config password' service rclone item config-pass
 # - or manually override RCLONE_PASSWORD_COMMAND or RCLONE_CONFIG_PASS however works best
-#
-# Create new git repositories on the remote:
-# - just clone the repo into a git bare repository, and then publish it with rclone sync via:
-#       TMP_DIR="$(mktemp -d)"
-#       git clone --bare "$REPO_DIR" "$TMP_DIR"
-#       rclone sync "$TMP_DIR" "$REMOTE_URL" --exclude '/hooks/**'
 
 set -euo pipefail
 
@@ -78,9 +72,19 @@ download_repo() {
         if ! run_cli sync "$REMOTE_URL" "$CACHE_DIR" >&2; then
             warn "Failed to download repo: remote path missing or inaccessible!"
             rm -rf "$CACHE_DIR"
-            exit 1
+            return 1
         fi
     } >&2
+}
+
+init_repo() {
+    if ! env -u GIT_DIR -u GIT_WORK_TREE git -C "$CACHE_DIR" rev-parse --git-dir &>/dev/null; then
+        log "- Missing git repository, initializing one at '$CACHE_DIR'..."
+        echo -n "Are you sure you want to create this new repository? [y/n] "
+        read -r answer </dev/tty
+        if [[ "$answer" != y ]]; then exit 0; fi
+        env -u GIT_DIR -u GIT_WORK_TREE git init --bare "$CACHE_DIR"
+    fi >&2
 }
 
 mkdir -p "$CACHE_TOPDIR"
@@ -95,7 +99,7 @@ while IFS= read -r line; do
 
         # download
         validate_remote
-        download_repo || exit 1
+        download_repo || init_repo
 
         # push into local git server
         REF_BEFORE=$(env -u GIT_DIR -u GIT_WORK_TREE git -C "$CACHE_DIR" rev-parse refs/heads/main 2>/dev/null || echo "")
