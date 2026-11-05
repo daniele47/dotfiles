@@ -69,3 +69,7 @@ fi
 echo "Uploading video..."
 rm -f "$LOCAL_UPLOAD_DIR"/*.part
 rclone copy "$LOCAL_UPLOAD_DIR"/* "$REMOTE"
+
+# cleanup temporary files and directories
+rm -rf "$LOCAL_UPLOAD_DIR"
+rmdir "$BASE_UPLOAD_DIR" &>/dev/null || true
