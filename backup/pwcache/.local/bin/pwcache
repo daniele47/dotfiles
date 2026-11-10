@@ -2,14 +2,14 @@
 
 set -euo pipefail
 
-if [[ "$#" -ne 3 ]]; then
-    echo "Script requires 3 parameters: KEY_NAME PROMPT_CMD TIMEOUT"
+if [[ "$#" -lt 2 || "$#" -gt 3 ]]; then
+    echo "Script requires 2 or 3 parameters: KEY_NAME PROMPT_CMD [TIMEOUT]"
     exit 1
 fi
 
 KEY_NAME="$1"
 PROMPT_CMD="$2"
-TIMEOUT="$3"
+TIMEOUT="${3:-600}"
 
 # checks
 if [[ ! "$KEY_NAME" =~ ^[a-z][a-z0-9_-]*$ ]]; then
