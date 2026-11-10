@@ -1,0 +1,34 @@
+#!/bin/bash
+
+set -euo pipefail
+
+if [[ "$#" -ne 3 ]]; then
+    echo "Script requires 3 parameters: KEY_NAME PROMPT_CMD TIMEOUT"
+    exit 1
+fi
+
+KEY_NAME="$1"
+PROMPT_CMD="$2"
+TIMEOUT="$3"
+
+# checks
+if [[ ! "$KEY_NAME" =~ ^[a-z][a-z0-9_-]*$ ]]; then
+    echo "Invalid password name: must start with a lowercase letter and contain only lowercase letters, numbers, _ and -"
+    exit 1
+fi
+if [[ ! "$TIMEOUT" =~ ^[0-9]+$ ]] || ((TIMEOUT < 10 || TIMEOUT > 1800)); then
+    echo "Invalid timeout: must be between 10 and 1800 seconds"
+    exit 1
+fi
+
+# store if absent, then request password
+if ! keyctl search @s user "$KEY_NAME" &>/dev/null; then
+    KEY_ID=$(eval "$PROMPT_CMD" | keyctl padd user "$KEY_NAME" @s)
+    keyctl timeout "$KEY_ID" "$TIMEOUT"
+fi
+
+if [[ ! -t 1 ]]; then
+    keyctl pipe "$(keyctl search @s user "$KEY_NAME")"
+else
+    echo "Not showing password with interactive output!" >&2
+fi
