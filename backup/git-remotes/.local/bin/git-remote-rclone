@@ -8,9 +8,7 @@
 # - now rclone is kinda like a git server!
 #
 # Rclone config file encryption:
-# - requires putting the password in the secret store once via:
-#       secret-tool store --label='rclone config password' service rclone item config-pass
-# - or manually override RCLONE_PASSWORD_COMMAND or RCLONE_CONFIG_PASS however works best
+# - handle it manually using `RCLONE_PASSWORD_COMMAND` to retrieve the password
 
 set -euo pipefail
 
@@ -47,7 +45,7 @@ CACHE_TOPDIR="${XDG_CACHE_HOME:-HOME/.cache}/git-remote-rclone"
 CACHE_DIR="$CACHE_TOPDIR/$REPO_NAME"
 
 run_cli() {
-    RCLONE_PASSWORD_COMMAND="${RCLONE_PASSWORD_COMMAND:-secret-tool lookup service rclone item config-pass}" rclone --progress "$@" --ask-password=false
+    rclone --progress "$@" --ask-password=false
 }
 
 validate_remote() {
