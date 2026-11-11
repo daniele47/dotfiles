@@ -1,0 +1,33 @@
+#!/bin/bash
+
+set -euo pipefail
+
+if [[ "$#" -ne 3 ]]; then
+    echo "Script requires 3 parameters: PROMPT_CMD VAULT_FILE VAULT_KEY"
+    exit 1
+fi
+
+PROMPT_CMD="$1"
+VAULT_FILE="$2"
+VAULT_KEY="$3"
+TIMEOUT="600"
+KEY_NAME="keepassxc-vault"
+
+# checks
+if [[ ! -f "$VAULT_FILE" ]]; then
+    echo "Invalid vault file: $VAULT_FILE"
+    exit 1
+fi
+
+if command -v keepassxc-cli &>/dev/null; then
+    KEEPASSXC=(keepassxc-cli)
+else
+    KEEPASSXC=(flatpak run --command=keepassxc-cli org.keepassxc.KeePassXC)
+fi
+
+PW="$(pwcache "$KEY_NAME" "$PROMPT_CMD" "$TIMEOUT" | "${KEEPASSXC[@]}" show "$VAULT_FILE" "$VAULT_KEY" --attributes Password)"
+if [[ ! -t 1 ]]; then
+    echo "$PW"
+else
+    echo "Not showing password with interactive output!" >&2
+fi
