@@ -1,3 +1,5 @@
+bindkey '^[[D' backward-char                  # Left Arrow
+bindkey '^[[C' forward-char                   # Right Arrow
 bindkey '\e[1~' beginning-of-line             # Home
 bindkey '\e[H' beginning-of-line              #
 bindkey '\eOH' beginning-of-line              #
