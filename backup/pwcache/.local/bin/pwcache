@@ -2,11 +2,21 @@
 
 set -euo pipefail
 
+# validate deps
+for dep in keyctl; do
+    if ! command -v "$dep" &>/dev/null; then
+        echo "Missing required dependency: '$dep'" >&2
+        exit 1
+    fi
+done
+
+# validate params
 if [[ "$#" -lt 2 || "$#" -gt 3 ]]; then
     echo "Script requires 2 or 3 parameters: KEY_NAME PROMPT_CMD [TIMEOUT]"
     exit 1
 fi
 
+# parameters
 KEY_NAME="$1"
 PROMPT_CMD="$2"
 TIMEOUT="${3:-600}"
@@ -21,7 +31,7 @@ if [[ ! "$TIMEOUT" =~ ^[0-9]+$ ]] || ((TIMEOUT < 10 || TIMEOUT > 1800)); then
     exit 1
 fi
 
-# store if absent, then request password
+# retrieve cached password prompting for it if necessary
 if ! keyctl search @s user "$KEY_NAME" &>/dev/null; then
     KEY_ID=$(eval "$PROMPT_CMD" | keyctl padd user "$KEY_NAME" @s)
     keyctl timeout "$KEY_ID" "$TIMEOUT"

@@ -2,14 +2,25 @@
 
 set -euo pipefail
 
-if [[ "$#" -ne 3 ]]; then
-    echo "Script requires 3 parameters: PROMPT_CMD VAULT_FILE VAULT_KEY"
+# validate deps
+for dep in keyctl pwcache; do
+    if ! command -v "$dep" &>/dev/null; then
+        echo "Missing required dependency: '$dep'" >&2
+        exit 1
+    fi
+done
+
+# validate params
+if [[ "$#" -lt 3 || "$#" -gt 4 ]]; then
+    echo "Script requires 3 or 4 parameters: PROMPT_CMD VAULT_FILE VAULT_KEY [ATTRIBUTES]"
     exit 1
 fi
 
+# parameters
 PROMPT_CMD="$1"
 VAULT_FILE="$2"
 VAULT_KEY="$3"
+ATTRIBUTES="${4:---attributes Password}"
 TIMEOUT="600"
 KEY_NAME="keepassxc-vault"
 
@@ -19,13 +30,18 @@ if [[ ! -f "$VAULT_FILE" ]]; then
     exit 1
 fi
 
+# detect keepassxc-cli
 if command -v keepassxc-cli &>/dev/null; then
     KEEPASSXC=(keepassxc-cli)
-else
+elif flatpak info org.keepassxc.KeePassXC &>/dev/null; then
     KEEPASSXC=(flatpak run --command=keepassxc-cli org.keepassxc.KeePassXC)
+else
+    echo "Keepassxc-cli not installed neither normally nor as a flatpak!" >&2
+    exit 1
 fi
 
-PW="$(pwcache "$KEY_NAME" "$PROMPT_CMD" "$TIMEOUT" | "${KEEPASSXC[@]}" show "$VAULT_FILE" "$VAULT_KEY" --attributes Password)"
+# actually retrieve passwords
+PW="$(pwcache "$KEY_NAME" "$PROMPT_CMD" "$TIMEOUT" | "${KEEPASSXC[@]}" show "$VAULT_FILE" "$VAULT_KEY" $ATTRIBUTES)"
 if [[ ! -t 1 ]]; then
     echo "$PW"
 else
