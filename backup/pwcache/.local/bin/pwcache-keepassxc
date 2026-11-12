@@ -11,24 +11,16 @@ for dep in keyctl pwcache; do
 done
 
 # validate params
-if [[ "$#" -lt 3 || "$#" -gt 4 ]]; then
-    echo "Script requires 3 or 4 parameters: PROMPT_CMD VAULT_FILE VAULT_KEY [ATTRIBUTES]"
+if [[ "$#" -lt 2 ]]; then
+    echo "Script requires 1 or more parameters: PROMPT_CMD KEEPASSXC_ARGS..."
     exit 1
 fi
 
 # parameters
 PROMPT_CMD="$1"
-VAULT_FILE="$2"
-VAULT_KEY="$3"
-ATTRIBUTES="${4:---attributes Password}"
+KEEPASSXC_ARGS=("${@:2}")
 TIMEOUT="600"
 KEY_NAME="keepassxc-vault"
-
-# checks
-if [[ ! -f "$VAULT_FILE" ]]; then
-    echo "Invalid vault file: $VAULT_FILE"
-    exit 1
-fi
 
 # detect keepassxc-cli
 if command -v keepassxc-cli &>/dev/null; then
@@ -40,10 +32,5 @@ else
     exit 1
 fi
 
-# actually retrieve passwords
-PW="$(pwcache "$KEY_NAME" "$PROMPT_CMD" "$TIMEOUT" | "${KEEPASSXC[@]}" show "$VAULT_FILE" "$VAULT_KEY" $ATTRIBUTES)"
-if [[ ! -t 1 ]]; then
-    echo "$PW"
-else
-    echo "Not showing password with interactive output!" >&2
-fi
+# execute keepassxc-cli command
+pwcache "$KEY_NAME" "$PROMPT_CMD" "$TIMEOUT" | "${KEEPASSXC[@]}" "${KEEPASSXC_ARGS[@]}"
