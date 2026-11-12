@@ -11,16 +11,32 @@ for dep in keyctl pwcache; do
 done
 
 # validate params
-if [[ "$#" -lt 2 ]]; then
-    echo "Script requires 1 or more parameters: PROMPT_CMD KEEPASSXC_ARGS..."
+if [[ "$#" -lt 3 ]]; then
+    echo "Script requires 3 or more parameters: PROMPT_CMD... -- KEEPASSXC_ARGS..."
     exit 1
 fi
 
 # parameters
-PROMPT_CMD="$1"
-KEEPASSXC_ARGS=("${@:2}")
+PROMPT_CMD=()
+KEEPASSXC_ARGS=()
 TIMEOUT="600"
 KEY_NAME="keepassxc-vault"
+found_separator=false
+for ARG in "$@"; do
+    if [[ "$found_separator" == false && "$ARG" == "--" ]]; then
+        found_separator=true
+        continue
+    fi
+    if [[ "$found_separator" == false ]]; then
+        PROMPT_CMD+=("$ARG")
+    else
+        KEEPASSXC_ARGS+=("$ARG")
+    fi
+done
+if [[ "$found_separator" == false ]]; then
+    echo "No -- separator found!" >&2
+    exit 1
+fi
 
 # detect keepassxc-cli
 if command -v keepassxc-cli &>/dev/null; then
@@ -33,4 +49,4 @@ else
 fi
 
 # execute keepassxc-cli command
-pwcache "$KEY_NAME" "$PROMPT_CMD" "$TIMEOUT" | "${KEEPASSXC[@]}" "${KEEPASSXC_ARGS[@]}"
+pwcache "$KEY_NAME" "$TIMEOUT" "${PROMPT_CMD[@]}" | "${KEEPASSXC[@]}" "${KEEPASSXC_ARGS[@]}"
