@@ -11,15 +11,15 @@ for dep in keyctl; do
 done
 
 # validate params
-if [[ "$#" -lt 2 || "$#" -gt 3 ]]; then
-    echo "Script requires 2 or 3 parameters: KEY_NAME PROMPT_CMD [TIMEOUT]"
+if [[ "$#" -lt 3 ]]; then
+    echo "Usage: KEY_NAME TIMEOUT PROMPT_CMD..."
     exit 1
 fi
 
 # parameters
 KEY_NAME="$1"
-PROMPT_CMD="$2"
-TIMEOUT="${3:-600}"
+TIMEOUT="$2"
+PROMPT_CMD=("${@:3}")
 
 # checks
 if [[ ! "$KEY_NAME" =~ ^[a-z][a-z0-9_-]*$ ]]; then
@@ -33,7 +33,7 @@ fi
 
 # retrieve cached password prompting for it if necessary
 if ! keyctl search @s user "$KEY_NAME" &>/dev/null; then
-    KEY_ID=$(eval "$PROMPT_CMD" | keyctl padd user "$KEY_NAME" @s)
+    KEY_ID=$("${PROMPT_CMD[@]}" | keyctl padd user "$KEY_NAME" @s)
     keyctl timeout "$KEY_ID" "$TIMEOUT"
 fi
 
