@@ -10,7 +10,6 @@ ZLE_SPACE_SUFFIX_CHARS=$';&|'
 
 # completions
 zstyle ':completion:*' menu no
-zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
 autoload -U compinit
 compinit -d "${XDG_STATE_HOME}/zsh_compdump"
 
