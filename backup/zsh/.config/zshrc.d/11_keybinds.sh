@@ -1,3 +1,5 @@
+bindkey -e  # use emacs mode
+
 bindkey '^[[D' backward-char                  # Left Arrow
 bindkey '^[[C' forward-char                   # Right Arrow
 bindkey '\e[1~' beginning-of-line             # Home
