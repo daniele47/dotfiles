@@ -1,5 +1,5 @@
-#!/bin/bash
-
+#!/usr/bin/env python
+#
 # Script to use rclone as a pseudo git remote
 #
 # How to use:
@@ -8,128 +8,101 @@
 # - now rclone is kinda like a git server!
 #
 # Rclone config file encryption:
-# - handle it manually using `RCLONE_PASSWORD_COMMAND` to retrieve the password
+# - run `secret-tool store --label="Rclone config password" service rclone-config-password` to use OS secret service
+# - or handle it manually using `RCLONE_PASSWORD_COMMAND` to retrieve the password
 
-set -euo pipefail
 
-log() {
-    echo -e "\e[1m$*\e[m" >&2
-}
-warn() {
-    log "\e[33mWARNING: $1"
-}
-error_exit() {
-    log "\e[31mERROR: $1"
-    exit 1
-}
-validate_url() {
-    local url="$1"
-    if [[ "$url" =~ [^a-zA-Z0-9:./_-] ]]; then
-        error_exit "URL contains forbidden characters. Allowed: a-z A-Z 0-9 : / - _ ."
-    fi
-    echo "${REMOTE_URL//\//%}"
-    return 0
-}
+import os
+import shutil
+import subprocess
+import sys
 
-# validate dependencies
-for dep in rclone git; do
-    if ! command -v "$dep" &>/dev/null; then
-        error_exit "Missing required dependency: '$dep'"
-    fi
-done
 
-REMOTE_URL="$2"
-REMOTE_NAME="${REMOTE_URL%%:*}:"
-REPO_NAME="$(validate_url "$REMOTE_URL")"
-CACHE_TOPDIR="${XDG_CACHE_HOME:-HOME/.cache}/git-remote-rclone"
-CACHE_DIR="$CACHE_TOPDIR/$REPO_NAME"
+### UTILITY METHODS ###
+class GitRemote:
+    def __init__(self, remote_url: str):
+        self.url: str = remote_url.rstrip("/")
+        self.name = f"{self.url.split(':')[0]}:"
+        self.refs: str = f"{self.url}/refs"
+        self.bundle: str = f"{self.url}/bundle"
 
-run_cli() {
-    rclone --progress "$@" --ask-password=false
-}
 
-validate_remote() {
-    {
-        log "- Validating remote '$REMOTE_NAME' is available..."
-        if ! run_cli listremotes -q | grep -Fxq "${REMOTE_NAME}" &>/dev/null; then
-            error_exit "Remote isn't avaiable! Try fixing config file!"
-        fi
-    } >&2
-}
+def send(msg: str):
+    print(f"{msg}", end="", flush=True, file=sys.stdout)
 
-upload_repo() {
-    {
-        log "- Uploading git repo to remote '$REMOTE_URL'..."
-        run_cli sync "$CACHE_DIR" "$REMOTE_URL" --exclude '/hooks/**' >&2
-    } >&2
-}
 
-download_repo() {
-    {
-        log "- Downloading git repo from '$REMOTE_URL' into '$CACHE_DIR'..."
-        if ! run_cli sync "$REMOTE_URL" "$CACHE_DIR" >&2; then
-            warn "Failed to download repo: remote path missing or inaccessible!"
-            rm -rf "$CACHE_DIR"
-            return 1
-        fi
-    } >&2
-}
+def log(msg: str, kind: str = "info", exit_code: int | None = None):
+    color = ""
+    prefix = ""
+    clear = "\x1b[0m"
+    # detect text color
+    match kind:
+        case "info":
+            color = "\x1b[1;37m"
+            prefix = "- "
+        case "warning":
+            color = "\x1b[1;33m"
+            prefix = "WARNING: "
+        case "error":
+            color = "\x1b[1;31m"
+            prefix = "ERROR: "
+        case _:
+            raise ValueError(f"Invalid log kind: {kind}")
+    # log message
+    print(f"{color}{prefix}{msg}{clear}", file=sys.stderr, flush=True)
+    # early quit
+    if exit_code is not None:
+        sys.exit(exit_code)
 
-init_repo() {
-    if ! env -u GIT_DIR -u GIT_WORK_TREE git -C "$CACHE_DIR" rev-parse --git-dir &>/dev/null; then
-        log "- Missing git repository, initializing one at '$CACHE_DIR'..."
-        echo -n "Are you sure you want to create this new repository? [y/n] "
-        read -r answer </dev/tty
-        if [[ "$answer" != y ]]; then exit 0; fi
-        env -u GIT_DIR -u GIT_WORK_TREE git init --bare "$CACHE_DIR"
-    fi >&2
-}
 
-mkdir -p "$CACHE_TOPDIR"
+def rclone_cmd(params: list[str], **kwargs):
+    kwargs.setdefault("check", False)
+    kwargs.setdefault("text", True)
+    kwargs.setdefault("capture_output", False)
+    return subprocess.run(["rclone", "--ask-password=false", *params], **kwargs)  # noqa: PLW1510
 
-while IFS= read -r line; do
-    case "$line" in
-    capabilities)
-        echo -e "connect\n"
-        ;;
-    "connect git-receive-pack"*)
-        echo
 
-        # download
-        validate_remote
-        download_repo || init_repo
+def validate_rclone_remote(git_remote: GitRemote):
+    # validate rclone is available
+    if shutil.which("rclone") is None:
+        log("Rclone command is not in PATH!", "error", 1)
 
-        # push into local git server
-        REF_BEFORE=$(env -u GIT_DIR -u GIT_WORK_TREE git -C "$CACHE_DIR" rev-parse refs/heads/main 2>/dev/null || echo "")
-        log "- Pushing to local git bare repo at '$CACHE_DIR'..."
-        git-receive-pack "$CACHE_DIR"
-        REF_AFTER=$(env -u GIT_DIR -u GIT_WORK_TREE git -C "$CACHE_DIR" rev-parse refs/heads/main 2>/dev/null || echo "")
-        if [ "$REF_BEFORE" = "$REF_AFTER" ]; then
-            warn "Ref unchanged, nothing to upload."
-            exit 0
-        fi
+    # validate rclone remote is available
+    result = rclone_cmd(["listremotes"], stdout=subprocess.PIPE)
+    if git_remote.name not in result.stdout.splitlines():
+        log(f"Unknown rclone remote: {git_remote.name}", "error", 1)
 
-        # upload
-        upload_repo
 
-        exit 0
-        ;;
-    "connect git-upload-pack"*)
-        echo
+### EXECUTION ###
+if __name__ == "__main__":
+    if len(sys.argv) != 3:
+        log("Usage: git-remote-rclone REMOTE_NAME REMOTE_URL", "error", 1)
 
-        # download
-        validate_remote
-        download_repo || exit 1
+    # provide a default to unlock rclone config
+    if shutil.which("secret-tool"):
+        os.environ.setdefault(
+            "RCLONE_PASSWORD_COMMAND",
+            "secret-tool lookup service rclone-config-password",
+        )
 
-        # pull from local git server
-        log "- Pulling from local git bare repo at '$CACHE_DIR'"
-        git-upload-pack "$CACHE_DIR"
+    # read parameters
+    git_remote = GitRemote(sys.argv[2])
 
-        exit 0
-        ;;
-    *)
-        log "Unknown message: [$line]"
-        exit 1
-        ;;
-    esac
-done
+    # validate remote
+    validate_rclone_remote(git_remote)
+
+    for line in sys.stdin:
+        line = line.rstrip("\n")
+
+        match line.split():
+            case ["capabilities"]:
+                send("connect\n\n")
+
+            case ["connect", "git-receive-pack"]:
+                sys.exit(7)
+
+            case ["connect", "git-upload-pack"]:
+                sys.exit(7)
+
+            case _:
+                log(f"Invalid line received: {line}", "error", 1)
