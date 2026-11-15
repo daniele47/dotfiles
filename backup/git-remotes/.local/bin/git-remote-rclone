@@ -76,6 +76,8 @@ def question(msg: str) -> bool:
 ### SUBPROCESSES ###
 def cmd(params: list[str], **kwargs) -> subprocess.CompletedProcess:
     kwargs.setdefault("check", True)
+    kwargs.setdefault("stdout", sys.stderr)
+    kwargs.setdefault("stdin", subprocess.DEVNULL)
     return subprocess.run(params, **kwargs)  # noqa: PLW1510
 
 
@@ -86,17 +88,37 @@ def cmd_out(params: list[str], **kwargs) -> subprocess.CompletedProcess:
 
 
 def cmd_git_clone(src: str, dst: str):
-    cmd(["git", "clone", src, dst])
+    shutil.rmtree(dst)
+    cmd(["git", "clone", "--bare", src, dst])
 
 
-def cmd_git_refs() -> str:
-    return cmd_out(
-        ["git", "for-each-ref", "--sort=refname", "--format=%(refname) %(objectname)"]
+def cmd_git_refs(git_dir: str, refs_file: str):
+    env = os.environ.copy()
+    env.pop("GIT_DIR", None)
+    refs = cmd_out(
+        ["git", "for-each-ref", "--sort=refname", "--format=%(refname) %(objectname)"],
+        env=env,
+        cwd=git_dir,
     ).stdout
+    Path(refs_file).write_text(refs)
+
+
+def cmd_git_bundle(git_dir: str, bundle_file: str):
+    env = os.environ.copy()
+    env.pop("GIT_DIR", None)
+    cmd(
+        ["git", "bundle", "create", bundle_file, "--all"],
+        env=env,
+        cwd=git_dir,
+    )
 
 
 def cmd_git_upload_pack(local_server_dir: str):
-    cmd(["git-upload-pack", local_server_dir])
+    cmd(["git-upload-pack", local_server_dir], stdin=None, stdout=None)
+
+
+def cmd_git_receive_pack(local_server_dir: str):
+    cmd(["git-receive-pack", local_server_dir], stdin=None, stdout=None)
 
 
 def cmd_rclone_listremotes() -> list[str]:
@@ -136,31 +158,66 @@ class GitRemote:
         qurl = urllib.parse.quote(self.url, safe="._-")
         self.tmp_root_dir = Path(tempfile.gettempdir()) / "git-remote-rclone"
         self.tmp_root_dir.mkdir(parents=True, exist_ok=True)
+        os.chmod(self.tmp_root_dir, 0o700)
         self.tmp_dir: str = tempfile.mkdtemp(prefix=qurl, dir=self.tmp_root_dir)
         os.chmod(self.tmp_dir, 0o700)
         self.tmp_server_dir = tempfile.mkdtemp(prefix="git-server", dir=self.tmp_dir)
+        self.tmp_refs_file_pull = self.new_tmp_file()
+        self.tmp_refs_file_push = self.new_tmp_file()
         atexit.register(shutil.rmtree, self.tmp_dir, ignore_errors=True)
 
     def new_tmp_file(self):
         return tempfile.NamedTemporaryFile(dir=self.tmp_dir, delete=False).name
 
-    def download_rclone_remote(self):
-        # compare remote refs with local refs to see if history differ
-        remote_refs_file = self.new_tmp_file()
-        log("Comparing local with remote refs...")
-        cmd_rclone_copy(self.refs, remote_refs_file)
-        local_refs = cmd_git_refs()
+    def download_rclone_remote(self, prompt: bool):
+        # if remote url is missing, and requested, prompt to create new repo
+        remote_exists = cmd_rclone_url_exist(self.url)
+        if not remote_exists:
+            if prompt:
+                warn(f"Remote url {self.url} does not exist!")
+                if not question("Do you want to create the repository on the remote?"):
+                    err_quit("No repository to work on!")
+            else:
+                err_quit(f"Remote url {self.url} does not exist!")
 
-        # initialize local server directory
-        if Path(remote_refs_file).read_text().strip() == local_refs.strip():
-            log("Using local repo to create a local server repository...")
-            cmd_git_clone(self.local_dir, self.tmp_server_dir)
+        # initialize local server
+        log("Using local repo to create a local server repository...")
+        cmd_git_clone(self.local_dir, self.tmp_server_dir)
+
+        if remote_exists:
+            # compare remote refs with local refs to see if history differ
+            log("Downloading refs from remote...")
+            cmd_rclone_copy(self.refs, self.tmp_refs_file_pull)
+            cmd_git_refs(self.tmp_server_dir, self.tmp_refs_file_push)
+            remote_refs = Path(self.tmp_refs_file_pull).read_text().strip()
+            local_refs = Path(self.tmp_refs_file_push).read_text().strip()
+
+            # initialize local server directory
+            if remote_refs != local_refs:
+                remote_bundle_file = self.new_tmp_file()
+                log("Downloading bundle from remote...")
+                cmd_rclone_copy(self.bundle, remote_bundle_file)
+                log("Creating local server repository...")
+                cmd_git_clone(remote_bundle_file, self.tmp_server_dir)
+            else:
+                warn("Nothing to download!")
         else:
-            remote_bundle_file = self.new_tmp_file()
-            log("Downloading bundle from remote...")
-            cmd_rclone_copy(self.bundle, remote_bundle_file)
-            log("Creating local server repository...")
-            cmd_git_clone(remote_bundle_file, self.tmp_server_dir)
+            # generate push refs anyway
+            cmd_git_refs(self.tmp_server_dir, self.tmp_refs_file_push)
+
+    def upload_remote_rclone(self):
+        pull_refs = Path(self.tmp_refs_file_pull).read_text()
+        push_refs = Path(self.tmp_refs_file_push).read_text()
+        if pull_refs != push_refs:
+            log("Creating bundle file")
+            local_bundle = self.new_tmp_file()
+            cmd_git_bundle(self.tmp_server_dir, local_bundle)
+            log("Uploading new bundle file...")
+            cmd_rclone_copy(local_bundle, self.bundle)
+            log("Uploading new refs file...")
+            cmd_rclone_copy(self.tmp_refs_file_push, self.refs)
+        else:
+            warn("Nothing to upload!")
 
     def communicate(self):
         # validate rclone is available
@@ -176,25 +233,20 @@ class GitRemote:
         assert sys.stdin.readline().split() == ["capabilities"]
         send("connect\n\n")
 
-        match (line := sys.stdin.readline()).split():
+        line = sys.stdin.readline()
+        send("\n")
+
+        match line.split():
             # git push operation
             case ["connect", "git-receive-pack"]:
-                if not cmd_rclone_url_exist(self.url):
-                    warn(f"Remote url {self.url} does not exist!")
-                    if question("Do you want to create the repository on the remote?"):
-                        cmd_git_clone(self.local_dir, self.tmp_server_dir)
-                    else:
-                        err_quit("No repository to work on!")
-                else:
-                    self.download_rclone_remote()
+                self.download_rclone_remote(True)
+                cmd_git_receive_pack(self.tmp_server_dir)
+                self.upload_remote_rclone()
 
             # git pull operation
             case ["connect", "git-upload-pack"]:
-                if not cmd_rclone_url_exist(self.url):
-                    err_quit(f"Remote url {self.url} does not exist!")
-                else:
-                    self.download_rclone_remote()
-                    cmd_git_upload_pack(self.tmp_server_dir)
+                self.download_rclone_remote(False)
+                cmd_git_upload_pack(self.tmp_server_dir)
 
             case _:
                 err_quit(f"Invalid line received: {line}")
