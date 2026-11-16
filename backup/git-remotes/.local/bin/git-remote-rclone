@@ -82,11 +82,19 @@ def cmd(params: list[str], **kwargs) -> subprocess.CompletedProcess:
 
 
 def cmd_git_init(dst: str):
-    cmd(["git", "init", "--bare", dst])
+    cmd(
+        ["git", "init", "--bare", dst],
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+    )
 
 
 def cmd_git_clone(src: str, dst: str):
-    cmd(["git", "clone", src, dst])
+    cmd(
+        ["git", "clone", src, dst],
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+    )
 
 
 def cmd_git_bundle(git_dir: str, bundle_file: str):
@@ -94,6 +102,8 @@ def cmd_git_bundle(git_dir: str, bundle_file: str):
     env.pop("GIT_DIR", None)
     cmd(
         ["git", "bundle", "create", bundle_file, "--all"],
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
         env=env,
         cwd=git_dir,
     )
@@ -112,6 +122,7 @@ def cmd_rclone_listremotes() -> list[str]:
         ["rclone", "listremotes"],
         check=False,
         stdout=subprocess.PIPE,
+        stderr=subprocess.DEVNULL,
         text=True,
     ).stdout.splitlines()
 
@@ -119,6 +130,8 @@ def cmd_rclone_listremotes() -> list[str]:
 def cmd_rclone_url_exist(remote_url: str) -> bool:
     result = cmd(
         ["rclone", "lsf", remote_url],
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
         check=False,
     )
     match result.returncode:
@@ -203,7 +216,9 @@ class GitRemote:
                 else:
                     self.download_rclone_remote()
 
+                log("Receiving packs into local server...")
                 cmd_git_receive_pack(self.tmp_server_dir)
+
                 self.upload_rclone_remote()
 
             # git pull operation
@@ -212,6 +227,8 @@ class GitRemote:
                     err_quit(f"Remote url {self.url} does not exist!")
 
                 self.download_rclone_remote()
+
+                log("Uploading packs from local server...")
                 cmd_git_upload_pack(self.tmp_server_dir)
 
             case _:
