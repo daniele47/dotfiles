@@ -178,7 +178,10 @@ def exists_not_empty(path: str) -> bool:
 
 ### GIT REMOTE ###
 class GitRemote:
-    def __init__(self, remote_url: str):
+    def __init__(self, git_remote_name: str, remote_url: str):
+        self.git_remote_name: str = git_remote_name
+
+        # rclone remote paths
         self.remote_url: str = remote_url.rstrip("/")
         self.remote_name: str = f"{self.remote_url.split(':')[0]}:"
         self.remote_bundle: str = f"{remote_url}/bundle"
@@ -189,7 +192,9 @@ class GitRemote:
 
         # local working directory
         self.rclone_dir: str = str((Path(os.environ["GIT_DIR"]) / "rclone").resolve())
-        self.rclone_repo_dir: str = str(Path(self.rclone_dir) / "repo")
+        self.rclone_repo_dir: str = str(
+            Path(self.rclone_dir) / "repo" / self.git_remote_name
+        )
         self.rclone_bundle: str = str(Path(self.rclone_repo_dir) / "bundle")
         self.rclone_hash: str = str(Path(self.rclone_repo_dir) / "hash")
         Path(self.rclone_repo_dir).mkdir(parents=True, exist_ok=True)
@@ -216,21 +221,23 @@ class GitRemote:
     def download_rclone_remote(self):
         log("Downloading remote hash...")
         cmd_rclone_copy(self.remote_hash, self.rclone_hash)
+        lhash = file_hash(self.rclone_bundle)
+        rhash = Path(self.rclone_hash).read_text().strip()
 
-        if exists_not_empty(self.rclone_bundle):
-            lhash = file_hash(self.rclone_bundle)
-            rhash = Path(self.rclone_hash).read_text().strip()
-            if lhash == rhash:
-                note("Skipping download of remote bundle as it matches local bundle!")
-            else:
-                log("Downloading remote bundle...")
-                cmd_rclone_copy(self.remote_bundle, self.rclone_bundle)
+        if exists_not_empty(self.rclone_bundle) and lhash == rhash:
+            note("Skipping download of remote bundle as it matches local bundle!")
+            cmd_git_clone(self.rclone_bundle, self.tmp_server_dir)
+            return
 
-                log("Validating downloaded bundle...")
-                if file_hash(self.rclone_bundle) != rhash:
-                    err_quit("Downloaded bundle has invalid hash!")
+        else:
+            log("Downloading remote bundle...")
+            cmd_rclone_copy(self.remote_bundle, self.rclone_bundle)
 
-        cmd_git_clone(self.rclone_bundle, self.tmp_server_dir)
+            log("Validating downloaded bundle...")
+            if file_hash(self.rclone_bundle) != rhash:
+                err_quit("Downloaded bundle has invalid hash!")
+
+            cmd_git_clone(self.rclone_bundle, self.tmp_server_dir)
 
     def upload_rclone_remote(self):
         log("Uploading files to remote...")
@@ -301,4 +308,4 @@ if __name__ == "__main__":
             "secret-tool lookup service rclone-config-password",
         )
 
-    GitRemote(sys.argv[2]).communicate()
+    GitRemote(sys.argv[1], sys.argv[2]).communicate()
