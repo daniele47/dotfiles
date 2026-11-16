@@ -39,8 +39,8 @@ def log(msg: str, kind: str = "info", exit_code: int | None = None, end=None):
             prefix = ""
             clear = ""
         case "info":
-            color = "\x1b[1;37m"
-            prefix = "- "
+            color = "\x1b[1;30m"
+            prefix = "LOG: "
         case "warning":
             color = "\x1b[1;33m"
             prefix = "WARNING: "
@@ -147,7 +147,7 @@ def cmd_rclone_url_exist(remote_url: str) -> bool:
         stdout=subprocess.PIPE,
         check=False,
     )
-    if {"bundle"}.issubset(set(result.stdout.splitlines())):
+    if {"bundle", "hash"}.issubset(set(result.stdout.splitlines())):
         err_quit("Remote is not a valid Git repository!")
 
     match result.returncode:
@@ -160,8 +160,8 @@ def cmd_rclone_url_exist(remote_url: str) -> bool:
             return False  # shush linter
 
 
-def cmd_rclone_copy(src: str, dst: str, check: bool = True):
-    cmd(["rclone", "copyto", src, dst], check=check)
+def cmd_rclone_copy(src: str, dst: str):
+    cmd(["rclone", "copyto", src, dst])
 
 
 def cmd_rclone_sync(src: str, dst: str):
@@ -219,29 +219,21 @@ class GitRemote:
         return tempfile.mkdtemp(dir=self.tmp_dir)
 
     def download_rclone_remote(self):
-        hash_str = None
+        log("Downloading remote hash...")
+        cmd_rclone_copy(self.remote_hash, self.rclone_hash)
+
         if exists_not_empty(self.rclone_bundle):
-            log("Downloading remote hash...")
-            cmd_rclone_copy(self.remote_hash, self.rclone_hash, check=False)
             lhash = file_hash(self.rclone_bundle)
             rhash = Path(self.rclone_hash).read_text().strip()
             if lhash == rhash:
-                hash_str = rhash
-                warn("Remote bundle matches locally cached bundle!")
-                cmd_git_clone(self.rclone_bundle, self.tmp_server_dir)
-                return
-        else:
-            warn("Skipping download of remote hash: no local hash file!")
+                warn("Skipping download of remote bundle!")
+            else:
+                log("Downloading remote bundle...")
+                cmd_rclone_copy(self.remote_bundle, self.rclone_bundle)
 
-        log("Downloading remote bundle...")
-        cmd_rclone_copy(self.remote_bundle, self.rclone_bundle)
-
-        # validating downloaded bundle file
-        if (
-            exists_not_empty(self.rclone_hash)
-            and file_hash(self.rclone_bundle) != hash_str
-        ):
-            err_quit("Downloaded bundle has invalid hash!")
+                log("Validating downloaded bundle...")
+                if file_hash(self.rclone_bundle) != rhash:
+                    err_quit("Downloaded bundle has invalid hash!")
 
         cmd_git_clone(self.rclone_bundle, self.tmp_server_dir)
 
