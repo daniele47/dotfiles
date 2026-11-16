@@ -160,17 +160,25 @@ def cmd_rclone_url_exist(remote_url: str) -> bool:
             return False  # shush linter
 
 
-def cmd_rclone_copy(src: str, dst: str):
-    cmd(["rclone", "copyto", src, dst])
+def cmd_rclone_copy(src: str, dst: str, check: bool = True):
+    cmd(["rclone", "copyto", src, dst], check=check)
 
 
-### FILE HASING ###
+def cmd_rclone_sync(src: str, dst: str):
+    cmd(["rclone", "sync", "--ignore-times", src, dst])
+
+
+### FILE OPERATIONS ###
 def file_hash(path: str) -> str:
     h = hashlib.sha256()
     with open(path, "rb") as f:
         for chunk in iter(lambda: f.read(1024 * 1024), b""):
             h.update(chunk)
     return h.hexdigest()
+
+
+def exists_not_empty(path: str) -> bool:
+    return (p := Path(path)) and p.exists() and p.stat().st_size > 0
 
 
 ### GIT REMOTE ###
@@ -184,11 +192,14 @@ class GitRemote:
         # local paths
         self.local_dir: str = str(Path.cwd())
 
-        # cache bundle to skip downloads when not necessary
+        # local working directory
         self.rclone_dir: str = str((Path(os.environ["GIT_DIR"]) / "rclone").resolve())
-        self.rclone_bundle: str = str(Path(self.rclone_dir) / "bundle")
-        Path(self.rclone_dir).mkdir(parents=True, exist_ok=True)
+        self.rclone_repo_dir: str = str(Path(self.rclone_dir) / "repo")
+        self.rclone_bundle: str = str(Path(self.rclone_repo_dir) / "bundle")
+        self.rclone_hash: str = str(Path(self.rclone_repo_dir) / "hash")
+        Path(self.rclone_repo_dir).mkdir(parents=True, exist_ok=True)
         Path(self.rclone_bundle).touch()
+        Path(self.rclone_hash).touch()
 
         # temporary directory for temporary files
         qurl = urllib.parse.quote(self.remote_url, safe="._-")
@@ -208,16 +219,35 @@ class GitRemote:
         return tempfile.mkdtemp(dir=self.tmp_dir)
 
     def download_rclone_remote(self):
-        # compare remote refs with local refs to see if history differ
+        hash_str = None
+        if exists_not_empty(self.rclone_bundle):
+            log("Downloading remote hash...")
+            cmd_rclone_copy(self.remote_hash, self.rclone_hash, check=False)
+            lhash = file_hash(self.rclone_bundle)
+            rhash = Path(self.rclone_hash).read_text().strip()
+            if lhash == rhash:
+                hash_str = rhash
+                warn("Remote bundle matches locally cached bundle!")
+                cmd_git_clone(self.rclone_bundle, self.tmp_server_dir)
+                return
+        else:
+            warn("Skipping download of remote hash: no local hash file!")
+
         log("Downloading remote bundle...")
         cmd_rclone_copy(self.remote_bundle, self.rclone_bundle)
+
+        # validating downloaded bundle file
+        if (
+            exists_not_empty(self.rclone_hash)
+            and file_hash(self.rclone_bundle) != hash_str
+        ):
+            err_quit("Downloaded bundle has invalid hash!")
+
         cmd_git_clone(self.rclone_bundle, self.tmp_server_dir)
 
     def upload_rclone_remote(self):
-        # compare remote refs with local refs to see if history differ
-        log("Uploading local bundle...")
-        cmd_git_bundle(self.tmp_server_dir, self.rclone_bundle)
-        cmd_rclone_copy(self.rclone_bundle, self.remote_bundle)
+        log("Uploading files to remote...")
+        cmd_rclone_sync(self.rclone_repo_dir, self.remote_url)
 
     def communicate(self):
         # validate rclone is available
