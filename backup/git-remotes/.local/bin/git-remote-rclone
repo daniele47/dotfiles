@@ -13,6 +13,7 @@
 
 
 import atexit
+import hashlib
 import os
 import shutil
 import subprocess
@@ -142,10 +143,13 @@ def cmd_rclone_listremotes() -> list[str]:
 def cmd_rclone_url_exist(remote_url: str) -> bool:
     result = cmd(
         ["rclone", "lsf", remote_url],
-        stdout=subprocess.DEVNULL,
         stderr=subprocess.DEVNULL,
+        stdout=subprocess.PIPE,
         check=False,
     )
+    if {"bundle"}.issubset(set(result.stdout.splitlines())):
+        err_quit("Remote is not a valid Git repository!")
+
     match result.returncode:
         case 0:
             return True
@@ -160,17 +164,34 @@ def cmd_rclone_copy(src: str, dst: str):
     cmd(["rclone", "copyto", src, dst])
 
 
+### FILE HASING ###
+def file_hash(path: str) -> str:
+    h = hashlib.sha256()
+    with open(path, "rb") as f:
+        for chunk in iter(lambda: f.read(1024 * 1024), b""):
+            h.update(chunk)
+    return h.hexdigest()
+
+
 ### GIT REMOTE ###
 class GitRemote:
     def __init__(self, remote_url: str):
-        self.url: str = remote_url.rstrip("/")
-        self.name = f"{self.url.split(':')[0]}:"
+        self.remote_url: str = remote_url.rstrip("/")
+        self.remote_name: str = f"{self.remote_url.split(':')[0]}:"
+        self.remote_bundle: str = f"{remote_url}/bundle"
+        self.remote_hash: str = f"{remote_url}/hash"
 
         # local paths
         self.local_dir: str = str(Path.cwd())
 
+        # cache bundle to skip downloads when not necessary
+        self.rclone_dir: str = str((Path(os.environ["GIT_DIR"]) / "rclone").resolve())
+        self.rclone_bundle: str = str(Path(self.rclone_dir) / "bundle")
+        Path(self.rclone_dir).mkdir(parents=True, exist_ok=True)
+        Path(self.rclone_bundle).touch()
+
         # temporary directory for temporary files
-        qurl = urllib.parse.quote(self.url, safe="._-")
+        qurl = urllib.parse.quote(self.remote_url, safe="._-")
         tmp_root_dir = Path(tempfile.gettempdir()) / "git-remote-rclone"
         tmp_root_dir.mkdir(parents=True, exist_ok=True)
         self.tmp_dir: str = tempfile.mkdtemp(prefix=qurl, dir=tmp_root_dir)
@@ -178,27 +199,25 @@ class GitRemote:
         atexit.register(shutil.rmtree, self.tmp_dir, ignore_errors=True)
 
         # shared tmp file/dirs
-        self.tmp_server_dir = self.new_tmp_dir()
+        self.tmp_server_dir: str = self.new_tmp_dir()
 
-    def new_tmp_file(self):
+    def new_tmp_file(self) -> str:
         return tempfile.NamedTemporaryFile(dir=self.tmp_dir, delete=False).name
 
-    def new_tmp_dir(self):
+    def new_tmp_dir(self) -> str:
         return tempfile.mkdtemp(dir=self.tmp_dir)
 
     def download_rclone_remote(self):
         # compare remote refs with local refs to see if history differ
         log("Downloading remote bundle...")
-        bundle_file = self.new_tmp_file()
-        cmd_rclone_copy(self.url, bundle_file)
-        cmd_git_clone(bundle_file, self.tmp_server_dir)
+        cmd_rclone_copy(self.remote_bundle, self.rclone_bundle)
+        cmd_git_clone(self.rclone_bundle, self.tmp_server_dir)
 
     def upload_rclone_remote(self):
         # compare remote refs with local refs to see if history differ
         log("Uploading local bundle...")
-        bundle_file = self.new_tmp_file()
-        cmd_git_bundle(self.tmp_server_dir, bundle_file)
-        cmd_rclone_copy(bundle_file, self.url)
+        cmd_git_bundle(self.tmp_server_dir, self.rclone_bundle)
+        cmd_rclone_copy(self.rclone_bundle, self.remote_bundle)
 
     def communicate(self):
         # validate rclone is available
@@ -207,8 +226,8 @@ class GitRemote:
 
         # validate rclone remote is available
         log("Validating rclone remote is valid...")
-        if self.name not in cmd_rclone_listremotes():
-            err_quit(f"Unknown rclone remote: {self.name}")
+        if self.remote_name not in cmd_rclone_listremotes():
+            err_quit(f"Unknown rclone remote: {self.remote_name}")
 
         # comunicate with git
         assert sys.stdin.readline().split() == ["capabilities"]
@@ -220,8 +239,8 @@ class GitRemote:
         match line.split():
             # git push operation
             case ["connect", "git-receive-pack"]:
-                if not cmd_rclone_url_exist(self.url):
-                    warn(f"Remote url {self.url} does not exist!")
+                if not cmd_rclone_url_exist(self.remote_url):
+                    warn(f"Remote url {self.remote_url} does not exist!")
                     if not question("Do you want to create the repository?"):
                         err_quit("No repository to work on!")
                     cmd_git_init(self.tmp_server_dir)
@@ -239,8 +258,8 @@ class GitRemote:
 
             # git pull operation
             case ["connect", "git-upload-pack"]:
-                if not cmd_rclone_url_exist(self.url):
-                    err_quit(f"Remote url {self.url} does not exist!")
+                if not cmd_rclone_url_exist(self.remote_url):
+                    err_quit(f"Remote url {self.remote_url} does not exist!")
 
                 self.download_rclone_remote()
 
