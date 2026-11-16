@@ -41,6 +41,9 @@ def log(msg: str, kind: str = "info", exit_code: int | None = None, end=None):
         case "info":
             color = "\x1b[1;30m"
             prefix = "LOG: "
+        case "note":
+            color = "\x1b[1;34m"
+            prefix = "NOTE: "
         case "warning":
             color = "\x1b[1;33m"
             prefix = "WARNING: "
@@ -56,12 +59,17 @@ def log(msg: str, kind: str = "info", exit_code: int | None = None, end=None):
         sys.exit(exit_code)
 
 
-def warn(msg: str):
-    log(msg, "warning")
+def warn(msg: str, **kwargs):
+    log(msg, "warning", **kwargs)
 
 
-def err_quit(msg: str):
-    log(msg, "error", 1)
+def err_quit(msg: str, **kwargs):
+    kwargs.setdefault("exit_code", 1)
+    log(msg, "error", **kwargs)
+
+
+def note(msg: str, **kwargs):
+    log(msg, "note", **kwargs)
 
 
 def question(msg: str) -> bool:
@@ -226,7 +234,7 @@ class GitRemote:
             lhash = file_hash(self.rclone_bundle)
             rhash = Path(self.rclone_hash).read_text().strip()
             if lhash == rhash:
-                warn("Skipping download of remote bundle!")
+                note("Skipping download of remote bundle as it matches local bundle!")
             else:
                 log("Downloading remote bundle...")
                 cmd_rclone_copy(self.remote_bundle, self.rclone_bundle)
@@ -274,7 +282,7 @@ class GitRemote:
                 cmd_git_receive_pack(self.tmp_server_dir)
                 after_refs = cmd_git_refs(self.tmp_server_dir)
                 if prev_refs == after_refs:
-                    log("Refs didn't change, early quitting!", "warning", 0)
+                    note("Refs didn't change, early quitting!", exit_code=0)
 
                 self.upload_rclone_remote()
 
