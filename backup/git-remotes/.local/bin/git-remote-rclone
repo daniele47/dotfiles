@@ -157,8 +157,11 @@ def cmd_rclone_url_exist(remote_url: str) -> bool:
             return False  # shush linter
 
 
-def cmd_rclone_copy(src: str, dst: str):
-    cmd(["rclone", "copyto", src, dst])
+def cmd_rclone_copy(src: str, dst: str, quiet: bool = False):
+    env = os.environ.copy()
+    if quiet:
+        env.pop("RCLONE_PROGRESS", None)
+    cmd(["rclone", "copyto", src, dst], env=env)
 
 
 def cmd_rclone_sync(src: str, dst: str):
@@ -215,7 +218,7 @@ class GitRemote:
 
     def download_rclone_remote(self):
         log("Downloading remote hash...")
-        cmd_rclone_copy(self.remote_hash, self.rclone_hash)
+        cmd_rclone_copy(self.remote_hash, self.rclone_hash, quiet=True)
         lhash = file_hash(self.rclone_bundle)
         rhash = Path(self.rclone_hash).read_text().strip()
 
@@ -243,7 +246,7 @@ class GitRemote:
 
     def communicate(self):
         # validate rclone is available and rclone remote is available
-        log("Validating rclone remote is valid...")
+        log(f"Validating rclone remote '{self.remote_url}' is valid...")
         if shutil.which("rclone") is None:
             err_quit("Rclone command is not in PATH!")
         if self.remote_name not in cmd_rclone_listremotes():
