@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 import hashlib
-import inspect
 import json
 import os
 import subprocess
@@ -25,8 +24,6 @@ def compress(repo_file, dir_to_compress, cwd):
 
 
 class RCloneRemote:
-    """git-remote-helper implementation to interface rclone remotes."""
-
     def __init__(
         self,
         gitdir: str,
@@ -36,16 +33,9 @@ class RCloneRemote:
         outstream=sys.stdout,
         errstream=sys.stderr,
     ):
-        """
-        gitdir:    Path to the GITDIR of the repository to operate on (provided by Git).
-        remote:    Remote label to use (provided by Git).
-        url:       rclone: //-type URL of the remote (provided by Git).
-        instream:  Stream to read communication from Git from.
-        outstream: Stream to communicate outcomes to Git.
-        errstream: Stream for logging.
-        """
         self.parsed_url = urlparse(url)
         self.remote = remote
+
         # internal logic relies on workdir to be an absolute path
         self.gitdir = gitdir
         self.workdir = Path(gitdir, "rclone", remote).resolve()
@@ -62,28 +52,13 @@ class RCloneRemote:
         self.marks_git.touch()
         self.marks_rclone.touch()
 
-    def PrintFrame(self):
-        """Helps debug"""
-        callerframerecord = inspect.stack()[1]  # 0 represents this line
-        # 1 represents line at caller
-        frame = callerframerecord[0]
-        info = inspect.getframeinfo(frame)
-
-        self.log(f"{info.function} :{info.lineno}")
-        # print(info.filename)
-
     def log(self, *args):
-        print("[GRR]", *args, file=self.errstream)
+        print("[LOG]", *args, file=self.errstream)
 
-    def send(self, msg=""):
+    def send(self, msg: str = ""):
         print(msg, end="\n", file=self.outstream, flush=True)
 
-    def get_remote_refs(self):
-        """Report remote refs
-        There are kept in a dedicated "refs" file at the remote.
-        Returns str
-        """
-        self.PrintFrame()
+    def get_remote_refs(self) -> str:
         url = self.parsed_url
         cat = subprocess.run(
             ["rclone", "cat", f"{url.netloc}:{url.path}/refs"],
@@ -93,17 +68,8 @@ class RCloneRemote:
         )
         return cat.stdout if (not cat.returncode) and cat.stdout else ""
 
-    def get_remote_state(self):
-        """Return a hash for the remote repo archive or ''
-
-        Raises
-        ------
-        RuntimeError
-          If no connection to the rclone remote could be made, or an unkown
-          error occurred.
-        """
+    def get_remote_hash(self) -> str:
         url = self.parsed_url
-        # request listing of the remote dir with the repo archive
         lsjson = subprocess.run(
             [
                 "rclone",
@@ -140,7 +106,7 @@ class RCloneRemote:
         url = self.parsed_url
         # stamp file with last syncronization IDs
         synced = self.workdir / "synced"
-        repo_hash = self.get_remote_state()
+        repo_hash = self.get_remote_hash()
 
         if synced.exists() and not repo_hash:
             # we had it sync'ed before, but now it is gone from the remote
@@ -359,7 +325,7 @@ class RCloneRemote:
 
         # lastly update the sync stamp to avoid redownload of what was just uploaded
         synced = self.workdir / "synced"
-        repo_hash = self.get_remote_state()
+        repo_hash = self.get_remote_hash()
         if not repo_hash:
             self.log("Failed to update sync stamp after successful upload")
             return
@@ -368,7 +334,6 @@ class RCloneRemote:
         synced.write_text(repo_hash)
 
     def send_capabilities(self):
-        self.PrintFrame()
         caps = [
             "import",
             "export",
