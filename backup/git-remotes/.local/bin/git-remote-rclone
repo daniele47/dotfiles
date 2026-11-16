@@ -91,7 +91,7 @@ def cmd_git_init(dst: str):
 
 def cmd_git_clone(src: str, dst: str):
     cmd(
-        ["git", "clone", src, dst],
+        ["git", "clone", "--bare", src, dst],
         stdout=subprocess.DEVNULL,
         stderr=subprocess.DEVNULL,
     )
@@ -163,7 +163,7 @@ class GitRemote:
         tmp_root_dir.mkdir(parents=True, exist_ok=True)
         self.tmp_dir: str = tempfile.mkdtemp(prefix=qurl, dir=tmp_root_dir)
         os.chmod(self.tmp_dir, 0o700)
-        # atexit.register(shutil.rmtree, self.tmp_dir, ignore_errors=True)
+        atexit.register(shutil.rmtree, self.tmp_dir, ignore_errors=True)
 
         # shared tmp file/dirs
         self.tmp_server_dir = self.new_tmp_dir()
