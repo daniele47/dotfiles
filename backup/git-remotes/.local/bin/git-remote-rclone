@@ -137,13 +137,17 @@ def cmd_rclone_listremotes() -> list[str]:
 
 
 def cmd_rclone_url_exist(remote_url: str) -> bool:
+    env = os.environ.copy()
+    env.pop("RCLONE_PROGRESS", None)
     result = cmd(
         ["rclone", "lsf", remote_url],
         stdout=subprocess.PIPE,
+        env=env,
         check=False,
+        text=True,
     )
-    if {"bundle", "hash"}.issubset(set(result.stdout.splitlines())):
-        err_quit("Remote is not a valid Git repository!")
+    if not {"bundle", "hash"}.issubset(set(result.stdout.splitlines())):
+        return False
 
     match result.returncode:
         case 0:
@@ -241,6 +245,10 @@ class GitRemote:
         log("Uploading files to remote...")
         cmd_rclone_sync(self.rclone_repo_dir, self.remote_url)
 
+    def generate_local_repo(self):
+        cmd_git_bundle(self.tmp_server_dir, self.rclone_bundle)
+        Path(self.rclone_hash).write_text(file_hash(self.rclone_bundle))
+
     def communicate(self):
         # validate rclone is available
         if shutil.which("rclone") is None:
@@ -272,9 +280,10 @@ class GitRemote:
                 log("Receiving packs into local server...")
                 prev_refs = cmd_git_refs(self.tmp_server_dir)
                 cmd_git_receive_pack(self.tmp_server_dir)
+                self.generate_local_repo()
                 after_refs = cmd_git_refs(self.tmp_server_dir)
                 if prev_refs == after_refs:
-                    note("Refs didn't change, early quitting!", exit_code=0)
+                    note("Refs did not change, early quitting!", exit_code=0)
 
                 self.upload_rclone_remote()
 
@@ -284,6 +293,7 @@ class GitRemote:
                     err_quit(f"Remote url {self.remote_url} does not exist!")
 
                 self.download_rclone_remote()
+                self.generate_local_repo()
 
                 log("Uploading packs from local server...")
                 cmd_git_upload_pack(self.tmp_server_dir)
