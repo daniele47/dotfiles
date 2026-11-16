@@ -75,38 +75,52 @@ def question(msg: str) -> bool:
 
 ### SUBPROCESSES ###
 def cmd(params: list[str], **kwargs) -> subprocess.CompletedProcess:
+    kwargs.setdefault("stdin", subprocess.DEVNULL)
+    kwargs.setdefault("stdout", sys.stderr)
     kwargs.setdefault("check", True)
     return subprocess.run(params, **kwargs)  # noqa: PLW1510
 
 
-def cmd_out(params: list[str], **kwargs) -> subprocess.CompletedProcess:
-    kwargs.setdefault("stdout", subprocess.PIPE)
-    kwargs.setdefault("text", True)
-    return cmd(params, **kwargs)
+def cmd_git_init(dst: str):
+    cmd(["git", "init", "--bare", dst])
 
 
 def cmd_git_clone(src: str, dst: str):
+    cmd(["git", "clone", src, dst])
+
+
+def cmd_git_bundle(git_dir: str, bundle_file: str):
+    env = os.environ.copy()
+    env.pop("GIT_DIR", None)
     cmd(
-        ["git", "clone", src, dst],
-        stdout=subprocess.DEVNULL,
-        stderr=subprocess.DEVNULL,
+        ["git", "bundle", "create", bundle_file, "--all"],
+        env=env,
+        cwd=git_dir,
     )
 
 
 def cmd_git_upload_pack(local_server_dir: str):
-    cmd(["git-upload-pack", local_server_dir])
+    cmd(["git-upload-pack", local_server_dir], stdin=None, stdout=None)
 
 
 def cmd_git_receive_pack(local_server_dir: str):
-    cmd(["git-receive-pack", local_server_dir])
+    cmd(["git-receive-pack", local_server_dir], stdin=None, stdout=None)
 
 
 def cmd_rclone_listremotes() -> list[str]:
-    return cmd_out(["rclone", "listremotes"], check=False).stdout.splitlines()
+    return cmd(
+        ["rclone", "listremotes"],
+        check=False,
+        stdout=subprocess.PIPE,
+        text=True,
+    ).stdout.splitlines()
 
 
 def cmd_rclone_url_exist(remote_url: str) -> bool:
-    result = cmd(["rclone", "lsf", remote_url], check=False)
+    result = cmd(
+        ["rclone", "lsf", remote_url],
+        check=False,
+    )
     match result.returncode:
         case 0:
             return True
@@ -136,7 +150,7 @@ class GitRemote:
         tmp_root_dir.mkdir(parents=True, exist_ok=True)
         self.tmp_dir: str = tempfile.mkdtemp(prefix=qurl, dir=tmp_root_dir)
         os.chmod(self.tmp_dir, 0o700)
-        atexit.register(shutil.rmtree, self.tmp_dir, ignore_errors=True)
+        # atexit.register(shutil.rmtree, self.tmp_dir, ignore_errors=True)
 
         # shared tmp file/dirs
         self.tmp_server_dir = self.new_tmp_dir()
@@ -157,7 +171,9 @@ class GitRemote:
     def upload_rclone_remote(self):
         # compare remote refs with local refs to see if history differ
         log("Uploading local bundle...")
-        3 / 0
+        bundle_file = self.new_tmp_file()
+        cmd_git_bundle(self.tmp_server_dir, bundle_file)
+        cmd_rclone_copy(bundle_file, self.url)
 
     def communicate(self):
         # validate rclone is available
@@ -173,26 +189,30 @@ class GitRemote:
         assert sys.stdin.readline().split() == ["capabilities"]
         send("connect\n\n")
 
-        match (line := sys.stdin.readline()).split():
+        line = sys.stdin.readline()
+        send("\n")
+
+        match line.split():
             # git push operation
             case ["connect", "git-receive-pack"]:
                 if not cmd_rclone_url_exist(self.url):
                     warn(f"Remote url {self.url} does not exist!")
-                    if question("Do you want to create the repository on the remote?"):
-                        cmd_git_clone(self.local_dir, self.tmp_server_dir)
-                    else:
+                    if not question("Do you want to create the repository?"):
                         err_quit("No repository to work on!")
+                    cmd_git_init(self.tmp_server_dir)
                 else:
                     self.download_rclone_remote()
-                    cmd_git_receive_pack(self.tmp_server_dir)
+
+                cmd_git_receive_pack(self.tmp_server_dir)
+                self.upload_rclone_remote()
 
             # git pull operation
             case ["connect", "git-upload-pack"]:
                 if not cmd_rclone_url_exist(self.url):
                     err_quit(f"Remote url {self.url} does not exist!")
-                else:
-                    self.download_rclone_remote()
-                    cmd_git_upload_pack(self.tmp_server_dir)
+
+                self.download_rclone_remote()
+                cmd_git_upload_pack(self.tmp_server_dir)
 
             case _:
                 err_quit(f"Invalid line received: {line}")
