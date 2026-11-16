@@ -172,8 +172,8 @@ def file_hash(path: str) -> str:
     return h.hexdigest()
 
 
-def exists_not_empty(path: str) -> bool:
-    return (p := Path(path)) and p.exists() and p.stat().st_size > 0
+def is_not_empty_file(path: str) -> bool:
+    return (p := Path(path)) and p.is_file() and p.stat().st_size > 0
 
 
 ### GIT REMOTE ###
@@ -224,10 +224,8 @@ class GitRemote:
         lhash = file_hash(self.rclone_bundle)
         rhash = Path(self.rclone_hash).read_text().strip()
 
-        if exists_not_empty(self.rclone_bundle) and lhash == rhash:
+        if is_not_empty_file(self.rclone_bundle) and lhash == rhash:
             note("Skipping download of remote bundle as it matches local bundle!")
-            cmd_git_clone(self.rclone_bundle, self.tmp_server_dir)
-            return
 
         else:
             log("Downloading remote bundle...")
@@ -237,7 +235,7 @@ class GitRemote:
             if file_hash(self.rclone_bundle) != rhash:
                 err_quit("Downloaded bundle has invalid hash!")
 
-            cmd_git_clone(self.rclone_bundle, self.tmp_server_dir)
+        cmd_git_clone(self.rclone_bundle, self.tmp_server_dir)
 
     def upload_rclone_remote(self):
         log("Uploading files to remote...")
