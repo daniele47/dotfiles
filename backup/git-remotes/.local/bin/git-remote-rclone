@@ -59,6 +59,7 @@ class RCloneRemote:
         print(msg, end="\n", file=self.outstream, flush=True)
 
     def get_remote_refs(self) -> str:
+        self.log("Obtaining refs from remote...")
         url = self.parsed_url
         cat = subprocess.run(
             ["rclone", "cat", f"{url.netloc}:{url.path}/refs"],
@@ -69,6 +70,7 @@ class RCloneRemote:
         return cat.stdout if (not cat.returncode) and cat.stdout else ""
 
     def get_remote_hash(self) -> str:
+        self.log("Obtaining hash from remote...")
         url = self.parsed_url
         lsjson = subprocess.run(
             [
@@ -137,12 +139,13 @@ class RCloneRemote:
             [
                 "rclone",
                 "copy",
-                "--verbose",
+                "--progress",
                 "--include",
                 "repo-*.tar.gz",
                 f"{url.netloc}:{url.path}/",
                 str(sync_dir),
             ],
+            stdout=self.errstream,
             check=True,
         )
         repo_archive = next(iter(sync_dir.glob("repo-*.tar.gz")))
@@ -307,7 +310,15 @@ class RCloneRemote:
 
         self.log("Upload repository archive")
         sync_repo = subprocess.run(
-            ["rclone", "sync", str(sync_dir), f"{url.netloc}:{url.path}"],
+            [
+                "rclone",
+                "sync",
+                "--progress",
+                "--ignore-times",
+                str(sync_dir),
+                f"{url.netloc}:{url.path}",
+            ],
+            stdout=self.errstream,
             check=False,
         )
         if sync_repo.returncode:
