@@ -91,19 +91,11 @@ def cmd(params: list[str], **kwargs) -> subprocess.CompletedProcess:
 
 
 def cmd_git_init(dst: str):
-    cmd(
-        ["git", "init", "--bare", dst],
-        stdout=subprocess.DEVNULL,
-        stderr=subprocess.DEVNULL,
-    )
+    cmd(["git", "init", "-q", "--bare", dst])
 
 
 def cmd_git_clone(src: str, dst: str):
-    cmd(
-        ["git", "clone", "--bare", src, dst],
-        stdout=subprocess.DEVNULL,
-        stderr=subprocess.DEVNULL,
-    )
+    cmd(["git", "clone", "-q", "--bare", src, dst])
 
 
 def cmd_git_refs(git_dir: str) -> str:
@@ -112,7 +104,6 @@ def cmd_git_refs(git_dir: str) -> str:
     return cmd(
         ["git", "for-each-ref", "--sort=refname", "--format=%(refname) %(objectname)"],
         stdout=subprocess.PIPE,
-        stderr=subprocess.DEVNULL,
         env=env,
         cwd=git_dir,
     ).stdout.strip()
@@ -122,9 +113,7 @@ def cmd_git_bundle(git_dir: str, bundle_file: str):
     env = os.environ.copy()
     env.pop("GIT_DIR", None)
     cmd(
-        ["git", "bundle", "create", bundle_file, "--all"],
-        stdout=subprocess.DEVNULL,
-        stderr=subprocess.DEVNULL,
+        ["git", "bundle", "create", "-q", bundle_file, "--all"],
         env=env,
         cwd=git_dir,
     )
@@ -143,7 +132,6 @@ def cmd_rclone_listremotes() -> list[str]:
         ["rclone", "listremotes"],
         check=False,
         stdout=subprocess.PIPE,
-        stderr=subprocess.DEVNULL,
         text=True,
     ).stdout.splitlines()
 
@@ -151,7 +139,6 @@ def cmd_rclone_listremotes() -> list[str]:
 def cmd_rclone_url_exist(remote_url: str) -> bool:
     result = cmd(
         ["rclone", "lsf", remote_url],
-        stderr=subprocess.DEVNULL,
         stdout=subprocess.PIPE,
         check=False,
     )
