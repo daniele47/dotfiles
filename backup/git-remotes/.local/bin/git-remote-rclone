@@ -97,6 +97,18 @@ def cmd_git_clone(src: str, dst: str):
     )
 
 
+def cmd_git_refs(git_dir: str) -> str:
+    env = os.environ.copy()
+    env.pop("GIT_DIR", None)
+    return cmd(
+        ["git", "for-each-ref", "--sort=refname", "--format=%(refname) %(objectname)"],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.DEVNULL,
+        env=env,
+        cwd=git_dir,
+    ).stdout.strip()
+
+
 def cmd_git_bundle(git_dir: str, bundle_file: str):
     env = os.environ.copy()
     env.pop("GIT_DIR", None)
@@ -217,7 +229,11 @@ class GitRemote:
                     self.download_rclone_remote()
 
                 log("Receiving packs into local server...")
+                prev_refs = cmd_git_refs(self.tmp_server_dir)
                 cmd_git_receive_pack(self.tmp_server_dir)
+                after_refs = cmd_git_refs(self.tmp_server_dir)
+                if prev_refs == after_refs:
+                    log("Refs didn't change, early quitting!", "warning", 0)
 
                 self.upload_rclone_remote()
 
