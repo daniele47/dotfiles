@@ -269,7 +269,7 @@ class GitRemote:
                     self.download_rclone_remote()
 
                 # send to local server
-                log("Receiving packs into local server...")
+                log("Pushing packs into local server...")
                 prev_refs = cmd_git_refs(self.tmp_server_dir)
                 cmd_git_receive_pack(self.tmp_server_dir)
                 self.generate_local_repo()
@@ -286,11 +286,11 @@ class GitRemote:
                 if not cmd_rclone_url_exist(self.remote_url):
                     err_quit(f"Remote url {self.remote_url} does not exist!")
                 self.download_rclone_remote()
-                self.generate_local_repo()
 
                 # receive from local server
-                log("Uploading packs from local server...")
+                log("Pulling packs from local server...")
                 cmd_git_upload_pack(self.tmp_server_dir)
+                self.generate_local_repo()
 
             case _:
                 err_quit(f"Invalid line received: {line}")
