@@ -177,10 +177,6 @@ def file_hash(path: str) -> str:
     return h.hexdigest()
 
 
-def is_not_empty_file(path: str) -> bool:
-    return (p := Path(path)) and p.is_file() and p.stat().st_size > 0
-
-
 ### GIT REMOTE ###
 class GitRemote:
     def __init__(self, git_remote_name: str, remote_url: str):
@@ -222,7 +218,7 @@ class GitRemote:
         lhash = file_hash(self.rclone_bundle)
         rhash = Path(self.rclone_hash).read_text().strip()
 
-        if is_not_empty_file(self.rclone_bundle) and lhash == rhash:
+        if lhash == rhash:
             note("Skipping download of remote bundle as it matches local bundle!")
 
         else:
