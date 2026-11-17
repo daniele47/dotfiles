@@ -246,11 +246,10 @@ class GitRemote:
         log("Uploading files to remote...")
         cmd_rclone_sync(self.rclone_repo_dir, self.remote_url)
 
-    def garbage_collect(self):
+    def generate_local_repo(self):
         log("Running aggressive garbage collection...")
         cmd_git_gc(self.tmp_server_dir)
 
-    def generate_local_repo(self):
         log("Generating bundle file...")
         cmd_git_bundle(self.tmp_server_dir, self.rclone_bundle)
         Path(self.rclone_hash).write_text(file_hash(self.rclone_bundle))
@@ -291,7 +290,6 @@ class GitRemote:
                 # upload to remote if refs changed
                 if prev_refs == after_refs:
                     note("Refs did not change, early quitting!", exit_code=0)
-                self.garbage_collect()
                 self.generate_local_repo()
                 self.upload_rclone_remote()
 
@@ -305,7 +303,6 @@ class GitRemote:
                 # receive from local server
                 log("Pulling packs from local server...")
                 cmd_git_upload_pack(self.tmp_server_dir)
-                self.generate_local_repo()
 
             case _:
                 err_quit(f"Invalid line received: {line}")
