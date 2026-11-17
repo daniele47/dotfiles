@@ -117,6 +117,16 @@ def cmd_git_bundle(git_dir: str, bundle_file: str):
     )
 
 
+def cmd_git_gc(git_dir: str):
+    env = os.environ.copy()
+    env.pop("GIT_DIR", None)
+    cmd(
+        ["git", "gc", "--aggressive", "--prune=now"],
+        env=env,
+        cwd=git_dir,
+    )
+
+
 def cmd_git_upload_pack(local_server_dir: str):
     cmd(["git-upload-pack", local_server_dir], stdin=None, stdout=None)
 
@@ -236,6 +246,10 @@ class GitRemote:
         log("Uploading files to remote...")
         cmd_rclone_sync(self.rclone_repo_dir, self.remote_url)
 
+    def garbage_collect(self):
+        log("Running aggressive garbage collection...")
+        cmd_git_gc(self.tmp_server_dir)
+
     def generate_local_repo(self):
         log("Generating bundle file...")
         cmd_git_bundle(self.tmp_server_dir, self.rclone_bundle)
@@ -243,7 +257,7 @@ class GitRemote:
 
     def communicate(self):
         # validate rclone is available and rclone remote is available
-        log(f"Validating rclone remote '{self.remote_url}' is valid...")
+        log(f"Validating rclone remote '{self.remote_url}'...")
         if shutil.which("rclone") is None:
             err_quit("Rclone command is not in PATH!")
         if self.remote_name not in cmd_rclone_listremotes():
@@ -272,12 +286,13 @@ class GitRemote:
                 log("Pushing packs into local server...")
                 prev_refs = cmd_git_refs(self.tmp_server_dir)
                 cmd_git_receive_pack(self.tmp_server_dir)
-                self.generate_local_repo()
                 after_refs = cmd_git_refs(self.tmp_server_dir)
 
                 # upload to remote if refs changed
                 if prev_refs == after_refs:
                     note("Refs did not change, early quitting!", exit_code=0)
+                self.garbage_collect()
+                self.generate_local_repo()
                 self.upload_rclone_remote()
 
             # git pull operation
