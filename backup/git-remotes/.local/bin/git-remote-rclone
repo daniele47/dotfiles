@@ -194,7 +194,7 @@ class GitRemote:
         # local working directory
         rclone_dir = os.path.realpath(os.path.join(os.environ["GIT_DIR"], "rclone"))
         rclone_tmp_dir = os.path.join(rclone_dir, "tmp")
-        rclone_lock_dir = os.path.join(rclone_tmp_dir, "lock")
+        rclone_lock_dir = os.path.join(rclone_dir, "lock")
         self.rclone_repo_dir = os.path.join(rclone_dir, "repo")
         self.rclone_bundle = os.path.join(self.rclone_repo_dir, "bundle")
         self.rclone_hash = os.path.join(self.rclone_repo_dir, "hash")
@@ -210,6 +210,7 @@ class GitRemote:
         Path(self.rclone_repo_dir).mkdir(parents=True, exist_ok=True)
         Path(self.rclone_bundle).touch()
         Path(self.rclone_hash).touch()
+        atexit.register(shutil.rmtree, rclone_lock_dir, ignore_errors=True)
         atexit.register(shutil.rmtree, rclone_tmp_dir, ignore_errors=True)
 
     def download_rclone_remote(self):
