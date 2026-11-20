@@ -171,7 +171,7 @@ def cmd_rclone_copy(src: str, dst: str, quiet: bool = False):
     env = os.environ.copy()
     if quiet:
         env.pop("RCLONE_PROGRESS", None)
-    cmd(["rclone", "copyto", src, dst], env=env)
+    cmd(["rclone", "copyto", "--ignore-times", src, dst], env=env)
 
 
 def cmd_rclone_sync(src: str, dst: str):
