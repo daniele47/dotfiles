@@ -1,7 +1,5 @@
 [user]
     useConfigOnly = true
-    name = Private
-    email = private@invalid.local
 [init]
     defaultBranch = main
 [pager]
