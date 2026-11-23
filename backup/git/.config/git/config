@@ -8,3 +8,4 @@
     lo = !git --no-pager log --oneline --graph -20
     st = status -s
     nuke = !git reset --hard && git clean -fd
+    hbomb = !git nuke && git clean -fdx
