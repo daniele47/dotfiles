@@ -1,0 +1,110 @@
+{
+  "firstRunComplete": true,
+  "newTabPageURL": "about:newtab",
+  "restorePreviousSession": false,
+  "translationPrefersHigherQuality": false,
+  "appearance": {
+    "showMenuBar": false,
+    "showBookmarksBar": "never",
+    "interfaceTheme": "system",
+    "websiteColorScheme": "system",
+    "colorTheme": "neutral"
+  },
+  "content": {
+    "defaultZoomLevelFactor": 1,
+    "zoomPerHost": {},
+    "enableForceDark": true,
+    "forceDarkPerHost": {}
+  },
+  "tabs": {
+    "verticalTabsEnabled": true,
+    "verticalTabsExpanded": false,
+    "verticalTabsExpandOnHover": false,
+    "verticalTabsPosition": "left",
+    "everythingInSidebar": false
+  },
+  "browsingBehavior": {
+    "enableAutoscroll": true,
+    "enablePrimaryPaste": true
+  },
+  "searchEngine": {
+    "engine": "DuckDuckGo",
+    "suggestions": true
+  },
+  "autoplay": {
+    "policy": "block-audio",
+    "siteFilters": []
+  },
+  "geolocation": {
+    "policy": "block"
+  },
+  "microphone": {
+    "policy": "block"
+  },
+  "notifications": {
+    "policy": "block"
+  },
+  "globalPrivacyControl": false,
+  "crashReportSending": "ask",
+  "backgroundNetworking": {
+    "enabled": true,
+    "features": {
+      "contentBlockerSubscriptionUpdates": true,
+      "updateChecks": false
+    }
+  },
+  "contentBlockers": {
+    "enabled": true,
+    "disabledSites": [],
+    "builtInLists": {
+      "easyList": true,
+      "easyPrivacy": true,
+      "easyListCookie": true,
+      "fanboyAnnoyances": true,
+      "fanboySocial": true,
+      "adblockWarningRemoval": true,
+      "abpindo": false,
+      "abpvn": false,
+      "bulgarianList": false,
+      "nordicFilters": false,
+      "easyListChina": false,
+      "easyListCzechAndSlovak": false,
+      "easyListDutch": false,
+      "easyListGermany": false,
+      "easyListHebrew": false,
+      "easyListItaly": true,
+      "easyListLithuania": false,
+      "easyListPolish": false,
+      "easyListPortuguese": false,
+      "easyListSpanish": false,
+      "indianList": false,
+      "koreanList": false,
+      "latvianList": false,
+      "listeAR": false,
+      "listeFR": false,
+      "roList": false,
+      "ruAdList": false
+    },
+    "customSubscriptions": [],
+    "localLists": [],
+    "customFilters": ""
+  },
+  "dnsSettings": {
+    "mode": "system"
+  },
+  "configVariables": {
+    "debug.process.show_web_content_process_id": false,
+    "debug.ui.show_advanced_debug_menu": false,
+    "debug.ui.show_tab_performance_monitor": false,
+    "ui.toolbar.show_feedback_button": true,
+    "ui.window.use_client_side_decorations": false,
+    "ui.tabs.vertical_tabs_hover_expand_delay_ms": 100,
+    "ui.tabs.vertical_tabs_hover_expand_animation_duration_ms": 100,
+    "network.http_cache.maximum_size_mb": 5120,
+    "downloads.maximum_connections_per_download": 4,
+    "downloads.split_without_validators": false,
+    "downloads.restart_stalled_connections": true,
+    "debug.compositor.disable_high_dynamic_range_surfaces": false,
+    "updates.check_interval_minutes": 240
+  }
+}
