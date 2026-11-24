@@ -19,4 +19,6 @@ if command -v distrobox &>/dev/null; then
     alias de='distrobox enter'
     alias dr='distrobox enter --'
     alias dl='distrobox list'
+elif command -v distrobox-host-exec &>/dev/null; then
+    alias dh='distrobox-host-exec'
 fi
