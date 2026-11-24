@@ -15,7 +15,7 @@ User=root
 Group=root
 CPUQuota=50%
 MemoryMax=50%
-ExecStart=/bin/bash -c 'for s in /autorun/*; do echo "running script: $s" && bash "$s" 2>&1 | while read -r line; do echo "[$(date "+%%a %%Y/%%m/%%d %%H:%%M:%%S")]: $line" >> "/autorun-logs/$(basename "$s").log"; done & done; wait'
+ExecStart=/bin/bash -c 'for s in /autorun/*; do echo "running script: $s" && logfile="/autorun-logs/$(basename "$s").log" && echo "---------------------------[$(date "+%%a %%Y/%%m/%%d %%H:%%M:%%S")]---------------------------" >>"$logfile" && bash "$s" 2>&1 | while read -r line; do echo "[$(date "+%%a %%Y/%%m/%%d %%H:%%M:%%S")]: $line" >>"$logfile"; done & done; wait'
 KillMode=mixed
 
 [Install]
