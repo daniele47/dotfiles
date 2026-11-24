@@ -1,0 +1,277 @@
+#!/usr/bin/env python
+#
+# Script to use rclone as a pseudo git remote
+#
+# How to use:
+# - place this script into any directory in PATH
+# - indicate the remote as `rclone::<REPO_URL>`
+# - now rclone is kinda like a git server!
+#
+# Rclone config file encryption:
+# - run `secret-tool store --label="Rclone config password" service rclone-config-password` to use OS secret service
+# - or handle it manually using `RCLONE_PASSWORD_COMMAND` to retrieve the password
+
+
+import atexit
+import hashlib
+import os
+import shutil
+import subprocess
+import sys
+from pathlib import Path
+
+
+### COMUNICATION ###
+def send(msg: str):
+    print(f"{msg}", end="", flush=True, file=sys.stdout)
+
+
+def log(msg: str, kind: str = "info", exit_code: int | None = None, end=None):
+    color = ""
+    prefix = ""
+    clear = "\x1b[0m"
+    # detect text color
+    match kind:
+        case "none":
+            color = ""
+            prefix = ""
+            clear = ""
+        case "info":
+            color = "\x1b[1;30m"
+            prefix = "LOG: "
+        case "note":
+            color = "\x1b[1;34m"
+            prefix = "NOTE: "
+        case "warning":
+            color = "\x1b[1;33m"
+            prefix = "WARNING: "
+        case "error":
+            color = "\x1b[1;31m"
+            prefix = "ERROR: "
+        case _:
+            raise ValueError(f"Invalid log kind: {kind}")
+    # log message
+    print(f"{color}{prefix}{msg}{clear}", file=sys.stderr, flush=True, end=end)
+    # early quit
+    if exit_code is not None:
+        sys.exit(exit_code)
+
+
+def warn(msg: str, **kwargs):
+    log(msg, "warning", **kwargs)
+
+
+def err_quit(msg: str, **kwargs):
+    kwargs.setdefault("exit_code", 1)
+    log(msg, "error", **kwargs)
+
+
+def note(msg: str, **kwargs):
+    log(msg, "note", **kwargs)
+
+
+def question(msg: str) -> bool:
+    log(f"{msg} [y/n] ", "none", end="")
+    result = cmd(
+        ['read answer </dev/tty; [ "$answer" = "y" ]'],
+        shell=True,  # we need some shell magic here since git eats stdin and stdout!
+        check=False,
+    )
+    return result.returncode == 0
+
+
+### SUBPROCESSES ###
+def cmd(params: list[str], **kwargs) -> subprocess.CompletedProcess:
+    kwargs.setdefault("stdin", subprocess.DEVNULL)
+    kwargs.setdefault("stdout", sys.stderr)
+    kwargs.setdefault("check", True)
+    return subprocess.run(params, **kwargs)  # noqa: PLW1510
+
+
+def cmd_git_init(dst: str):
+    shutil.rmtree(dst)
+    cmd(["git", "init", "-q", "--bare", dst])
+    shutil.rmtree(Path(dst) / "hooks")
+
+
+def cmd_git_refs(git_dir: str) -> str:
+    env = os.environ.copy()
+    env.pop("GIT_DIR", None)
+    return cmd(
+        ["git", "for-each-ref", "--sort=refname", "--format=%(refname) %(objectname)"],
+        stdout=subprocess.PIPE,
+        env=env,
+        cwd=git_dir,
+    ).stdout.strip()
+
+
+def cmd_git_gc(git_dir: str):
+    env = os.environ.copy()
+    env.pop("GIT_DIR", None)
+    cmd(
+        ["git", "gc", "--aggressive", "--prune=now"],
+        env=env,
+        cwd=git_dir,
+    )
+
+
+def cmd_git_upload_pack(local_server_dir: str):
+    cmd(["git-upload-pack", local_server_dir], stdin=None, stdout=None)
+
+
+def cmd_git_receive_pack(local_server_dir: str):
+    cmd(["git-receive-pack", local_server_dir], stdin=None, stdout=None)
+
+
+def cmd_rclone_listremotes() -> list[str]:
+    return cmd(
+        ["rclone", "listremotes"],
+        check=False,
+        stdout=subprocess.PIPE,
+        text=True,
+    ).stdout.splitlines()
+
+
+def cmd_rclone_url_exist(remote_url: str) -> bool:
+    env = os.environ.copy()
+    env.pop("RCLONE_PROGRESS", None)
+    result = cmd(
+        ["rclone", "lsd", remote_url],
+        stdout=subprocess.DEVNULL,
+        env=env,
+        check=False,
+    )
+
+    match result.returncode:
+        case 0:
+            return True
+        case 3:
+            return False
+        case _:
+            err_quit("Unable to check remote status!")
+            return False  # shush linter
+
+
+def cmd_rclone_copy(src: str, dst: str, quiet: bool = False):
+    env = os.environ.copy()
+    if quiet:
+        env.pop("RCLONE_PROGRESS", None)
+    cmd(["rclone", "copyto", "--ignore-times", src, dst], env=env)
+
+
+def cmd_rclone_sync(src: str, dst: str):
+    cmd(["rclone", "sync", "--create-empty-src-dirs", src, dst])
+
+
+### FILE OPERATIONS ###
+def file_hash(path: str) -> str:
+    h = hashlib.sha256()
+    with open(path, "rb") as f:
+        for chunk in iter(lambda: f.read(1024 * 1024), b""):
+            h.update(chunk)
+    return h.hexdigest()
+
+
+### GIT REMOTE ###
+class GitRemote:
+    def __init__(self, git_remote_name: str, remote_url: str):
+        self.git_remote_name = git_remote_name
+
+        # rclone remote paths
+        self.remote_url = remote_url.rstrip("/")
+        self.remote_name = f"{self.remote_url.split(':')[0]}:"
+
+        # local paths
+        rclone_dir = os.path.realpath(os.path.join(os.environ["GIT_DIR"], "rclone"))
+        rclone_lock_dir = os.path.join(rclone_dir, "lock")
+        self.rclone_repo_dir = os.path.join(rclone_dir, "repo")
+
+        # initialize files and dirs
+        Path(self.rclone_repo_dir).mkdir(parents=True, exist_ok=True)
+        try:
+            Path(rclone_lock_dir).mkdir()
+        except FileExistsError as e:
+            err_quit(f"Could not acquire lock at '{e.filename}'!")
+        atexit.register(shutil.rmtree, rclone_lock_dir, ignore_errors=True)
+
+    def download_rclone_remote(self):
+        log("Downloading remote repo...")
+        cmd_rclone_sync(self.remote_url, self.rclone_repo_dir)
+
+    def upload_rclone_remote(self):
+        log("Uploading repo to remote...")
+        cmd_rclone_sync(self.rclone_repo_dir, self.remote_url)
+
+    def garbage_collection(self):
+        log("Running aggressive garbage collection...")
+        cmd_git_gc(self.rclone_repo_dir)
+
+    def communicate(self):
+        # validate rclone is available and rclone remote is available
+        log(f"Validating rclone remote 'rclone-parts::{self.remote_url}'...")
+        if shutil.which("rclone") is None:
+            err_quit("Rclone command is not in PATH!")
+        if self.remote_name not in cmd_rclone_listremotes():
+            err_quit(f"Unknown rclone remote: {self.remote_name}")
+
+        # comunicate with git
+        assert sys.stdin.readline().split() == ["capabilities"]
+        send("connect\n\n")
+
+        line = sys.stdin.readline()
+        send("\n")
+
+        match line.split():
+            # git push operation
+            case ["connect", "git-receive-pack"]:
+                # checking remote repo exists, and download or prompt to create it
+                if not cmd_rclone_url_exist(self.remote_url):
+                    warn(f"Remote url {self.remote_url} does not exist!")
+                    if not question("Do you want to create the repository?"):
+                        err_quit("No repository to work on!")
+                    cmd_git_init(self.rclone_repo_dir)
+                else:
+                    self.download_rclone_remote()
+
+                # send to local server
+                log("Pushing packs into local server...")
+                prev_refs = cmd_git_refs(self.rclone_repo_dir)
+                cmd_git_receive_pack(self.rclone_repo_dir)
+                after_refs = cmd_git_refs(self.rclone_repo_dir)
+
+                # upload to remote if refs changed
+                if prev_refs == after_refs:
+                    note("Refs did not change, early quitting!", exit_code=0)
+                self.garbage_collection()
+                self.upload_rclone_remote()
+
+            # git pull operation
+            case ["connect", "git-upload-pack"]:
+                # checking remote repo exists, and download it
+                if not cmd_rclone_url_exist(self.remote_url):
+                    err_quit(f"Remote url {self.remote_url} does not exist!")
+                self.download_rclone_remote()
+
+                # receive from local server
+                log("Pulling packs from local server...")
+                cmd_git_upload_pack(self.rclone_repo_dir)
+
+            case _:
+                err_quit(f"Invalid line received: {line}")
+
+
+### EXECUTION ###
+if __name__ == "__main__":
+    if len(sys.argv) != 3:
+        err_quit("Usage: git-remote-rclone REMOTE_NAME REMOTE_URL")
+
+    # setup default for env vars
+    os.environ.setdefault("RCLONE_PROGRESS", "true")
+    os.environ.setdefault("RCLONE_ASKPASSWORD", "false")
+    if shutil.which("secret-tool"):
+        os.environ.setdefault(
+            "RCLONE_PASSWORD_COMMAND",
+            "secret-tool lookup service rclone-config-password",
+        )
+
+    GitRemote(sys.argv[1], sys.argv[2]).communicate()

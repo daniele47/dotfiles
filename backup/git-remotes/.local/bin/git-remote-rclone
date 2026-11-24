@@ -256,7 +256,7 @@ class GitRemote:
 
     def communicate(self):
         # validate rclone is available and rclone remote is available
-        log(f"Validating rclone remote '{self.remote_url}'...")
+        log(f"Validating rclone remote 'rclone::{self.remote_url}'...")
         if shutil.which("rclone") is None:
             err_quit("Rclone command is not in PATH!")
         if self.remote_name not in cmd_rclone_listremotes():
