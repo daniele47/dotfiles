@@ -142,7 +142,7 @@ def cmd_rclone_url_exist(remote_url: str) -> bool:
         check=False,
         text=True,
     )
-    if not {"objects/", "HEAD", "config", "refs/"}.issubset(
+    if not {"objects/", "HEAD", "config", "refs/", "hash"}.issubset(
         set(result.stdout.splitlines())
     ):
         if result.returncode == 0:
@@ -170,6 +170,15 @@ def cmd_rclone_sync(src: str, dst: str):
     cmd(["rclone", "sync", "--create-empty-src-dirs", src, dst])
 
 
+def cmd_rclone_rm(remote_url, remote_relpaths: list[str]):
+    cmd(
+        ["rclone", "delete", remote_url, "--files-from-raw", "-"],
+        stdin=None,
+        input="\n".join(remote_relpaths),
+        text=True,
+    )
+
+
 ### FILE OPERATIONS ###
 def file_hash(path: str) -> str:
     h = hashlib.sha256()
@@ -187,13 +196,14 @@ class GitRemote:
         # rclone remote paths
         self.remote_url = remote_url.rstrip("/")
         self.remote_name = f"{self.remote_url.split(':')[0]}:"
+        self.remote_hash = f"{self.remote_url}/hash"
 
         # local paths
-        rclone_dir = os.path.realpath(
-            os.path.join(os.environ["GIT_DIR"], "rclone-parts")
-        )
+        git_dir = os.environ["GIT_DIR"]
+        rclone_dir = os.path.realpath(os.path.join(git_dir, "rclone-parts"))
         rclone_lock_dir = os.path.join(rclone_dir, "lock")
         self.rclone_repo_dir = os.path.join(rclone_dir, "repo")
+        self.rclone_hash_file = os.path.join(self.rclone_repo_dir, "hash")
 
         # initialize files and dirs
         Path(self.rclone_repo_dir).mkdir(parents=True, exist_ok=True)
@@ -203,12 +213,71 @@ class GitRemote:
             err_quit(f"Could not acquire lock at '{e.filename}'!")
         atexit.register(shutil.rmtree, rclone_lock_dir, ignore_errors=True)
 
+    def generate_hashes(
+        self, base_dir: str, skip: list[str] | None = None
+    ) -> dict[str, str]:
+        skip = skip or []
+        hashes = {}
+        for root, dirs, files in os.walk(base_dir):
+            for filename in files:
+                filepath = os.path.join(root, filename)
+                relpath = os.path.relpath(filepath, base_dir)
+                if relpath not in skip:
+                    hashes[relpath] = file_hash(filepath)
+        return hashes
+
+    def read_hashes(self, hash_file: str) -> dict[str, str]:
+        hashes = {}
+        for line in Path(hash_file).read_text().splitlines():
+            parts = line.split(maxsplit=1)
+            hashes[parts[1]] = parts[0]
+        return hashes
+
+    def write_hashes(self, hash_file: str, hashes: dict[str, str]):
+        content = []
+        for h in sorted(hashes.keys()):
+            content.append(f"{hashes[h]} {h}")
+        Path(hash_file).write_text("\n".join(content))
+
     def download_rclone_remote(self):
-        log("Downloading remote repo...")
-        cmd_rclone_sync(self.remote_url, self.rclone_repo_dir)
+        log("Downloading remote hash file...")
+        cmd_rclone_copy(self.remote_hash, self.rclone_hash_file, quiet=True)
+        hashes = self.generate_hashes(self.rclone_repo_dir, ["hash"])
+        remote_hashes = self.read_hashes(self.rclone_hash_file)
+        if hashes == remote_hashes:
+            note("Skipping download of remote repo as it matches local repo!")
+        else:
+            for file in hashes:
+                hash1 = hashes[file]
+                hash2 = remote_hashes.get(file)
+                if hash1 != hash2:
+                    (Path(self.rclone_repo_dir) / file).unlink()
+            log("Downloading remote repo...")
+            cmd_rclone_sync(self.remote_url, self.rclone_repo_dir)
+            hashes = self.generate_hashes(self.rclone_repo_dir, ["hash"])
+        if hashes != remote_hashes:
+            for i in set(hashes) | set(remote_hashes):
+                lh = hashes.get(i)
+                rh = remote_hashes.get(i)
+                if lh != rh:
+                    warn(f"Hash differ:'{i}' -> '{lh}' / '{rh}'")
+            err_quit("Downloaded repo doesn't match downloaded hash!")
 
     def upload_rclone_remote(self):
         log("Uploading repo to remote...")
+        Path(self.rclone_hash_file).touch()
+        hashes = self.generate_hashes(self.rclone_repo_dir, ["hash"])
+        remote_hashes = self.read_hashes(self.rclone_hash_file)
+        files_to_delete = []
+        for file in remote_hashes:
+            hash1 = hashes.get(file)
+            hash2 = remote_hashes[file]
+            if hash1 != hash2:
+                files_to_delete.append(file)
+        if files_to_delete:
+            files_to_delete.append("hash")
+            cmd_rclone_rm(self.remote_url, files_to_delete)
+        self.write_hashes(self.rclone_hash_file, hashes)
         cmd_rclone_sync(self.rclone_repo_dir, self.remote_url)
 
     def communicate(self):
