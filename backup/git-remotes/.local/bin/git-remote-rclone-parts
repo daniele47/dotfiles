@@ -142,7 +142,7 @@ def cmd_rclone_url_exist(remote_url: str) -> bool:
         check=False,
         text=True,
     )
-    if not {"objects", "HEAD", "config", "refs"}.issubset(
+    if not {"objects/", "HEAD", "config", "refs/"}.issubset(
         set(result.stdout.splitlines())
     ):
         if result.returncode == 0:
