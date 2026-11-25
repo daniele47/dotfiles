@@ -232,38 +232,51 @@ class GitRemote:
     def download_rclone_remote(self):
         log("Downloading remote hash file...")
         cmd_rclone_copy(self.remote_hash, self.rclone_hash_file)
+        # compute file diff using hashes
         hashes = generate_hashes(self.rclone_repo_dir)
         remote_hashes = read_hashes(self.rclone_hash_file)
+        # no diff
         if hashes == remote_hashes:
             note("Skipping download of remote repo as it matches local repo!")
+        # delete local file that diff (force rclone sync to resend them)
         else:
             for file in hashes:
                 if hashes[file] != remote_hashes.get(file):
                     (Path(self.rclone_repo_dir) / file).unlink()
             log("Downloading remote repo...")
             cmd_rclone_sync(self.remote_repo, self.rclone_repo_dir)
+            # rclone might drop empty refs dir
+            (Path(self.rclone_repo_dir) / "refs").mkdir(exist_ok=True)
             hashes = generate_hashes(self.rclone_repo_dir)
+        # validate files match remote hash
         if hashes != remote_hashes:
             err_quit("Downloaded repo files checksums don't match downloaded hash!")
 
     def upload_rclone_remote(self):
         log("Uploading repo to remote...")
+        # compute hashes
         hashes = generate_hashes(self.rclone_repo_dir)
         remote_hashes = read_hashes(self.rclone_hash_file)
+        # compute file diff
         files_to_delete = []
         for file in remote_hashes:
             hash1 = hashes.get(file)
             hash2 = remote_hashes[file]
             if hash1 != hash2:
                 files_to_delete.append(file)
+        # force remote to delete file that diff (force sync to resend them)
         if files_to_delete:
             cmd_rclone_delete(self.remote_repo, files_to_delete)
-        write_hashes(self.rclone_hash_file, hashes)
+        # send repo to remote
         cmd_rclone_sync(self.rclone_repo_dir, self.remote_repo)
+        # send hash file to remote
         log("Uploading hash to remote...")
+        write_hashes(self.rclone_hash_file, hashes)
         cmd_rclone_copy(self.rclone_hash_file, self.remote_hash)
 
     def communicate(self):
+        must_contain = {"repo/", "hash"}
+
         # validate rclone is available and rclone remote is available
         log(f"Validating rclone remote 'rclone::{self.remote_url}'...")
         if shutil.which("rclone") is None:
@@ -274,11 +287,8 @@ class GitRemote:
         # comunicate with git
         assert sys.stdin.readline().split() == ["capabilities"]
         send("connect\n\n")
-
         line = sys.stdin.readline()
         send("\n")
-
-        must_contain = {"repo/", "hash"}
 
         match line.split():
             # git push operation
