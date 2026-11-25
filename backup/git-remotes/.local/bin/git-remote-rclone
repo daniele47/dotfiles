@@ -155,6 +155,8 @@ def cmd_rclone_url_exist(remote_url: str) -> bool:
         text=True,
     )
     if not {"bundle", "hash"}.issubset(set(result.stdout.splitlines())):
+        if result.returncode == 0:
+            err_quit("Remote url is being used by something else!")
         return False
 
     match result.returncode:

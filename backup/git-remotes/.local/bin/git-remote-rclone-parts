@@ -136,11 +136,18 @@ def cmd_rclone_url_exist(remote_url: str) -> bool:
     env = os.environ.copy()
     env.pop("RCLONE_PROGRESS", None)
     result = cmd(
-        ["rclone", "lsd", remote_url],
-        stdout=subprocess.DEVNULL,
+        ["rclone", "lsf", remote_url],
+        stdout=subprocess.PIPE,
         env=env,
         check=False,
+        text=True,
     )
+    if not {"objects", "HEAD", "config", "refs"}.issubset(
+        set(result.stdout.splitlines())
+    ):
+        if result.returncode == 0:
+            err_quit("Remote url is being used by something else!")
+        return False
 
     match result.returncode:
         case 0:
@@ -182,7 +189,9 @@ class GitRemote:
         self.remote_name = f"{self.remote_url.split(':')[0]}:"
 
         # local paths
-        rclone_dir = os.path.realpath(os.path.join(os.environ["GIT_DIR"], "rclone"))
+        rclone_dir = os.path.realpath(
+            os.path.join(os.environ["GIT_DIR"], "rclone-parts")
+        )
         rclone_lock_dir = os.path.join(rclone_dir, "lock")
         self.rclone_repo_dir = os.path.join(rclone_dir, "repo")
 
