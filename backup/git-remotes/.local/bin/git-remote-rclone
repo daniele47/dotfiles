@@ -15,7 +15,9 @@
 import atexit
 import hashlib
 import os
+import secrets
 import shutil
+import signal
 import subprocess
 import sys
 from pathlib import Path
@@ -123,8 +125,14 @@ def cmd_git_receive_pack(local_server_dir: str):
 
 
 def cmd_rclone_listremotes() -> list[str]:
+    env = os.environ.copy()
+    env.pop("RCLONE_PROGRESS", None)
     return cmd(
-        ["rclone", "listremotes"], check=False, stdout=subprocess.PIPE, text=True
+        ["rclone", "listremotes"],
+        check=False,
+        stdout=subprocess.PIPE,
+        text=True,
+        env=env,
     ).stdout.splitlines()
 
 
@@ -134,10 +142,9 @@ def cmd_rclone_url_exist(remote_url: str, must_contain: set[str]) -> bool:
     result = cmd(
         ["rclone", "lsf", remote_url],
         stdout=subprocess.PIPE,
-        stderr=subprocess.DEVNULL,
-        env=env,
         check=False,
         text=True,
+        env=env,
     )
     if not must_contain.issubset(set(result.stdout.splitlines())):
         if result.returncode == 0:
@@ -154,12 +161,19 @@ def cmd_rclone_url_exist(remote_url: str, must_contain: set[str]) -> bool:
             return False  # shush linter
 
 
-def cmd_rclone_copy(src: str, dst: str):
-    cmd(["rclone", "copyto", "--ignore-times", src, dst])
+def cmd_rclone_ls(remote_url: str) -> list[str]:
+    env = os.environ.copy()
+    env.pop("RCLONE_PROGRESS", None)
+    res = cmd(["rclone", "lsf", remote_url], stdout=subprocess.PIPE, text=True, env=env)
+    return res.stdout.splitlines()
 
 
-def cmd_rclone_sync(src: str, dst: str):
-    cmd(["rclone", "sync", src, dst])
+def cmd_rclone_mkdir(remote_url: str):
+    cmd(["rclone", "mkdir", remote_url])
+
+
+def cmd_rclone_rmdir(remote_url: str):
+    cmd(["rclone", "rmdir", remote_url])
 
 
 def cmd_rclone_delete(remote_url, remote_relpaths: list[str]):
@@ -169,6 +183,14 @@ def cmd_rclone_delete(remote_url, remote_relpaths: list[str]):
         input="\n".join(remote_relpaths),
         text=True,
     )
+
+
+def cmd_rclone_copy(src: str, dst: str):
+    cmd(["rclone", "copyto", "--ignore-times", src, dst])
+
+
+def cmd_rclone_sync(src: str, dst: str):
+    cmd(["rclone", "sync", src, dst])
 
 
 ### HASH OPERATIONS ###
@@ -215,6 +237,9 @@ class GitRemote:
         self.remote_name = f"{self.remote_url.split(':')[0]}:"
         self.remote_repo = f"{self.remote_url}/repo"
         self.remote_hash = f"{self.remote_url}/hash"
+        self.remote_lock_root = f"{self.remote_url}/lock"
+        self.remote_rlock = f"{self.remote_lock_root}/r${secrets.token_hex(32)}"
+        self.remote_rwlock = f"{self.remote_lock_root}/w${secrets.token_hex(32)}"
 
         # local paths
         git_dir = os.environ["GIT_DIR"]
@@ -231,6 +256,32 @@ class GitRemote:
         except FileExistsError as e:
             err_quit(f"Could not acquire lock at '{e.filename}'!")
         atexit.register(shutil.rmtree, rclone_lock_dir, ignore_errors=True)
+
+    def acquire_lock(self, is_reader: bool):
+        log("Acquiring lock on the remote...")
+        cmd_rclone_mkdir(self.remote_rlock if is_reader else self.remote_rwlock)
+        locks = cmd_rclone_ls(self.remote_lock_root)
+        # lock acquired
+        if all(s.startswith("r") for s in locks) or len(locks) == 1:
+            atexit.register(self.release_lock, is_reader=is_reader)
+        # couldn't acquire lock
+        else:
+            err_msg = f"Failed to acquire lock at '{self.remote_lock_root}'!"
+            err_quit(err_msg, exit_code=None)
+            self.release_lock(is_reader)
+            sys.exit(1)
+
+    def release_lock(self, is_reader: bool):
+        # cleanup
+        log("Releasing lock on the remote...")
+        sig = {signal.SIGINT, signal.SIGTERM, signal.SIGHUP, signal.SIGQUIT}
+        old = signal.pthread_sigmask(signal.SIG_BLOCK, sig)
+        try:
+            cmd_rclone_rmdir(self.remote_rlock if is_reader else self.remote_rwlock)
+        except Exception as e:  # noqa: BLE001
+            warn(f"Could not release remote lock at '{self.remote_lock_root}': {e}")
+        finally:
+            signal.pthread_sigmask(signal.SIG_SETMASK, old)
 
     def download_rclone_remote(self):
         log("Downloading remote hash file...")
@@ -303,6 +354,7 @@ class GitRemote:
                         err_quit("No repository to work on!")
                     cmd_git_init(self.rclone_repo_dir)
                 else:
+                    self.acquire_lock(is_reader=False)
                     self.download_rclone_remote()
 
                 # send to local server
@@ -321,6 +373,7 @@ class GitRemote:
                 # checking remote repo exists, and download it
                 if not cmd_rclone_url_exist(self.remote_url, must_contain):
                     err_quit(f"Remote url {self.remote_url} does not exist!")
+                self.acquire_lock(is_reader=True)
                 self.download_rclone_remote()
 
                 # receive from local server
