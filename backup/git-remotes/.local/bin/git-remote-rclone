@@ -50,7 +50,10 @@ def log(msg: str, kind: str = "info", exit_code: int | None = None, end=None):
             prefix = "ERROR: "
         case _:
             raise ValueError(f"Invalid log kind: {kind}")
-    # log message
+    # log message (remove colors with not interactive output)
+    if not sys.stderr.isatty():
+        color = ""
+        clear = ""
     print(f"{color}{prefix}{msg}{clear}", file=sys.stderr, flush=True, end=end)
     # early quit
     if exit_code is not None:
