@@ -4,7 +4,7 @@
 #
 # How to use:
 # - place this script into any directory in PATH
-# - indicate the remote as `rclone::<REPO_URL>`
+# - indicate the remote as `rclone-parts::<REPO_URL>`
 # - now rclone is kinda like a git server!
 #
 # Rclone config file encryption:
@@ -211,10 +211,6 @@ class GitRemote:
         log("Uploading repo to remote...")
         cmd_rclone_sync(self.rclone_repo_dir, self.remote_url)
 
-    def garbage_collection(self):
-        log("Running aggressive garbage collection...")
-        cmd_git_gc(self.rclone_repo_dir)
-
     def communicate(self):
         # validate rclone is available and rclone remote is available
         log(f"Validating rclone remote 'rclone-parts::{self.remote_url}'...")
@@ -251,7 +247,6 @@ class GitRemote:
                 # upload to remote if refs changed
                 if prev_refs == after_refs:
                     note("Refs did not change, early quitting!", exit_code=0)
-                self.garbage_collection()
                 self.upload_rclone_remote()
 
             # git pull operation
