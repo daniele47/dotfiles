@@ -89,11 +89,9 @@ def cmd(params: list[str], **kwargs) -> subprocess.CompletedProcess:
 
 
 def cmd_git_init(dst: str):
+    shutil.rmtree(dst)
     cmd(["git", "init", "-q", "--bare", dst])
-
-
-def cmd_git_clone(src: str, dst: str):
-    cmd(["git", "clone", "-q", "--bare", src, dst])
+    shutil.rmtree(Path(dst) / "hooks")
 
 
 def cmd_git_refs(git_dir: str) -> str:
@@ -107,24 +105,10 @@ def cmd_git_refs(git_dir: str) -> str:
     ).stdout.strip()
 
 
-def cmd_git_bundle(git_dir: str, bundle_file: str):
-    env = os.environ.copy()
-    env.pop("GIT_DIR", None)
-    cmd(
-        ["git", "bundle", "create", "-q", bundle_file, "--all"],
-        env=env,
-        cwd=git_dir,
-    )
-
-
 def cmd_git_gc(git_dir: str):
     env = os.environ.copy()
     env.pop("GIT_DIR", None)
-    cmd(
-        ["git", "gc", "--aggressive", "--prune=now"],
-        env=env,
-        cwd=git_dir,
-    )
+    cmd(["git", "gc", "--aggressive", "--prune=now"], env=env, cwd=git_dir)
 
 
 def cmd_git_upload_pack(local_server_dir: str):
@@ -137,24 +121,22 @@ def cmd_git_receive_pack(local_server_dir: str):
 
 def cmd_rclone_listremotes() -> list[str]:
     return cmd(
-        ["rclone", "listremotes"],
-        check=False,
-        stdout=subprocess.PIPE,
-        text=True,
+        ["rclone", "listremotes"], check=False, stdout=subprocess.PIPE, text=True
     ).stdout.splitlines()
 
 
-def cmd_rclone_url_exist(remote_url: str) -> bool:
+def cmd_rclone_url_exist(remote_url: str, must_contain: set[str]) -> bool:
     env = os.environ.copy()
     env.pop("RCLONE_PROGRESS", None)
     result = cmd(
         ["rclone", "lsf", remote_url],
         stdout=subprocess.PIPE,
+        stderr=subprocess.DEVNULL,
         env=env,
         check=False,
         text=True,
     )
-    if not {"bundle", "hash"}.issubset(set(result.stdout.splitlines())):
+    if not must_contain.issubset(set(result.stdout.splitlines())):
         if result.returncode == 0:
             err_quit("Remote url is being used by something else!")
         return False
@@ -169,24 +151,55 @@ def cmd_rclone_url_exist(remote_url: str) -> bool:
             return False  # shush linter
 
 
-def cmd_rclone_copy(src: str, dst: str, quiet: bool = False):
-    env = os.environ.copy()
-    if quiet:
-        env.pop("RCLONE_PROGRESS", None)
-    cmd(["rclone", "copyto", "--ignore-times", src, dst], env=env)
+def cmd_rclone_copy(src: str, dst: str):
+    cmd(["rclone", "copyto", "--ignore-times", src, dst])
 
 
 def cmd_rclone_sync(src: str, dst: str):
-    cmd(["rclone", "sync", "--ignore-times", src, dst])
+    cmd(["rclone", "sync", src, dst])
 
 
-### FILE OPERATIONS ###
+def cmd_rclone_delete(remote_url, remote_relpaths: list[str]):
+    cmd(
+        ["rclone", "delete", remote_url, "--files-from-raw", "-"],
+        stdin=None,
+        input="\n".join(remote_relpaths),
+        text=True,
+    )
+
+
+### HASH OPERATIONS ###
 def file_hash(path: str) -> str:
     h = hashlib.sha256()
     with open(path, "rb") as f:
         for chunk in iter(lambda: f.read(1024 * 1024), b""):
             h.update(chunk)
     return h.hexdigest()
+
+
+def generate_hashes(base_dir: str) -> dict[str, str]:
+    hashes = {}
+    for root, dirs, files in os.walk(base_dir):
+        for filename in files:
+            filepath = os.path.join(root, filename)
+            relpath = os.path.relpath(filepath, base_dir)
+            hashes[relpath] = file_hash(filepath)
+    return hashes
+
+
+def read_hashes(hash_file: str) -> dict[str, str]:
+    hashes = {}
+    for line in Path(hash_file).read_text().splitlines():
+        parts = line.split(maxsplit=1)
+        hashes[parts[1]] = parts[0]
+    return hashes
+
+
+def write_hashes(hash_file: str, hashes: dict[str, str]):
+    content = []
+    for h in sorted(hashes.keys()):
+        content.append(f"{hashes[h]} {h}")
+    Path(hash_file).write_text("\n".join(content))
 
 
 ### GIT REMOTE ###
@@ -197,64 +210,58 @@ class GitRemote:
         # rclone remote paths
         self.remote_url = remote_url.rstrip("/")
         self.remote_name = f"{self.remote_url.split(':')[0]}:"
-        self.remote_bundle = f"{remote_url}/bundle"
-        self.remote_hash = f"{remote_url}/hash"
+        self.remote_repo = f"{self.remote_url}/repo"
+        self.remote_hash = f"{self.remote_url}/hash"
 
         # local paths
-        self.local_dir = os.getcwd()
-
-        # local working directory
-        rclone_dir = os.path.realpath(os.path.join(os.environ["GIT_DIR"], "rclone"))
-        rclone_tmp_dir = os.path.join(rclone_dir, "tmp")
+        git_dir = os.environ["GIT_DIR"]
+        rclone_dir = os.path.realpath(os.path.join(git_dir, "rclone"))
         rclone_lock_dir = os.path.join(rclone_dir, "lock")
         self.rclone_repo_dir = os.path.join(rclone_dir, "repo")
-        self.rclone_bundle = os.path.join(self.rclone_repo_dir, "bundle")
-        self.rclone_hash = os.path.join(self.rclone_repo_dir, "hash")
-        self.tmp_server_dir = os.path.join(rclone_tmp_dir, "server")
+        self.rclone_hash_file = os.path.join(rclone_dir, "hash")
 
         # initialize files and dirs
-        Path(rclone_tmp_dir).mkdir(parents=True, exist_ok=True)
+        Path(self.rclone_repo_dir).mkdir(parents=True, exist_ok=True)
+        Path(self.rclone_hash_file).touch()
         try:
             Path(rclone_lock_dir).mkdir()
         except FileExistsError as e:
             err_quit(f"Could not acquire lock at '{e.filename}'!")
-        Path(self.tmp_server_dir).mkdir(parents=True, exist_ok=True)
-        Path(self.rclone_repo_dir).mkdir(parents=True, exist_ok=True)
-        Path(self.rclone_bundle).touch()
-        Path(self.rclone_hash).touch()
         atexit.register(shutil.rmtree, rclone_lock_dir, ignore_errors=True)
-        atexit.register(shutil.rmtree, rclone_tmp_dir, ignore_errors=True)
 
     def download_rclone_remote(self):
-        log("Downloading remote hash...")
-        cmd_rclone_copy(self.remote_hash, self.rclone_hash, quiet=True)
-        lhash = file_hash(self.rclone_bundle)
-        rhash = Path(self.rclone_hash).read_text().strip()
-
-        if lhash == rhash:
-            note("Skipping download of remote bundle as it matches local bundle!")
-
+        log("Downloading remote hash file...")
+        cmd_rclone_copy(self.remote_hash, self.rclone_hash_file)
+        hashes = generate_hashes(self.rclone_repo_dir)
+        remote_hashes = read_hashes(self.rclone_hash_file)
+        if hashes == remote_hashes:
+            note("Skipping download of remote repo as it matches local repo!")
         else:
-            log("Downloading remote bundle...")
-            cmd_rclone_copy(self.remote_bundle, self.rclone_bundle)
-
-            log("Validating downloaded bundle...")
-            if file_hash(self.rclone_bundle) != rhash:
-                err_quit("Downloaded bundle has invalid hash!")
-
-        cmd_git_clone(self.rclone_bundle, self.tmp_server_dir)
+            for file in hashes:
+                if hashes[file] != remote_hashes.get(file):
+                    (Path(self.rclone_repo_dir) / file).unlink()
+            log("Downloading remote repo...")
+            cmd_rclone_sync(self.remote_repo, self.rclone_repo_dir)
+            hashes = generate_hashes(self.rclone_repo_dir)
+        if hashes != remote_hashes:
+            err_quit("Downloaded repo files checksums don't match downloaded hash!")
 
     def upload_rclone_remote(self):
-        log("Uploading files to remote...")
-        cmd_rclone_sync(self.rclone_repo_dir, self.remote_url)
-
-    def generate_local_repo(self):
-        log("Running aggressive garbage collection...")
-        cmd_git_gc(self.tmp_server_dir)
-
-        log("Generating bundle file...")
-        cmd_git_bundle(self.tmp_server_dir, self.rclone_bundle)
-        Path(self.rclone_hash).write_text(file_hash(self.rclone_bundle))
+        log("Uploading repo to remote...")
+        hashes = generate_hashes(self.rclone_repo_dir)
+        remote_hashes = read_hashes(self.rclone_hash_file)
+        files_to_delete = []
+        for file in remote_hashes:
+            hash1 = hashes.get(file)
+            hash2 = remote_hashes[file]
+            if hash1 != hash2:
+                files_to_delete.append(file)
+        if files_to_delete:
+            cmd_rclone_delete(self.remote_repo, files_to_delete)
+        write_hashes(self.rclone_hash_file, hashes)
+        cmd_rclone_sync(self.rclone_repo_dir, self.remote_repo)
+        log("Uploading hash to remote...")
+        cmd_rclone_copy(self.rclone_hash_file, self.remote_hash)
 
     def communicate(self):
         # validate rclone is available and rclone remote is available
@@ -271,40 +278,41 @@ class GitRemote:
         line = sys.stdin.readline()
         send("\n")
 
+        must_contain = {"repo/", "hash"}
+
         match line.split():
             # git push operation
             case ["connect", "git-receive-pack"]:
                 # checking remote repo exists, and download or prompt to create it
-                if not cmd_rclone_url_exist(self.remote_url):
+                if not cmd_rclone_url_exist(self.remote_url, must_contain):
                     warn(f"Remote url {self.remote_url} does not exist!")
                     if not question("Do you want to create the repository?"):
                         err_quit("No repository to work on!")
-                    cmd_git_init(self.tmp_server_dir)
+                    cmd_git_init(self.rclone_repo_dir)
                 else:
                     self.download_rclone_remote()
 
                 # send to local server
                 log("Pushing packs into local server...")
-                prev_refs = cmd_git_refs(self.tmp_server_dir)
-                cmd_git_receive_pack(self.tmp_server_dir)
-                after_refs = cmd_git_refs(self.tmp_server_dir)
+                prev_refs = cmd_git_refs(self.rclone_repo_dir)
+                cmd_git_receive_pack(self.rclone_repo_dir)
+                after_refs = cmd_git_refs(self.rclone_repo_dir)
 
                 # upload to remote if refs changed
                 if prev_refs == after_refs:
                     note("Refs did not change, early quitting!", exit_code=0)
-                self.generate_local_repo()
                 self.upload_rclone_remote()
 
             # git pull operation
             case ["connect", "git-upload-pack"]:
                 # checking remote repo exists, and download it
-                if not cmd_rclone_url_exist(self.remote_url):
+                if not cmd_rclone_url_exist(self.remote_url, must_contain):
                     err_quit(f"Remote url {self.remote_url} does not exist!")
                 self.download_rclone_remote()
 
                 # receive from local server
                 log("Pulling packs from local server...")
-                cmd_git_upload_pack(self.tmp_server_dir)
+                cmd_git_upload_pack(self.rclone_repo_dir)
 
             case _:
                 err_quit(f"Invalid line received: {line}")
